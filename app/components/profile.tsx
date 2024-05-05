@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export default async function Profile() {
   const session = (await auth()) as any;
-  console.log(session);
+
   if (session?.token) {
     const res = await fetch(
       process.env.API_URL + "/user/" + encodeURI(session?.user.email),
@@ -19,8 +19,6 @@ export default async function Profile() {
       }
     );
     const body = await res.json();
-
-    console.log(body);
   } else {
     return <SignIn />;
   }

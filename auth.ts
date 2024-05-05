@@ -18,7 +18,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     jwt: async ({ token, user, account }) => {
       if (account && account.access_token) {
         // set access_token to the token payload
-        console.log(account);
         token.accessToken = account.access_token;
       }
       return token;
