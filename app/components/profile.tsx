@@ -3,22 +3,17 @@ import React from "react";
 import { SignOut } from "@/app/components/signout";
 import { SignIn } from "@/app/components/signin";
 import Image from "next/image";
+import beFetch from "@/utilities/beFetch";
 
 export default async function Profile() {
   const session = (await auth()) as any;
 
   if (session?.token) {
-    const res = await fetch(
-      process.env.API_URL + "/user/" + encodeURI(session?.user.email),
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.token}`,
-        },
-      }
+    const res = await beFetch(
+      'GET',
+      '/user/' + encodeURI(session?.user.email),
     );
-    const body = await res.json();
+
   } else {
     return <SignIn />;
   }
