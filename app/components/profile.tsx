@@ -14,6 +14,7 @@ export default async function Profile() {
       '/user/' + encodeURI(session?.user.email),
     );
 
+    session.user.id = res.id;
   } else {
     return <SignIn />;
   }
