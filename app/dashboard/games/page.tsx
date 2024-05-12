@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import backendFetch from "@/utilities/beFetch";
+import backendFetch from "@/utilities/backendFetch";
 import React from "react";
 
 export default async function Dashboard() {

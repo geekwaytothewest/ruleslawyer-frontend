@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import feFetch from "@/utilities/feFetch";
+import frontendFetch from "@/utilities/frontendFetch";
 import Link from "next/link";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
@@ -20,7 +20,7 @@ export default function SideBar() {
   useEffect(() => {}, [session]);
 
   useEffect(() => {
-    feFetch("GET", "/user/" + session?.data?.user?.email, null, session)
+    frontendFetch("GET", "/user/" + session?.data?.user?.email, null, session)
       .then((res: any) => res.json())
       .then((data: any) => {
         setUser(data);
@@ -29,7 +29,7 @@ export default function SideBar() {
   }, [session]);
 
   useEffect(() => {
-    feFetch("GET", "/userOrgPerm/" + user?.id, null, session)
+    frontendFetch("GET", "/userOrgPerm/" + user?.id, null, session)
       .then((res: any) => res.json())
       .then((data: any) => {
         setOrgs(data);
@@ -40,7 +40,7 @@ export default function SideBar() {
   }, [user?.id, session]);
 
   useEffect(() => {
-    feFetch("GET", "/userConPerm/" + user?.id + '/count', null, session)
+    frontendFetch("GET", "/userConPerm/" + user?.id + '/count', null, session)
       .then((res: any) => res.json())
       .then((data: any) => {
         setConCount(data);

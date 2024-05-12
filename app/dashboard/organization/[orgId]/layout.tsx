@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import feFetch from "@/utilities/feFetch";
+import frontendFetch from "@/utilities/frontendFetch";
 import Link from "next/link";
 
 export default function CollectionLayout({
@@ -19,7 +19,7 @@ export default function CollectionLayout({
   useEffect(() => {}, [session]);
 
   useEffect(() => {
-    feFetch("GET", "/org/" + params.orgId, null, session)
+    frontendFetch("GET", "/org/" + params.orgId, null, session)
       .then((res: any) => res.json())
       .then((data: any) => {
         setData(data);

@@ -1,5 +1,5 @@
 "use client";
-import feFetch from "@/utilities/feFetch";
+import frontendFetch from "@/utilities/frontendFetch";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -17,7 +17,7 @@ export default function OrgCollectionsView({
   useEffect(() => {}, [session]);
 
   useEffect(() => {
-    feFetch("GET", "/org/" + params.orgId + '/collections', null, session)
+    frontendFetch("GET", "/org/" + params.orgId + '/collections', null, session)
       .then((res: any) => res.json())
       .then((data: any) => {
         setData(data);

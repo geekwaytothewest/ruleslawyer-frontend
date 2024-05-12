@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import backendFetch from "@/utilities/beFetch";
+import backendFetch from "@/utilities/backendFetch";
 import Link from "next/link";
 import React from "react";
 
