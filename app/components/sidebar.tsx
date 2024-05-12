@@ -1,29 +1,95 @@
-import { auth } from "../../auth";
-import React from "react";
-import beFetch from "@/utilities/beFetch";
+"use client";
+import React, { useEffect, useState } from "react";
+import feFetch from "@/utilities/feFetch";
 import Link from "next/link";
+import clsx from "clsx";
+import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 
-export default async function SideBar() {
-  const session = (await auth()) as any;
+export default function SideBar() {
+  const [user, setUser]: any = useState(null);
+  const [orgCount, setOrgCount]: any = useState(null);
+  const [conCount, setConCount]: any = useState(null);
+  const [isLoadingOrgCount, setLoadingOrgCount]: any = useState(true);
+  const [isLoadingConCount, setLoadingConCount]: any = useState(true);
 
-  let user: any = [];
-  let orgCount: any = [];
-  let conCount: any = [];
+  const pathname = usePathname();
+  const session = useSession();
 
-  if (session?.user.email) {
-    user = await beFetch('GET', '/user/' + session?.user.email);
+  useEffect(() => {}, [session]);
 
-    if (user.id) {
-        orgCount = await beFetch('GET', '/userOrgPerm/' + user.id + '/count');
-        conCount = await beFetch('GET', '/userConPerm/' + user.id + '/count');
-    }
-  }
+  useEffect(() => {
+    feFetch("GET", "/user/" + session?.data?.user?.email, null, session)
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        setUser(data);
+      })
+      .catch((err: any) => {});
+  }, [session]);
+
+  useEffect(() => {
+    feFetch("GET", "/userOrgPerm/" + user?.id + "/count", null, session)
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        setOrgCount(data);
+        setLoadingOrgCount(false);
+      })
+      .catch((err: any) => {});
+  }, [user?.id, session]);
+
+  useEffect(() => {
+    feFetch("GET", "/userConPerm/" + user?.id + "/count", null, session)
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        setConCount(data);
+        setLoadingConCount(false);
+      })
+      .catch((err: any) => {});
+  }, [user?.id, session]);
+
+  if (isLoadingOrgCount || isLoadingConCount)
+    return <div className="mr-10">Loading...</div>;
 
   return (
-    <div className="w-1/6">
-      {(orgCount > 0 || user.superAdmin) && <Link href='/dashboard/organizations'><div className="border-2 border-gwblue bg-gwgreen hover:bg-gwblue"><h1>Organizations</h1></div></Link>}
-      {(conCount > 0 || user.superAdmin) && <Link href='/dashboard/conventions'><div className="border-2 border-gwblue bg-gwgreen hover:bg-gwblue"><h1>Conventions</h1></div></Link>}
-      <Link href='/dashboard/games'><div className="border-2 border-gwblue bg-gwgreen hover:bg-gwblue"><h1>Games</h1></div></Link>
+    <div className="min-w-48 mr-10 h-screen bg-gwdarkgreen">
+      {(orgCount > 0 || user.superAdmin) && (
+        <Link href="/dashboard/organizations">
+          <div
+            className={clsx(
+              "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
+              { "bg-gwdarkblue": pathname.startsWith("/dashboard/organizations") },
+              { "bg-gwgreen border-right-2": !pathname.startsWith("/dashboard/organizations") }
+            )}
+          >
+            <h1>Organizations</h1>
+          </div>
+        </Link>
+      )}
+      {(conCount > 0 || user.superAdmin) && (
+        <Link href="/dashboard/conventions">
+          <div
+            className={clsx(
+              "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
+              { "bg-gwdarkblue": pathname.startsWith("/dashboard/conventions") },
+              { "bg-gwgreen border-right-2": !pathname.startsWith("/dashboard/conventions") }
+            )}
+          >
+            <h1>Conventions</h1>
+          </div>
+        </Link>
+      )}
+      <Link href="/dashboard/games">
+        <div
+          className={clsx(
+            "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
+            { "bg-gwdarkblue border-right-0": pathname.startsWith("/dashboard/games") },
+            { "bg-gwgreen border-right-2": !pathname.startsWith("/dashboard/games") }
+          )}
+        >
+          <h1>Games</h1>
+        </div>
+      </Link>
+      <div className="h-full bg-gwdarkgreen"></div>
     </div>
   );
 }

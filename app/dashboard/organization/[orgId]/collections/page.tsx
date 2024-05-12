@@ -1,36 +1,47 @@
-'use client'
-import beFetch from "@/utilities/beFetch";
-import { useSearchParams } from "next/navigation";
-import React from "react";
+"use client";
+import feFetch from "@/utilities/feFetch";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
 
-export default function Dashboard() {
-  const params = useSearchParams();
+export default function OrgCollectionsView({
+  params,
+}: {
+  params: { orgId: string };
+}) {
+  const [collections, setData]: any = useState(null);
+  const [isLoading, setLoading]: any = useState(true);
 
-  const orgId = params.get('orgId');
-  let collections: any = [];
+  const session = useSession();
 
-  if (orgId) {
-    collections = beFetch("GET", "/org/" + orgId + '/collections');
-  }
+  useEffect(() => {}, [session]);
+
+  useEffect(() => {
+    feFetch("GET", "/org/" + params.orgId + '/collections', null, session)
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        setData(data);
+        setLoading(false);
+      })
+      .catch((err: any) => {});
+  }, [params.orgId, session]);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (!collections) return <p>No collection data</p>;
 
   return (
     <div>
       {collections.map(
-        (c: {
-          id: React.Key | null | undefined;
-          name:
-            | string
-            | number
-            | bigint
-            | boolean
-            | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-            | Iterable<React.ReactNode>
-            | React.ReactPortal
-            | Promise<React.AwaitedReactNode>
-            | null
-            | undefined;
-        }) => {
-          return <div key={c.id}>{c.name}</div>;
+        (c: { id: React.Key | null | undefined; name: string | null }) => {
+          return (
+            <div key={c.id}>
+              <Link
+                href={`/dashboard/organization/${params.orgId}/collection/${c.id}`}
+              >
+                {c.name}
+              </Link>
+            </div>
+          );
         }
       )}
     </div>

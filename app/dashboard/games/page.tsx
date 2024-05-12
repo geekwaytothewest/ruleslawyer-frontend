@@ -10,6 +10,8 @@ export default async function Dashboard() {
     games = await beFetch("GET", "/game");
   }
 
+  games.sort((a: { name: string }, b: { name: string }) => { return a.name.localeCompare(b.name); });
+
   return (
     <div>
       {games.map(
@@ -27,7 +29,7 @@ export default async function Dashboard() {
             | null
             | undefined;
         }) => {
-          return <div key={g.id}>{g.name}</div>;
+          return <div key={g.id}>{g.name ? g.name : '[unknown name]'}</div>;
         }
       )}
     </div>

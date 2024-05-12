@@ -4,6 +4,7 @@ import { SignOut } from "@/app/components/signout";
 import { SignIn } from "@/app/components/signin";
 import Image from "next/image";
 import beFetch from "@/utilities/beFetch";
+import Link from "next/link";
 
 export default async function Profile() {
   const session = (await auth()) as any;
@@ -28,6 +29,7 @@ export default async function Profile() {
         alt="Profile Picture"
       />
       <h1 className="p-5">{session.user.email}</h1>
+      <Link href="/dashboard" className="p-5">Dashboard</Link>
       <SignOut />
     </div>
   );
