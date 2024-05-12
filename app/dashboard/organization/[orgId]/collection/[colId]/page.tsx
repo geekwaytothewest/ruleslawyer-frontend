@@ -29,13 +29,13 @@ export default function OrgCollectionView({
   if (isLoading) return <p>Loading...</p>;
   if (!collection) return <p>No collection data</p>;
 
-  collection.copies.sort((a: any, b: any) =>
+  collection.copies?.sort((a: any, b: any) =>
     a.game.name.localeCompare(b.game.name)
   );
 
-  const games = collection.copies.map((copy: any) => copy.game);
+  const games = collection.copies?.map((copy: any) => copy.game);
   const unqiueGames = games
-    .filter(
+    ?.filter(
       (game: { id: number; name: string }, index: any) =>
         games.findIndex(
           (g: { id: number; name: string }) => g.id === game.id
@@ -51,12 +51,11 @@ export default function OrgCollectionView({
   return (
     <div>
       <h1>{collection.name}</h1>
-      <h2>Games</h2>
       <div>
-        {unqiueGames.map((game: any) => (
+        {unqiueGames?.map((game: any) => (
           <div key={game.id} className="flex mb-5">
             <h1 className="odd:bg-gwblue-50 min-w-64 max-w-64 text-wrap">
-              <Link href={`/dashboard/game/${game.id}`} className="mr-2">
+              <Link href={`/dashboard/game/${game.id}`} className="mr-2 hover:text-gwgreen">
                 {game.name ? game.name : "[unknown name]"}
               </Link>
             </h1>

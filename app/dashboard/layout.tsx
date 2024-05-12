@@ -7,11 +7,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex h-screen">
-      <SessionProvider>
-        <SideBar />
-        <div className="width-5/6">{children}</div>
-      </SessionProvider>
-    </div>
+    <SessionProvider>
+      <div className="flex h-full min-h-screen">
+          <SideBar />
+          <div className="pt-5">{children}</div>
+      </div>
+    </SessionProvider>
   );
 }

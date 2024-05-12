@@ -37,6 +37,7 @@ export default function OrgCollectionsView({
             <div key={c.id}>
               <Link
                 href={`/dashboard/organization/${params.orgId}/collection/${c.id}`}
+                className="hover:text-gwgreen"
               >
                 {c.name}
               </Link>

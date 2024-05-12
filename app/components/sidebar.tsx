@@ -5,6 +5,7 @@ import Link from "next/link";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { SignOut } from "./signout-client";
 
 export default function SideBar() {
   const [user, setUser]: any = useState(null);
@@ -51,45 +52,47 @@ export default function SideBar() {
     return <div className="mr-10">Loading...</div>;
 
   return (
-    <div className="min-w-48 mr-10 h-screen bg-gwdarkgreen">
-      {(orgCount > 0 || user.superAdmin) && (
-        <Link href="/dashboard/organizations">
+    <div className="min-w-48 mr-10">
+      <div>
+        {(orgCount > 0 || user.superAdmin) && (
+          <Link href="/dashboard/organizations">
+            <div
+              className={clsx(
+                "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
+                { "bg-transparent": pathname.startsWith("/dashboard/organization") },
+                { "bg-gwgreen border-right-2": !pathname.startsWith("/dashboard/organization") }
+              )}
+            >
+              <h1>Organizations</h1>
+            </div>
+          </Link>
+        )}
+        {(conCount > 0 || user.superAdmin) && (
+          <Link href="/dashboard/conventions">
+            <div
+              className={clsx(
+                "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
+                { "bg-transparent": pathname.startsWith("/dashboard/conventions") },
+                { "bg-gwgreen border-right-2": !pathname.startsWith("/dashboard/conventions") }
+              )}
+            >
+              <h1>Conventions</h1>
+            </div>
+          </Link>
+        )}
+        <Link href="/dashboard/games">
           <div
             className={clsx(
               "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
-              { "bg-gwdarkblue": pathname.startsWith("/dashboard/organizations") },
-              { "bg-gwgreen border-right-2": !pathname.startsWith("/dashboard/organizations") }
+              { "bg-transparent border-right-0": pathname.startsWith("/dashboard/games") },
+              { "bg-gwgreen border-right-2": !pathname.startsWith("/dashboard/games") }
             )}
           >
-            <h1>Organizations</h1>
+            <h1>Games</h1>
           </div>
         </Link>
-      )}
-      {(conCount > 0 || user.superAdmin) && (
-        <Link href="/dashboard/conventions">
-          <div
-            className={clsx(
-              "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
-              { "bg-gwdarkblue": pathname.startsWith("/dashboard/conventions") },
-              { "bg-gwgreen border-right-2": !pathname.startsWith("/dashboard/conventions") }
-            )}
-          >
-            <h1>Conventions</h1>
-          </div>
-        </Link>
-      )}
-      <Link href="/dashboard/games">
-        <div
-          className={clsx(
-            "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
-            { "bg-gwdarkblue border-right-0": pathname.startsWith("/dashboard/games") },
-            { "bg-gwgreen border-right-2": !pathname.startsWith("/dashboard/games") }
-          )}
-        >
-          <h1>Games</h1>
-        </div>
-      </Link>
-      <div className="h-full bg-gwdarkgreen"></div>
+      </div>
+      <div className="text-center pt-10 bg-gwdarkgreen h-full"><SignOut /></div>
     </div>
   );
 }

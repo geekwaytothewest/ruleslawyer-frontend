@@ -1,6 +1,6 @@
 import { auth } from "../../auth";
 import React from "react";
-import { SignOut } from "@/app/components/signout";
+import { SignOut } from "@/app/components/signout-server";
 import { SignIn } from "@/app/components/signin";
 import Image from "next/image";
 import beFetch from "@/utilities/beFetch";
@@ -29,7 +29,7 @@ export default async function Profile() {
         alt="Profile Picture"
       />
       <h1 className="p-5">{session.user.email}</h1>
-      <Link href="/dashboard" className="p-5">Dashboard</Link>
+      <Link href="/dashboard" className="p-5 hover:text-gwgreen">Dashboard</Link>
       <SignOut />
     </div>
   );

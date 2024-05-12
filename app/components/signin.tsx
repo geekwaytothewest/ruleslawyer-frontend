@@ -10,7 +10,7 @@ export function SignIn() {
         await signIn("auth0")
       }}
     >
-      <button type="submit">Sign In</button>
+      <button type="submit" className="hover:text-gwgreen">Sign In</button>
     </form>
   )
 }

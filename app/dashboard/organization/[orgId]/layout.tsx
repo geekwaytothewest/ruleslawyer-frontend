@@ -33,11 +33,11 @@ export default function CollectionLayout({
 
   return (
     <div>
-      <div className="width-1/6">
-        <Link href={`/dashboard/organization/${organization.id}`} className="mr-5 after:content-[' -&gt; '']">{organization.name}</Link>
-        <Link href={`/dashboard/organization/${organization.id}/collections`}>Collections</Link>
+      <div>
+        <Link href={`/dashboard/organization/${organization.id}`} className="mr-5 after:content-[' -&gt; ''] hover:text-gwgreen">{organization.name}</Link>
+        <Link href={`/dashboard/organization/${organization.id}/collections`} className="hover:text-gwgreen">Collections</Link>
       </div>
-      <div className="width-5/6">{children}</div>
+      <div>{children}</div>
     </div>
   );
 }
