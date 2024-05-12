@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import beFetch from "@/utilities/beFetch";
+import backendFetch from "@/utilities/beFetch";
 import React from "react";
 
 export default async function Dashboard() {
@@ -7,7 +7,7 @@ export default async function Dashboard() {
   let cons: any = [];
 
   if (session?.user.email) {
-    cons = await beFetch("GET", "/userConPerm/" + session.user.email);
+    cons = await backendFetch("GET", "/userConPerm/" + session.user.email);
   }
 
   return (

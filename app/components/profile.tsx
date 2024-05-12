@@ -3,14 +3,14 @@ import React from "react";
 import { SignOut } from "@/app/components/signout-server";
 import { SignIn } from "@/app/components/signin";
 import Image from "next/image";
-import beFetch from "@/utilities/beFetch";
+import backendFetch from "@/utilities/beFetch";
 import Link from "next/link";
 
 export default async function Profile() {
   const session = (await auth()) as any;
 
   if (session?.token) {
-    const res = await beFetch(
+    const res = await backendFetch(
       'GET',
       '/user/' + encodeURI(session?.user.email),
     );

@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import beFetch from "@/utilities/beFetch";
+import backendFetch from "@/utilities/beFetch";
 import React from "react";
 
 export default async function Dashboard() {
@@ -7,7 +7,7 @@ export default async function Dashboard() {
   let games: any = [];
 
   if (session?.user.email) {
-    games = await beFetch("GET", "/game");
+    games = await backendFetch("GET", "/game");
   }
 
   games.sort((a: { name: string }, b: { name: string }) => { return a.name.localeCompare(b.name); });

@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 
-export default async function beFetch(method: string, url: string, body?: any) {
+export default async function backendFetch(method: string, url: string, body?: any) {
   const session = (await auth()) as any;
 
   let resp = await fetch(process.env.API_URL + url, {

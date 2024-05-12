@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import beFetch from "@/utilities/beFetch";
+import backendFetch from "@/utilities/beFetch";
 import Link from "next/link";
 import React from "react";
 
@@ -8,7 +8,7 @@ export default async function Dashboard() {
   let orgs: any = [];
 
   if (session?.user.email) {
-    orgs = await beFetch("GET", "/userOrgPerm/" + session.user.email);
+    orgs = await backendFetch("GET", "/userOrgPerm/" + session.user.email);
   }
 
   return (
