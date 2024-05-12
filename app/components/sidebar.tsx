@@ -9,7 +9,7 @@ import { SignOut } from "./signout-client";
 
 export default function SideBar() {
   const [user, setUser]: any = useState(null);
-  const [orgCount, setOrgCount]: any = useState(null);
+  const [orgs, setOrgs]: any = useState(null);
   const [conCount, setConCount]: any = useState(null);
   const [isLoadingOrgCount, setLoadingOrgCount]: any = useState(true);
   const [isLoadingConCount, setLoadingConCount]: any = useState(true);
@@ -29,17 +29,18 @@ export default function SideBar() {
   }, [session]);
 
   useEffect(() => {
-    feFetch("GET", "/userOrgPerm/" + user?.id + "/count", null, session)
+    feFetch("GET", "/userOrgPerm/" + user?.id, null, session)
       .then((res: any) => res.json())
       .then((data: any) => {
-        setOrgCount(data);
+        setOrgs(data);
+        console.log(data);
         setLoadingOrgCount(false);
       })
       .catch((err: any) => {});
   }, [user?.id, session]);
 
   useEffect(() => {
-    feFetch("GET", "/userConPerm/" + user?.id + "/count", null, session)
+    feFetch("GET", "/userConPerm/" + user?.id + '/count', null, session)
       .then((res: any) => res.json())
       .then((data: any) => {
         setConCount(data);
@@ -54,26 +55,63 @@ export default function SideBar() {
   return (
     <div className="min-w-48 mr-10">
       <div>
-        {(orgCount > 0 || user.superAdmin) && (
+        {(orgs.length === 1 && !user?.superAdmin) && (
+          <Link href={`/dashboard/organization/${orgs[0].organization.id}`}>
+            <div
+              className={clsx(
+                "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
+                {
+                  "bg-transparent": pathname.startsWith(
+                    "/dashboard/organization"
+                  ),
+                },
+                {
+                  "bg-gwgreen border-right-2": !pathname.startsWith(
+                    "/dashboard/organization"
+                  ),
+                }
+              )}
+            >
+              <h1>{orgs[0].organization.name}</h1>
+            </div>
+          </Link>
+        )}
+        {(orgs.length > 1 || user?.superAdmin) && (
           <Link href="/dashboard/organizations">
             <div
               className={clsx(
                 "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
-                { "bg-transparent": pathname.startsWith("/dashboard/organization") },
-                { "bg-gwgreen border-right-2": !pathname.startsWith("/dashboard/organization") }
+                {
+                  "bg-transparent": pathname.startsWith(
+                    "/dashboard/organization"
+                  ),
+                },
+                {
+                  "bg-gwgreen border-right-2": !pathname.startsWith(
+                    "/dashboard/organization"
+                  ),
+                }
               )}
             >
               <h1>Organizations</h1>
             </div>
           </Link>
         )}
-        {(conCount > 0 || user.superAdmin) && (
+        {(conCount > 0 || user?.superAdmin) && (
           <Link href="/dashboard/conventions">
             <div
               className={clsx(
                 "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
-                { "bg-transparent": pathname.startsWith("/dashboard/conventions") },
-                { "bg-gwgreen border-right-2": !pathname.startsWith("/dashboard/conventions") }
+                {
+                  "bg-transparent": pathname.startsWith(
+                    "/dashboard/conventions"
+                  ),
+                },
+                {
+                  "bg-gwgreen border-right-2": !pathname.startsWith(
+                    "/dashboard/conventions"
+                  ),
+                }
               )}
             >
               <h1>Conventions</h1>
@@ -84,15 +122,23 @@ export default function SideBar() {
           <div
             className={clsx(
               "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
-              { "bg-transparent border-right-0": pathname.startsWith("/dashboard/games") },
-              { "bg-gwgreen border-right-2": !pathname.startsWith("/dashboard/games") }
+              {
+                "bg-transparent border-right-0":
+                  pathname.startsWith("/dashboard/games"),
+              },
+              {
+                "bg-gwgreen border-right-2":
+                  !pathname.startsWith("/dashboard/games"),
+              }
             )}
           >
             <h1>Games</h1>
           </div>
         </Link>
       </div>
-      <div className="text-center pt-10 bg-gwdarkgreen h-full"><SignOut /></div>
+      <div className="text-center pt-10 bg-gwdarkgreen h-full">
+        <SignOut />
+      </div>
     </div>
   );
 }
