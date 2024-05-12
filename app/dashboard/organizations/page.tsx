@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import beFetch from "@/utilities/beFetch";
+import Link from "next/link";
 import React from "react";
 
 export default async function Dashboard() {
@@ -32,7 +33,7 @@ export default async function Dashboard() {
               | undefined;
           };
         }) => {
-          return <div key={o.organization.id}>{o.organization.name}</div>;
+          return <div key={o.organization.id}><Link href={`/dashboard/organization/${o.organization.id}`}>{o.organization.name}</Link></div>;
         }
       )}
     </div>
