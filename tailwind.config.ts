@@ -20,6 +20,7 @@ const config: Config = {
       'gwblue': '#0093d2',
       'gwdarkblue': '#002C5F',
       'gwlightblue': '#E6F4F1',
+      'gwred': '#FF0000',
     }
   },
   plugins: [],

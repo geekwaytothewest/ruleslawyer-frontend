@@ -55,17 +55,31 @@ export default function OrgCollectionView({
         {unqiueGames?.map((game: any) => (
           <div key={game.id} className="flex mb-5">
             <h1 className="odd:bg-gwblue-50 min-w-64 max-w-64 text-wrap">
-              <Link href={`/dashboard/game/${game.id}`} className="mr-2 hover:text-gwgreen">
+              <Link
+                href={`/dashboard/game/${game.id}`}
+                className="mr-2 hover:text-gwgreen"
+              >
                 {game.name ? game.name : "[unknown name]"}
               </Link>
             </h1>
             <div className="ml-2 flex flex-wrap">
               (
-                {game.copies.map((copy: any) => (
-                  <span key={copy.id} className="ml-2 mr-2">
+              {game.copies.map((copy: any) => (
+                <span key={copy.id} className="ml-2 mr-2">
+                  <Link
+                    href={`/dashboard/copy/${copy.id}`}
+                    className="hover:text-gwgreen"
+                  >
+                    {copy.checkOuts.length === 0 ||
+                    copy.checkOuts[0].checkIn !== null ? (
+                      <div className="inline-block mr-2 w-4 h-4 rounded-full bg-gwgreen"></div>
+                    ) : (
+                      <div className="inline-block mr-2 w-4 h-4 rounded-full bg-gwred"></div>
+                    )}
                     {copy.barcode.replaceAll("*", "")}
-                  </span>
-                ))}
+                  </Link>
+                </span>
+              ))}
               )
             </div>
           </div>
