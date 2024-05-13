@@ -11,6 +11,7 @@ import {
   ModalHeader,
   Select,
   SelectItem,
+  Textarea,
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -23,7 +24,9 @@ export default function CopyModal(props: any) {
   const [collections, setCollections]: any = useState(null);
   const [copyCollectionId, setCopyCollectionId]: any = useState(null);
   const [copyWinnable, setCopyWinnable]: any = useState(null);
+  const [copyBarcode, setCopyBarcode]: any = useState(null);
   const [copyBarcodeLabel, setCopyBarcodeLabel]: any = useState(null);
+  const [copyComments, setCopyComments]: any = useState(null);
 
   const session = useSession();
 
@@ -37,6 +40,8 @@ export default function CopyModal(props: any) {
         collectionId: copyCollectionId,
         winnable: copyWinnable,
         barcodeLabel: copyBarcodeLabel,
+        barcode: copyBarcode,
+        comments: copyComments,
       },
       session
     )
@@ -54,12 +59,20 @@ export default function CopyModal(props: any) {
   useEffect(() => {
     if (copyIn) {
       setData(copyIn);
+      setCopyWinnable(copyIn.winnable);
+      setCopyBarcodeLabel(copyIn.barcodeLabel);
+      setCopyBarcode(copyIn.barcode);
+      setCopyCollectionId(copyIn.collectionId);
       setLoading(false);
     } else {
       frontendFetch("GET", "/copy/" + copyId, null, session)
         .then((res: any) => res.json())
         .then((data: any) => {
           setData(data);
+          setCopyWinnable(data.winnable);
+          setCopyBarcodeLabel(data.barcodeLabel);
+          setCopyBarcode(copyIn.barcode);
+          setCopyCollectionId(data.collectionId);
           setLoading(false);
         })
         .catch((err: any) => {});
@@ -114,10 +127,24 @@ export default function CopyModal(props: any) {
                 type="text"
                 isRequired
                 label="Barcode Label"
-                value={copy.barcodeLabel}
+                value={copyBarcodeLabel}
                 onValueChange={(value) => setCopyBarcodeLabel(value)}
               />
-              {copy.collection.allowWinning && (
+              <Input
+                id="barcode"
+                type="text"
+                isRequired
+                label="Barcode"
+                value={copyBarcode}
+                onValueChange={(value) => setCopyBarcode(value)}
+              />
+              <Textarea
+                label="Comments"
+                placeholder="Enter your comments"
+                value={copyComments}
+                onValueChange={(value) => setCopyComments(value)}
+              />
+              {copy.collection?.allowWinning && (
                 <Checkbox
                   defaultSelected={copy.winnable}
                   onValueChange={(isSelected) => setCopyWinnable(isSelected)}

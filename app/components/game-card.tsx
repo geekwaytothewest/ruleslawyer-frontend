@@ -21,10 +21,22 @@ export default function GameCard(props: any) {
   const [game, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
 
-  const disclosure = useDisclosure();
-  const { isOpen, onOpen, onClose } = disclosure;
-
   const session = useSession();
+
+  const onModalClose = () => {
+    frontendFetch("GET", "/game/" + gameId, null, session)
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        setData(data);
+        setLoading(false);
+      })
+      .catch((err: any) => {});
+  };
+
+  const disclosure = useDisclosure({
+    onClose: onModalClose,
+  });
+  const { isOpen, onOpen, onClose } = disclosure;
 
   useEffect(() => {}, [session]);
 

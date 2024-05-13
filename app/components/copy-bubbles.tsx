@@ -10,8 +10,20 @@ export default function CopyBubbles(props: any) {
   const [copies, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
 
-  const disclosure = useDisclosure();
-  const { isOpen, onOpen } = disclosure;
+  const onCloseModal = () => {
+    frontendFetch("GET", "/game/" + gameId + "/copies", null, session)
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        setData(data);
+        setLoading(false);
+      })
+      .catch((err: any) => {});
+  };
+
+  const disclosure = useDisclosure({
+    onClose: onCloseModal,
+  });
+  const { isOpen, onOpen, onClose } = disclosure;
 
   const session = useSession();
 

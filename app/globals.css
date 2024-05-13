@@ -32,6 +32,6 @@ body {
   }
 }
 
-input {
+input, textarea {
   background-color: transparent;
 }
