@@ -7,7 +7,8 @@ export default async function Dashboard() {
   let cons: any = [];
 
   if (session?.user.email) {
-    cons = await backendFetch("GET", "/userConPerm/" + session.user.email);
+    const resp = await backendFetch("GET", "/userConPerm/" + session.user.email);
+    cons = await resp.json();
   }
 
   return (

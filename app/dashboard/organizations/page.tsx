@@ -8,7 +8,8 @@ export default async function Dashboard() {
   let orgs: any = [];
 
   if (session?.user.email) {
-    orgs = await backendFetch("GET", "/userOrgPerm/" + session.user.email);
+    const resp = await backendFetch("GET", "/userOrgPerm/" + session.user.email);
+    orgs = await resp.json();
   }
 
   return (

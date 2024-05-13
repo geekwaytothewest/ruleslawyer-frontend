@@ -13,6 +13,7 @@ export default function SideBar() {
   const [conCount, setConCount]: any = useState(null);
   const [isLoadingOrgCount, setLoadingOrgCount]: any = useState(true);
   const [isLoadingConCount, setLoadingConCount]: any = useState(true);
+  const [isLoadingUser, setLoadingUser]: any = useState(true);
 
   const pathname = usePathname();
   const session = useSession();
@@ -24,38 +25,43 @@ export default function SideBar() {
       .then((res: any) => res.json())
       .then((data: any) => {
         setUser(data);
+        setLoadingUser(false);
       })
       .catch((err: any) => {});
   }, [session]);
 
   useEffect(() => {
-    frontendFetch("GET", "/userOrgPerm/" + user?.id, null, session)
-      .then((res: any) => res.json())
-      .then((data: any) => {
-        setOrgs(data);
-        console.log(data);
-        setLoadingOrgCount(false);
-      })
-      .catch((err: any) => {});
-  }, [user?.id, session]);
+    if (user) {
+      frontendFetch("GET", "/userOrgPerm/" + user.id, null, session)
+        .then((res: any) => res.json())
+        .then((data: any) => {
+          setOrgs(data);
+          setLoadingOrgCount(false);
+        })
+        .catch((err: any) => {});
+    }
+  }, [user, session]);
 
   useEffect(() => {
-    frontendFetch("GET", "/userConPerm/" + user?.id + '/count', null, session)
-      .then((res: any) => res.json())
-      .then((data: any) => {
-        setConCount(data);
-        setLoadingConCount(false);
-      })
-      .catch((err: any) => {});
-  }, [user?.id, session]);
+    if (user) {
+      frontendFetch("GET", "/userConPerm/" + user.id + "/count", null, session)
+        .then((res: any) => res.json())
+        .then((data: any) => {
+          setConCount(data);
+          setLoadingConCount(false);
+        })
+        .catch((err: any) => {});
+    }
+  }, [user, session]);
 
-  if (isLoadingOrgCount || isLoadingConCount)
+  if (isLoadingUser || isLoadingOrgCount || isLoadingConCount) {
     return <div className="mr-10">Loading...</div>;
+  }
 
   return (
     <div className="min-w-48 mr-10">
       <div>
-        {(orgs.length === 1 && !user?.superAdmin) && (
+        {orgs.length === 1 && !user?.superAdmin && (
           <Link href={`/dashboard/organization/${orgs[0].organization.id}`}>
             <div
               className={clsx(

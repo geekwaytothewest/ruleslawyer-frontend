@@ -3,20 +3,12 @@ import React from "react";
 import { SignOut } from "@/app/components/signout-server";
 import { SignIn } from "@/app/components/signin";
 import Image from "next/image";
-import backendFetch from "@/utilities/backendFetch";
 import Link from "next/link";
 
 export default async function Profile() {
   const session = (await auth()) as any;
 
-  if (session?.token) {
-    const res = await backendFetch(
-      'GET',
-      '/user/' + encodeURI(session?.user.email),
-    );
-
-    session.user.id = res.id;
-  } else {
+  if (!session?.token) {
     return <SignIn />;
   }
 

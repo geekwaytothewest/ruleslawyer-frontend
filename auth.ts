@@ -1,6 +1,5 @@
 import NextAuth from "next-auth";
 import Auth0 from "next-auth/providers/auth0";
-import backendFetch from "./utilities/backendFetch";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   providers: [

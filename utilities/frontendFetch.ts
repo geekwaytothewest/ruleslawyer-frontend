@@ -7,6 +7,6 @@ export default function frontendFetch(method: string, url: string, body?: any, s
       "Content-Type": "application/json",
       Authorization: `Bearer ${session.data.token}`,
     },
-    body: body,
+    body: body ? JSON.stringify(body) : null,
   });
 }
