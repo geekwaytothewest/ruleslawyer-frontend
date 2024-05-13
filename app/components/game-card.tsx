@@ -13,42 +13,16 @@ import {
   ModalHeader,
 } from "@nextui-org/react";
 import { useDisclosure } from "@nextui-org/modal";
-import CopyBubbles from "./copy-bubbles";
+import GameModal from "./game-modal";
 
 export default function GameCard(props: any) {
   let { gameIn, gameId } = props;
 
   const [game, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
-  const [bubbles, setBubbles]: any = useState(null);
-  const [gameName, setGameName]: any = useState(null);
 
-  const onOpenModal = () => {
-    setGameName(game.name);
-    setBubbles(<CopyBubbles copiesIn={game.copies} gameId={game.id} />);
-  };
-
-  const onCloseModal = () => {
-    setGameName(null);
-    setBubbles(<div></div>);
-  };
-
-  const { isOpen, onOpen, onClose } = useDisclosure({
-    onOpen: onOpenModal,
-    onClose: onCloseModal,
-  });
-
-  const onSave = () => {
-    game.name = gameName;
-
-    frontendFetch("PUT", "/game/" + game.id, game, session)
-      .then((res: any) => res.json())
-      .then((data: any) => {
-        setData(data);
-        onClose();
-      })
-      .catch((err: any) => {});
-  };
+  const disclosure = useDisclosure();
+  const { isOpen, onOpen, onClose } = disclosure;
 
   const session = useSession();
 
@@ -58,7 +32,6 @@ export default function GameCard(props: any) {
     if (gameIn) {
       setData(gameIn);
       setLoading(false);
-      return;
     } else {
       frontendFetch("GET", "/game/" + gameId, null, session)
         .then((res: any) => res.json())
@@ -88,36 +61,7 @@ export default function GameCard(props: any) {
           </span>
         </div>
       </div>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalContent>
-          {(onClose) => (
-            <div>
-              <ModalHeader>
-                {game.name !== "" ? game.name : "[unknown name]"}
-              </ModalHeader>
-              <ModalBody>
-                <Input
-                  id="gameName"
-                  type="text"
-                  isRequired
-                  label="Game Name"
-                  value={gameName}
-                  onValueChange={(value) => setGameName(value)}
-                />
-                {bubbles}
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" onPress={onSave}>
-                  Save
-                </Button>
-                <Button color="primary" onPress={onClose}>
-                  Close
-                </Button>
-              </ModalFooter>
-            </div>
-          )}
-        </ModalContent>
-      </Modal>
+      <GameModal disclosure={disclosure} gameIn={game} gameId={game.id} />
     </div>
   );
 }
