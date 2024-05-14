@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { SignOut } from "./signout-client";
+import { CircularProgress } from "@nextui-org/react";
 
 export default function SideBar() {
   const [user, setUser]: any = useState(null);
@@ -54,8 +55,16 @@ export default function SideBar() {
     }
   }, [user, session]);
 
-  if (isLoadingUser || isLoadingOrgCount || isLoadingConCount) {
-    return <div className="mr-10">Loading...</div>;
+  if (isLoadingOrgCount | isLoadingConCount | isLoadingUser) {
+    return (
+      <div className="min-w-48 mr-10">
+        <div className="text-center bg-gwdarkgreen h-full">
+          <div className="flex justify-center w-full pt-10" >
+            <CircularProgress isIndeterminate={true} label="Loading..." />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

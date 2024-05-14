@@ -1,4 +1,10 @@
-export default function frontendFetch(method: string, url: string, body?: any, session?: any) {
+export default function frontendFetch(
+  method: string,
+  url: string,
+  body?: any,
+  session?: any,
+  signal?: AbortSignal
+) {
   if (!session?.data?.token) return Promise.reject("No token in session");
 
   return fetch(process.env.NEXT_PUBLIC_API_URL + url, {
@@ -8,5 +14,6 @@ export default function frontendFetch(method: string, url: string, body?: any, s
       Authorization: `Bearer ${session.data.token}`,
     },
     body: body ? JSON.stringify(body) : null,
+    signal: signal,
   });
 }

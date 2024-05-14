@@ -1,5 +1,6 @@
-import {nextui} from '@nextui-org/theme';
+import { nextui } from "@nextui-org/theme";
 import type { Config } from "tailwindcss";
+const colors = require("tailwindcss/colors");
 
 const config: Config = {
   content: [
@@ -17,13 +18,14 @@ const config: Config = {
       },
     },
     colors: {
-      'gwgreen': '#00b259',
-      'gwdarkgreen': '#005D72',
-      'gwblue': '#0093d2',
-      'gwdarkblue': '#002C5F',
-      'gwlightblue': '#E6F4F1',
-      'gwred': '#FF0000',
-    }
+      gwgreen: "#00b259",
+      gwdarkgreen: "#005D72",
+      gwblue: "#0093d2",
+      gwdarkblue: "#002C5F",
+      gwlightblue: "#E6F4F1",
+      gwred: "#FF0000",
+      ...colors,
+    },
   },
   darkMode: "class",
   plugins: [nextui()],

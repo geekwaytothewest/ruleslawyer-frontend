@@ -10,7 +10,7 @@ export default function RootLayout({
     <SessionProvider>
       <div className="flex h-full min-h-screen">
           <SideBar />
-          <div className="pt-5">{children}</div>
+          <div className="pt-5 w-full">{children}</div>
       </div>
     </SessionProvider>
   );

@@ -3,17 +3,10 @@ import React, { useEffect, useState } from "react";
 import { BsBox2Heart } from "react-icons/bs";
 import { useSession } from "next-auth/react";
 import frontendFetch from "@/utilities/frontendFetch";
-import {
-  Button,
-  Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from "@nextui-org/react";
 import { useDisclosure } from "@nextui-org/modal";
 import GameModal from "./game-modal";
+import { Skeleton } from "@nextui-org/react";
+import { BiSolidMessageAltError } from "react-icons/bi";
 
 export default function GameCard(props: any) {
   let { gameIn, gameId } = props;
@@ -55,14 +48,43 @@ export default function GameCard(props: any) {
     }
   }, [gameIn, gameId, session]);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (!game) return <div>No game data</div>;
+  if (isLoading) {
+    return (
+      <div className="flex items-center border-2 w-64 h-24 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] border-slate-800">
+        <div className="flex-col p-3 w-24">
+          <BsBox2Heart size={64} className="text-slate-800" />
+        </div>
+        <div className="flex-col pr-3 w-full">
+          <Skeleton className="rounded-lg">
+            <div className="inline-block align-middle h-full"></div>
+          </Skeleton>
+        </div>
+      </div>
+    );
+  }
+
+  if (!game) {
+    return (
+      <div className="flex items-center border-2 w-64 h-24 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] border-slate-800">
+        <div className="flex-col p-3 w-24">
+          <BiSolidMessageAltError size={64} className="text-slate-500" />
+        </div>
+        <div className="flex-col pr-3 w-full">
+          <div className="inline-block align-middle h-full">
+            <span className="inline-block align-middle h-full">
+              Error loading game
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
       <div
         onClick={onOpen}
-        className="flex items-center border-2 w-64 h-24 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50]"
+        className="flex items-center border-2 border-gwblue w-64 h-24 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] cursor-pointer"
       >
         <div className="flex-col p-3 w-24">
           <BsBox2Heart size={64} />

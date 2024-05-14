@@ -44,8 +44,8 @@ export default function CopyBubbles(props: any) {
     }
   }, [copiesIn, gameId, session]);
 
-  if (isLoading) return <p>Loading...</p>;
-  if (!copies) return <p>No copy data</p>;
+  if (isLoading) return <div></div>;
+  if (!copies) return <div></div>;
 
   return (
     <div>

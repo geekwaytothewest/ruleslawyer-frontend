@@ -12,9 +12,17 @@ import {
   Select,
   SelectItem,
   Textarea,
+  Autocomplete,
+  AutocompleteItem,
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useAsyncList } from "@react-stately/data";
+
+type game = {
+  id: number;
+  name: string;
+};
 
 export default function CopyModal(props: any) {
   let { copyIn, copyId, disclosure } = props;
@@ -27,6 +35,7 @@ export default function CopyModal(props: any) {
   const [copyBarcode, setCopyBarcode]: any = useState(null);
   const [copyBarcodeLabel, setCopyBarcodeLabel]: any = useState(null);
   const [copyComments, setCopyComments]: any = useState(null);
+  const [gameId, setGameId]: any = useState(null);
 
   const session = useSession();
 
@@ -42,17 +51,41 @@ export default function CopyModal(props: any) {
         barcodeLabel: copyBarcodeLabel,
         barcode: copyBarcode,
         comments: copyComments,
+        gameId: Number(gameId),
       },
       session
     )
       .then((res: any) => res.json())
       .then((data: any) => {
-        copy.collection = data;
+        copy.collection = data.collection;
         copy.collectionId = data.collectionId;
+        copy.game = data.game;
+        copy.gameId = data.gameId;
         onClose();
       })
       .catch((err: any) => {});
   };
+
+  let gameList = useAsyncList<game>({
+    async load({ signal, filterText }) {
+      if (filterText && filterText.length > 3) {
+        let res = await frontendFetch(
+          "GET",
+          `/game/search/${filterText}`,
+          null,
+          session,
+          signal
+        );
+        let json = await res.json();
+
+        return {
+          items: json,
+        };
+      } else {
+        return { items: [] };
+      }
+    },
+  });
 
   useEffect(() => {}, [session]);
 
@@ -63,6 +96,10 @@ export default function CopyModal(props: any) {
       setCopyBarcodeLabel(copyIn.barcodeLabel);
       setCopyBarcode(copyIn.barcode);
       setCopyCollectionId(copyIn.collectionId);
+      setGameId(copyIn.gameId);
+
+      gameList.setFilterText(copyIn.game.name);
+
       setLoading(false);
     } else {
       frontendFetch("GET", "/copy/" + copyId, null, session)
@@ -71,12 +108,18 @@ export default function CopyModal(props: any) {
           setData(data);
           setCopyWinnable(data.winnable);
           setCopyBarcodeLabel(data.barcodeLabel);
-          setCopyBarcode(copyIn.barcode);
+          setCopyBarcode(data.barcode);
           setCopyCollectionId(data.collectionId);
+          setGameId(data.gameId);
+
+          gameList.setFilterText(data.game.name);
+
           setLoading(false);
         })
         .catch((err: any) => {});
     }
+    // gameList is not a dependency, ignoring this error makes a warning go away
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [copyIn, copy, copyId, session]);
 
   useEffect(() => {
@@ -95,8 +138,8 @@ export default function CopyModal(props: any) {
     }
   }, [copy, session]);
 
-  if (isLoading) return <p>Loading...</p>;
-  if (!copy) return <p>No copy data</p>;
+  if (isLoading) return <div></div>;
+  if (!copy) return <div></div>;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -108,6 +151,7 @@ export default function CopyModal(props: any) {
             </ModalHeader>
             <ModalBody>
               <Select
+                name="collectionSelect"
                 items={collections}
                 label="Current collection"
                 placeholder="Select a collection"
@@ -122,8 +166,24 @@ export default function CopyModal(props: any) {
                   </SelectItem>
                 )}
               </Select>
+              <Autocomplete
+                name="gameAutocomplete"
+                label="Select a game"
+                placeholder="Type to search..."
+                inputValue={gameList.filterText}
+                isLoading={gameList.isLoading}
+                items={gameList.items}
+                onInputChange={gameList.setFilterText}
+                onSelectionChange={(key: React.Key | null) =>
+                  setGameId(key?.valueOf())
+                }
+              >
+                {(item) => (
+                  <AutocompleteItem key={item.id}>{item.name}</AutocompleteItem>
+                )}
+              </Autocomplete>
               <Input
-                id="barcodeLabel"
+                name="barcodeLabel"
                 type="text"
                 isRequired
                 label="Barcode Label"
@@ -131,7 +191,7 @@ export default function CopyModal(props: any) {
                 onValueChange={(value) => setCopyBarcodeLabel(value)}
               />
               <Input
-                id="barcode"
+                name="barcode"
                 type="text"
                 isRequired
                 label="Barcode"
@@ -139,13 +199,15 @@ export default function CopyModal(props: any) {
                 onValueChange={(value) => setCopyBarcode(value)}
               />
               <Textarea
+                name="comments"
                 label="Comments"
                 placeholder="Enter your comments"
-                value={copyComments}
+                value={copyComments ?? ""}
                 onValueChange={(value) => setCopyComments(value)}
               />
               {copy.collection?.allowWinning && (
                 <Checkbox
+                  name="allowWinning"
                   defaultSelected={copy.winnable}
                   onValueChange={(isSelected) => setCopyWinnable(isSelected)}
                 >

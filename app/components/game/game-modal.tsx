@@ -11,7 +11,7 @@ import {
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import CopyBubbles from "./copy-bubbles";
+import CopyBubbles from "../copy/copy-bubbles";
 
 export default function GameModal(props: any) {
   let { gameIn, gameId, disclosure } = props;
@@ -60,22 +60,27 @@ export default function GameModal(props: any) {
   if (!game) return <div>No game data</div>;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
       <ModalContent>
         {(onClose) => (
-          <div>
+          <>
             <ModalHeader>
               {game.name !== "" ? game.name : "[unknown name]"}
             </ModalHeader>
             <ModalBody>
-              <Input
-                id="gameName"
-                type="text"
-                isRequired
-                label="Game Name"
-                value={gameName}
-                onValueChange={(value) => setGameName(value)}
-              />
+              {game.name != "" ? (
+                <Input
+                  name="gameName"
+                  type="text"
+                  isRequired
+                  label="Game Name"
+                  value={gameName}
+                  onValueChange={(value) => setGameName(value)}
+                />
+              ) : (
+                ""
+              )}
+
               {bubbles}
             </ModalBody>
             <ModalFooter>
@@ -86,7 +91,7 @@ export default function GameModal(props: any) {
                 Close
               </Button>
             </ModalFooter>
-          </div>
+          </>
         )}
       </ModalContent>
     </Modal>
