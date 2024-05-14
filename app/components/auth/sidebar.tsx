@@ -59,7 +59,7 @@ export default function SideBar() {
     return (
       <div className="min-w-48 mr-10">
         <div className="text-center bg-gwdarkgreen h-full">
-          <div className="flex justify-center w-full pt-10" >
+          <div className="flex justify-center w-full pt-10">
             <CircularProgress isIndeterminate={true} label="Loading..." />
           </div>
         </div>

@@ -1,5 +1,5 @@
 import { SessionProvider } from "next-auth/react";
-import SideBar from "../components/sidebar";
+import SideBar from "../components/auth/sidebar";
 
 export default function RootLayout({
   children,

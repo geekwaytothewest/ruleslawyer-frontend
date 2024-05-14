@@ -26,6 +26,8 @@ export default function OrgView({ params }: { params: { orgId: string } }) {
   if (!organization) return <p>No organization data</p>;
 
   return (
-    <div></div>
+    <div>
+      <Link href={`/dashboard/organization/${params.orgId}/collections`}>Collections</Link>
+    </div>
   );
 }

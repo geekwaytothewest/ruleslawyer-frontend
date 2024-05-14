@@ -2,31 +2,52 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import frontendFetch from "@/utilities/frontendFetch";
-import Link from "next/link";
+import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/react";
+import { useParams, usePathname } from "next/navigation";
 
 export default function CollectionLayout({
   children,
-  params,
 }: Readonly<{
   children: React.ReactNode;
-  params: { orgId: string };
 }>) {
   const [organization, setData]: any = useState(null);
+  const [collection, setCollection]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
 
   const session = useSession();
+  const pathname = usePathname();
+  const params = useParams();
 
   useEffect(() => {}, [session]);
 
   useEffect(() => {
-    frontendFetch("GET", "/org/" + params.orgId, null, session)
-      .then((res: any) => res.json())
-      .then((data: any) => {
-        setData(data);
-        setLoading(false);
-      })
-      .catch((err: any) => {});
-  }, [params.orgId, session]);
+    if (params) {
+      frontendFetch("GET", "/org/" + params.orgId, null, session)
+        .then((res: any) => res.json())
+        .then((data: any) => {
+          setData(data);
+          setLoading(false);
+        })
+        .catch((err: any) => {});
+    }
+  }, [params, session]);
+
+  useEffect(() => {
+    if (params.colId) {
+      frontendFetch(
+        "GET",
+        "/collection/" + params.colId,
+        null,
+        session
+      )
+        .then((res: any) => res.json())
+        .then((data: any) => {
+          setCollection(data);
+          setLoading(false);
+        })
+        .catch((err: any) => {});
+    }
+  }, [params, session]);
 
   if (isLoading) return <p>Loading...</p>;
   if (!organization) return <p>No organization data</p>;
@@ -34,8 +55,35 @@ export default function CollectionLayout({
   return (
     <div>
       <div>
-        <Link href={`/dashboard/organization/${organization.id}`} className="mr-5 after:content-[' -&gt; ''] hover:text-gwgreen">{organization.name}</Link>
-        <Link href={`/dashboard/organization/${organization.id}/collections`} className="hover:text-gwgreen">Collections</Link>
+        <Breadcrumbs size="lg" color="success" underline="hover">
+          {params.orgId !== null && params.orgId !== undefined ? (
+            <BreadcrumbItem href={`/dashboard/organization/${organization.id}`}>
+              {organization.name}
+            </BreadcrumbItem>
+          ) : (
+            ""
+          )}
+
+          {pathname.includes("collection") ? (
+            <BreadcrumbItem
+              href={`/dashboard/organization/${organization.id}/collections`}
+            >
+              Collections
+            </BreadcrumbItem>
+          ) : (
+            ""
+          )}
+
+          {params.colId !== null && params.colId !== undefined ? (
+            <BreadcrumbItem
+              href={`/dashboard/organization/${organization.id}/collection/${params.colId}`}
+            >
+              {collection?.name}
+            </BreadcrumbItem>
+          ) : (
+            ""
+          )}
+        </Breadcrumbs>
       </div>
       <div>{children}</div>
     </div>

@@ -47,10 +47,7 @@ export default function OrgCollectionView({
 
   return (
     <div>
-      <h1>{collection.name}</h1>
-      <div>
-        <GameGrid gamesIn={unqiueGames} />
-      </div>
+      <GameGrid gamesIn={unqiueGames} />
     </div>
   );
 }
