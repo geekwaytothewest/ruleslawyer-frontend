@@ -216,7 +216,7 @@ export default function CopyModal(props: any) {
               )}
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" onPress={onSave}>
+              <Button color="success" onPress={onSave}>
                 Save
               </Button>
               <Button color="primary" onPress={onClose}>

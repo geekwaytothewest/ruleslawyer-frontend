@@ -84,7 +84,7 @@ export default function GameModal(props: any) {
               {bubbles}
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" onPress={onSave}>
+              <Button color="success" onPress={onSave}>
                 Save
               </Button>
               <Button color="primary" onPress={onClose}>
