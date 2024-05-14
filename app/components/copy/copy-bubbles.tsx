@@ -55,7 +55,7 @@ export default function CopyBubbles(props: any) {
           {c.checkOuts.length === 0 || c.checkOuts[0].checkIn !== null ? (
             <BsBox2Heart className="inline-block mr-2 mb-2 text-gwgreen" />
           ) : (
-            <BsBox2Heart className="inline-block mr-2 mb-2 text-gwred" />
+            <BsBox2Heart className="inline-block mr-2 mb-2 text-gwdarkred" />
           )}
         </div>
       );
@@ -71,7 +71,7 @@ export default function CopyBubbles(props: any) {
           {c.checkOuts.length === 0 || c.checkOuts[0].checkIn !== null ? (
             <BsBox2Heart className="inline-block text-gwgreen mr-2 mb-2" />
           ) : (
-            <BsBox2Heart className="inline-block text-gwred mr-2 mb-2" />
+            <BsBox2Heart className="inline-block text-gwdarkred mr-2 mb-2" />
           )}
           {c.barcodeLabel}
         </div>
@@ -93,7 +93,7 @@ export default function CopyBubbles(props: any) {
           <div></div>
         )}
         {copies.length - available.length > 0 ? (
-          <div className="rounded-full bg-gwred p-1 mr-2 mt-2 text-sm text-gwdarkblue">
+          <div className="rounded-full bg-gwdarkred p-1 mr-2 mt-2 text-sm text-gwdarkblue">
             {copies.length - available.length} Checked Out
           </div>
         ) : (

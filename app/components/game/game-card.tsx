@@ -51,7 +51,7 @@ export default function GameCard(props: any) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center border-2 w-64 h-24 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] border-slate-800">
+      <div className="flex items-center border-2 w-80 h-32 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] border-slate-800">
         <div className="flex-col p-3 w-24">
           <IoLibrary size={64} className="text-slate-800" />
         </div>
@@ -66,7 +66,7 @@ export default function GameCard(props: any) {
 
   if (!game) {
     return (
-      <div className="flex items-center border-2 w-64 h-24 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] border-slate-800">
+      <div className="flex items-center border-2 w-80 h-32 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] border-slate-800">
         <div className="flex-col p-3 w-24">
           <BiSolidMessageAltError size={64} className="text-slate-500" />
         </div>
