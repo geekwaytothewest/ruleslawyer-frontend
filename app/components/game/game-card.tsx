@@ -1,12 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { BsBox2Heart } from "react-icons/bs";
 import { useSession } from "next-auth/react";
 import frontendFetch from "@/utilities/frontendFetch";
 import { useDisclosure } from "@nextui-org/modal";
 import GameModal from "./game-modal";
 import { Skeleton } from "@nextui-org/react";
 import { BiSolidMessageAltError } from "react-icons/bi";
+import CopyBubbles from "../copy/copy-bubbles";
+import { IoLibrary } from "react-icons/io5";
 
 export default function GameCard(props: any) {
   let { gameIn, gameId } = props;
@@ -52,7 +53,7 @@ export default function GameCard(props: any) {
     return (
       <div className="flex items-center border-2 w-64 h-24 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] border-slate-800">
         <div className="flex-col p-3 w-24">
-          <BsBox2Heart size={64} className="text-slate-800" />
+          <IoLibrary size={64} className="text-slate-800" />
         </div>
         <div className="flex-col pr-3 w-full">
           <Skeleton className="rounded-lg">
@@ -84,14 +85,15 @@ export default function GameCard(props: any) {
     <div>
       <div
         onClick={onOpen}
-        className="flex items-center border-2 border-gwblue w-64 h-24 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] cursor-pointer"
+        className="flex items-center border-2 border-gwblue w-80 h-32 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] cursor-pointer"
       >
         <div className="flex-col p-3 w-24">
-          <BsBox2Heart size={64} />
+          <IoLibrary size={64} />
         </div>
         <div className="flex-col pr-3 w-full">
           <span className="inline-block align-middle h-full">
             {game.name !== "" ? game.name : "[unknown name]"}
+            <CopyBubbles copyIn={game.copies} gameId={game.id} bubbleStyle={"statusOnly"} />
           </span>
         </div>
       </div>
