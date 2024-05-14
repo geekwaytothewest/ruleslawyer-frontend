@@ -1,4 +1,5 @@
 "use client";
+import GameGrid from "@/app/components/game/game-grid";
 import frontendFetch from "@/utilities/frontendFetch";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -29,10 +30,6 @@ export default function OrgCollectionView({
   if (isLoading) return <p>Loading...</p>;
   if (!collection) return <p>No collection data</p>;
 
-  collection.copies?.sort((a: any, b: any) =>
-    a.game.name.localeCompare(b.game.name)
-  );
-
   const games = collection.copies?.map((copy: any) => copy.game);
   const unqiueGames = games
     ?.filter(
@@ -52,38 +49,7 @@ export default function OrgCollectionView({
     <div>
       <h1>{collection.name}</h1>
       <div>
-        {unqiueGames?.map((game: any) => (
-          <div key={game.id} className="flex mb-5">
-            <h1 className="odd:bg-gwblue-50 min-w-64 max-w-64 text-wrap">
-              <Link
-                href={`/dashboard/game/${game.id}`}
-                className="mr-2 hover:text-gwgreen"
-              >
-                {game.name ? game.name : "[unknown name]"}
-              </Link>
-            </h1>
-            <div className="ml-2 flex flex-wrap">
-              (
-              {game.copies.map((copy: any) => (
-                <span key={copy.id} className="ml-2 mr-2">
-                  <Link
-                    href={`/dashboard/copy/${copy.id}`}
-                    className="hover:text-gwgreen"
-                  >
-                    {copy.checkOuts.length === 0 ||
-                    copy.checkOuts[0].checkIn !== null ? (
-                      <div className="inline-block mr-2 w-4 h-4 rounded-full bg-gwgreen"></div>
-                    ) : (
-                      <div className="inline-block mr-2 w-4 h-4 rounded-full bg-gwred"></div>
-                    )}
-                    {copy.barcode.replaceAll("*", "")}
-                  </Link>
-                </span>
-              ))}
-              )
-            </div>
-          </div>
-        ))}
+        <GameGrid gamesIn={unqiueGames} />
       </div>
     </div>
   );

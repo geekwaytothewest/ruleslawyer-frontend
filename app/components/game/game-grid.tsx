@@ -12,7 +12,9 @@ import { LuPackageSearch } from "react-icons/lu";
 import { useSession } from "next-auth/react";
 import frontendFetch from "@/utilities/frontendFetch";
 
-export default function GameGrid() {
+export default function GameGrid(props: any) {
+  const { gamesIn } = props;
+
   const [games, setData]: any = useState(null);
   const [searchText, setSearchText]: any = useState("");
   const [isLoading, setLoading]: any = useState(true);
@@ -23,14 +25,19 @@ export default function GameGrid() {
   useEffect(() => {}, [session]);
 
   useEffect(() => {
-    frontendFetch("GET", "/game", null, session)
-      .then((res: any) => res.json())
-      .then((data: any) => {
-        setData(data);
-        setLoading(false);
-      })
-      .catch((err: any) => {});
-  }, [session]);
+    if (gamesIn) {
+      setData(gamesIn);
+      setLoading(false);
+    } else {
+      frontendFetch("GET", "/game", null, session)
+        .then((res: any) => res.json())
+        .then((data: any) => {
+          setData(data);
+          setLoading(false);
+        })
+        .catch((err: any) => {});
+    }
+  }, [session, gamesIn]);
 
   if (isLoading) {
     return (
