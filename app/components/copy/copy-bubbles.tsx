@@ -20,11 +20,6 @@ export default function CopyBubbles(props: any) {
       .catch((err: any) => {});
   };
 
-  const disclosure = useDisclosure({
-    onClose: onCloseModal,
-  });
-  const { isOpen, onOpen, onClose } = disclosure;
-
   const session = useSession();
 
   useEffect(() => {}, [session]);
@@ -47,27 +42,36 @@ export default function CopyBubbles(props: any) {
   if (isLoading) return <div></div>;
   if (!copies) return <div></div>;
 
+  const BubbleModal = ({c}: any) => {
+    const disclosure = useDisclosure({
+      onClose: onCloseModal,
+    });
+    const { isOpen, onOpen, onClose } = disclosure;
+
+    return (
+      <span
+        key={c.id}
+        className="flex-col inline-block mb-2 mr-2 bg-gwdarkblue p-3 rounded-full border-4 border-gwgreen hover:border-gwblue hover:text-gwgreen cursor-pointer"
+        onClick={onOpen}
+      >
+        <div>
+          {c.checkOuts.length === 0 || c.checkOuts[0].checkIn !== null ? (
+            <div className="inline-block mr-2 w-4 h-4 rounded-full bg-gwgreen"></div>
+          ) : (
+            <div className="inline-block mr-2 w-4 h-4 rounded-full bg-gwred"></div>
+          )}
+          {c.barcodeLabel}
+        </div>
+        <CopyModal disclosure={disclosure} copyIn={c} copyId={c.id} />
+      </span>
+    );
+  };
+
   return (
     <div>
-      {copies?.map((c: any) => {
-        return (
-          <span
-            key={c.id}
-            className="flex-col inline-block mb-2 mr-2 bg-gwdarkblue p-3 rounded-full border-4 border-gwgreen hover:border-gwblue hover:text-gwgreen cursor-pointer"
-            onClick={onOpen}
-          >
-            <div>
-              {c.checkOuts.length === 0 || c.checkOuts[0].checkIn !== null ? (
-                <div className="inline-block mr-2 w-4 h-4 rounded-full bg-gwgreen"></div>
-              ) : (
-                <div className="inline-block mr-2 w-4 h-4 rounded-full bg-gwred"></div>
-              )}
-              {c.barcodeLabel}
-            </div>
-            <CopyModal disclosure={disclosure} copyIn={c} copyId={c.id} />
-          </span>
-        );
-      })}
+      {copies?.map((c: any) => (
+        <BubbleModal key={c.id} c={c} />
+      ))}
     </div>
   );
 }
