@@ -29,7 +29,7 @@ export default function GameGrid(props: any) {
       setData(gamesIn);
       setLoading(false);
     } else {
-      frontendFetch("GET", "/game", null, session)
+      frontendFetch("GET", "/game/withCopies", null, session)
         .then((res: any) => res.json())
         .then((data: any) => {
           setData(data);
@@ -94,6 +94,7 @@ export default function GameGrid(props: any) {
           .slice(0, Array.from(maxResults)[0] ?? 50)
           .map(
             (g: {
+              copies: any;
               id: React.Key | null | undefined;
               name:
                 | string
@@ -110,7 +111,7 @@ export default function GameGrid(props: any) {
                 | null
                 | undefined;
             }) => {
-              return <GameCard key={g.id} gameIn={g} gameId={g.id} />;
+              return <GameCard key={g.id} gameIn={g} gameId={g.id}/>;
             }
           )}
       </div>

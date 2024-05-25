@@ -93,7 +93,7 @@ export default function GameCard(props: any) {
         <div className="flex-col pr-3 w-full">
           <span className="inline-block align-middle h-full">
             {game.name !== "" ? game.name : "[unknown name]"}
-            <CopyBubbles copyIn={game.copies} gameId={game.id} bubbleStyle={"statusOnly"} />
+            <CopyBubbles copiesIn={game.copies} gameId={game.id} bubbleStyle={"statusOnly"} />
           </span>
         </div>
       </div>

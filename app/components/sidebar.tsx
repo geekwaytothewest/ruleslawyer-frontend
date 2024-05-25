@@ -5,13 +5,13 @@ import Link from "next/link";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { SignOut } from "./signout-client";
+import { SignOut } from "./auth/signout-client";
 import { CircularProgress } from "@nextui-org/react";
 
 export default function SideBar() {
   const [user, setUser]: any = useState(null);
   const [orgs, setOrgs]: any = useState(null);
-  const [conCount, setConCount]: any = useState(null);
+  const [cons, setCons]: any = useState(null);
   const [isLoadingOrgCount, setLoadingOrgCount]: any = useState(true);
   const [isLoadingConCount, setLoadingConCount]: any = useState(true);
   const [isLoadingUser, setLoadingUser]: any = useState(true);
@@ -45,10 +45,10 @@ export default function SideBar() {
 
   useEffect(() => {
     if (user) {
-      frontendFetch("GET", "/userConPerm/" + user.id + "/count", null, session)
+      frontendFetch("GET", "/userConPerm/" + user.id, null, session)
         .then((res: any) => res.json())
         .then((data: any) => {
-          setConCount(data);
+          setCons(data);
           setLoadingConCount(false);
         })
         .catch((err: any) => {});
@@ -98,12 +98,12 @@ export default function SideBar() {
                 "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
                 {
                   "bg-transparent": pathname.startsWith(
-                    "/dashboard/organization"
+                    "/dashboard/organizations"
                   ),
                 },
                 {
                   "bg-gwgreen border-right-2": !pathname.startsWith(
-                    "/dashboard/organization"
+                    "/dashboard/organizations"
                   ),
                 }
               )}
@@ -112,7 +112,28 @@ export default function SideBar() {
             </div>
           </Link>
         )}
-        {(conCount > 0 || user?.superAdmin) && (
+        {(cons.length == 1 && !user?.superAdmin) && (
+          <Link href={`/dashboard/convention/${cons[0].convention.id}`}>
+            <div
+              className={clsx(
+                "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
+                {
+                  "bg-transparent": pathname.startsWith(
+                    "/dashboard/conventions"
+                  ),
+                },
+                {
+                  "bg-gwgreen border-right-2": !pathname.startsWith(
+                    "/dashboard/convention"
+                  ),
+                }
+              )}
+            >
+              <h1>{cons[0].convention.name}</h1>
+            </div>
+          </Link>
+        )}
+        {(cons.length > 1 || user?.superAdmin) && (
           <Link href="/dashboard/conventions">
             <div
               className={clsx(

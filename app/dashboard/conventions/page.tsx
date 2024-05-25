@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import backendFetch from "@/utilities/backendFetch";
+import Link from "next/link";
 import React from "react";
 
 export default async function Dashboard() {
@@ -33,7 +34,7 @@ export default async function Dashboard() {
               | undefined;
           };
         }) => {
-          return <div key={c.convention.id}>{c.convention.name}</div>;
+          return <div key={c.convention.id}><Link href={`/dashboard/convention/${c.convention.id}`}>{c.convention.name}</Link></div>;
         }
       )}
     </div>
