@@ -22,7 +22,7 @@ const config: Config = {
       'gwdarkgreen': '#005D72',
       'gwblue': '#0093d2',
       'gwdarkblue': '#002C5F',
-      'gwlightblue': '#E6F4F1',
+      'gwlightblue': '#70bdc7',
       'gwred': '#FF0000',
       'gwdarkred': '#7e0909',
       ...colors,

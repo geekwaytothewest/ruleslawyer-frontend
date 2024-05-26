@@ -15,6 +15,7 @@ import {
   SelectItem,
   useDisclosure,
 } from "@nextui-org/react";
+import { GrAttachment } from "react-icons/gr";
 
 export default function ConventionInfo(props: any) {
   let { id } = props;
@@ -67,13 +68,13 @@ export default function ConventionInfo(props: any) {
   const onSave = () => {
     frontendFetch(
       "POST",
-      "/con/" + id + "/attachCollection/" + collectionIdToAttach,
+      "/con/" + id + "/conventionCollection/" + collectionIdToAttach,
       {},
       session
     )
       .then((res: any) => res.json())
       .then((data: any) => {
-        onModalClose();
+        onClose();
       })
       .catch((err: any) => {});
   };
@@ -91,7 +92,7 @@ export default function ConventionInfo(props: any) {
       <h2>{convention.theme}</h2>
       <h3 className="flex">
         Collections:{" "}
-        <MdLibraryAdd className="ml-2 hover:cursor-pointer" onClick={onOpen} />{" "}
+        <GrAttachment className="ml-2 hover:cursor-pointer" onClick={onOpen} />{" "}
       </h3>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalContent>
@@ -123,34 +124,36 @@ export default function ConventionInfo(props: any) {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      {convention.collections.map(
-        (c: {
-          collection: {
-            _count: any;
-            id: React.Key | null | undefined;
-            name:
-              | string
-              | number
-              | bigint
-              | boolean
-              | React.ReactElement<
-                  any,
-                  string | React.JSXElementConstructor<any>
-                >
-              | Iterable<React.ReactNode>
-              | React.ReactPortal
-              | Promise<React.AwaitedReactNode>
-              | null
-              | undefined;
-          };
-        }) => {
-          return (
-            <div key={c.collection.id}>
-              <CollectionCard collectionIn={c.collection} />
-            </div>
-          );
-        }
-      )}
+      <div className="flex flex-wrap">
+        {convention.collections.map(
+          (c: {
+            collection: {
+              _count: any;
+              id: React.Key | null | undefined;
+              name:
+                | string
+                | number
+                | bigint
+                | boolean
+                | React.ReactElement<
+                    any,
+                    string | React.JSXElementConstructor<any>
+                  >
+                | Iterable<React.ReactNode>
+                | React.ReactPortal
+                | Promise<React.AwaitedReactNode>
+                | null
+                | undefined;
+            };
+          }) => {
+            return (
+              <div key={c.collection.id}>
+                <CollectionCard collectionIn={c.collection} conventionId={convention.id} onDeleted={onClose} />
+              </div>
+            );
+          }
+        )}
+      </div>
     </div>
   );
 }

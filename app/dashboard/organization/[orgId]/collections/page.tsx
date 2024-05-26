@@ -1,8 +1,7 @@
 "use client";
+import CollectionCard from "@/app/components/collection/collection-card";
 import frontendFetch from "@/utilities/frontendFetch";
-import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 export default function OrgCollectionsView({
@@ -40,19 +39,10 @@ export default function OrgCollectionsView({
   if (!collections) return <p>No collection data</p>;
 
   return (
-    <div>
+    <div className="flex flex-wrap">
       {collections.map(
         (c: { id: React.Key | null | undefined; name: string | null }) => {
-          return (
-            <div key={c.id}>
-              <Link
-                href={`/dashboard/organization/${params.orgId}/collection/${c.id}`}
-                className="hover:text-gwgreen"
-              >
-                {c.name}
-              </Link>
-            </div>
-          );
+          return <CollectionCard key={c.id} collectionIn={c} />;
         }
       )}
     </div>
