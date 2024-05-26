@@ -100,8 +100,13 @@ export default function ConventionInfo(props: any) {
           <ModalBody>
             <Select
               name="collectionSelect"
-              items={collections}
-              label="Current collection"
+              items={collections?.filter(
+                (c: { id: any }) =>
+                  convention.collections.find(
+                    (c2: { id: any }) => c2.id == c.id
+                  ) == undefined
+              )}
+              label="Collection to Attach"
               placeholder="Select a collection"
               onChange={(event) => {
                 setCollectionIdToAttach(Number(event.target.value));
@@ -148,7 +153,11 @@ export default function ConventionInfo(props: any) {
           }) => {
             return (
               <div key={c.collection.id}>
-                <CollectionCard collectionIn={c.collection} conventionId={convention.id} onDeleted={onClose} />
+                <CollectionCard
+                  collectionIn={c.collection}
+                  conventionId={convention.id}
+                  onDeleted={onClose}
+                />
               </div>
             );
           }
