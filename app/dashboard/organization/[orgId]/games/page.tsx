@@ -1,5 +1,7 @@
+import frontendFetch from "@/utilities/frontendFetch";
+import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
-import React from "react";
+import React, { useEffect } from "react";
 
 const GameGrid = dynamic(() => import("@/app/components/game/game-grid"), {
   loading: () => <p>Loading...</p>,
