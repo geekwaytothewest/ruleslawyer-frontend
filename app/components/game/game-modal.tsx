@@ -20,6 +20,9 @@ export default function GameModal(props: any) {
   const [isLoading, setLoading]: any = useState(true);
   const [bubbles, setBubbles]: any = useState(null);
   const [gameName, setGameName]: any = useState(null);
+  const [readOnly, setReadOnly]: any = useState(null);
+  const [user, setUser]: any = useState(null);
+  const [isLoadingUser, setLoadingUser]: any = useState(true);
 
   const session = useSession();
 
@@ -56,6 +59,38 @@ export default function GameModal(props: any) {
     }
   }, [gameIn, gameId, session, game]);
 
+  useEffect(() => {
+    frontendFetch("GET", "/user/" + session?.data?.user?.email, null, session)
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        setUser(data);
+        setLoadingUser(false);
+      })
+      .catch((err: any) => {});
+  }, [session]);
+
+  useEffect(() => {
+    if (user) {
+      frontendFetch("GET", "/userOrgPerm/" + user.id, null, session)
+        .then((res: any) => res.json())
+        .then((data: any) => {
+          if (
+            data.filter(
+              (d: { organizationId: any; admin: boolean }) =>
+                d.organizationId === game.organizationId && d.admin === true
+            ).length > 0
+          ) {
+            setReadOnly(true);
+          } else {
+            setReadOnly(false);
+          }
+
+          setLoading(false);
+        })
+        .catch((err: any) => {});
+    }
+  }, [user, session, game]);
+
   if (isLoading) return <div>Loading...</div>;
   if (!game) return <div>No game data</div>;
 
@@ -84,9 +119,13 @@ export default function GameModal(props: any) {
               {bubbles}
             </ModalBody>
             <ModalFooter>
-              <Button color="success" onPress={onSave}>
-                Save
-              </Button>
+              {readOnly ? (
+                ""
+              ) : (
+                <Button color="success" onPress={onSave}>
+                  Save
+                </Button>
+              )}
               <Button color="primary" onPress={onClose}>
                 Close
               </Button>
