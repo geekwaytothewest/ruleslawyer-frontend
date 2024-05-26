@@ -6,16 +6,16 @@ import CopyModal from "./copy-modal";
 import { useDisclosure } from "@nextui-org/react";
 import { BsBox2Heart } from "react-icons/bs";
 export default function CopyBubbles(props: any) {
-  let { copiesIn, gameId, bubbleStyle } = props;
+  let { game, bubbleStyle } = props;
 
   const [copies, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
 
   const onCloseModal = () => {
-    frontendFetch("GET", "/game/" + gameId + "/copies", null, session)
+    frontendFetch("GET", "/game/" + game.id, null, session)
       .then((res: any) => res.json())
       .then((data: any) => {
-        setData(data);
+        setData(data.copies);
         setLoading(false);
       })
       .catch((err: any) => {});
@@ -26,19 +26,19 @@ export default function CopyBubbles(props: any) {
   useEffect(() => {}, [session]);
 
   useEffect(() => {
-    if (copiesIn) {
-      setData(copiesIn);
+    if (game.copies) {
+      setData(game.copies);
       setLoading(false);
     } else {
-      frontendFetch("GET", "/game/" + gameId + "/copies", null, session)
+      frontendFetch("GET", "/game/" + game.id, null, session)
         .then((res: any) => res.json())
         .then((data: any) => {
-          setData(data);
+          setData(data.copies);
           setLoading(false);
         })
         .catch((err: any) => {});
     }
-  }, [copiesIn, gameId, session]);
+  }, [game, session]);
 
   if (isLoading) return <div></div>;
   if (!copies) return <div></div>;

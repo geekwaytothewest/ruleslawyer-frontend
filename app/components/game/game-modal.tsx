@@ -41,7 +41,7 @@ export default function GameModal(props: any) {
     if (gameIn) {
       setData(gameIn);
       setGameName(gameIn.name);
-      setBubbles(<CopyBubbles copiesIn={gameIn.copies} gameId={gameIn.id} />);
+      setBubbles(<CopyBubbles game={game} />);
       setLoading(false);
     } else {
       frontendFetch("GET", "/game/" + gameId, null, session)
@@ -49,7 +49,7 @@ export default function GameModal(props: any) {
         .then((data: any) => {
           setData(data);
           setGameName(game.name);
-          setBubbles(<CopyBubbles copiesIn={game.copies} gameId={game.id} />);
+          setBubbles(<CopyBubbles game={game} />);
           setLoading(false);
         })
         .catch((err: any) => {});

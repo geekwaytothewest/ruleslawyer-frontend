@@ -12,6 +12,7 @@ export default function CollectionLayout({
 }>) {
   const [organization, setData]: any = useState(null);
   const [collection, setCollection]: any = useState(null);
+  const [convention, setConvention]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
 
   const session = useSession();
@@ -49,6 +50,23 @@ export default function CollectionLayout({
     }
   }, [params, session]);
 
+  useEffect(() => {
+    if (params.conId) {
+      frontendFetch(
+        "GET",
+        "/con/" + params.conId,
+        null,
+        session
+      )
+        .then((res: any) => res.json())
+        .then((data: any) => {
+          setConvention(data);
+          setLoading(false);
+        })
+        .catch((err: any) => {});
+    }
+  }, [params, session]);
+
   if (isLoading) return <p>Loading...</p>;
   if (!organization) return <p>No organization data</p>;
 
@@ -59,6 +77,26 @@ export default function CollectionLayout({
           {params.orgId !== null && params.orgId !== undefined ? (
             <BreadcrumbItem href={`/dashboard/organization/${organization.id}`}>
               {organization.name}
+            </BreadcrumbItem>
+          ) : (
+            ""
+          )}
+
+          {pathname.includes("convention") ? (
+            <BreadcrumbItem
+              href={`/dashboard/organization/${organization.id}/conventions`}
+            >
+              Conventions
+            </BreadcrumbItem>
+          ) : (
+            ""
+          )}
+
+          {params.conId !== null && params.conId !== undefined ? (
+            <BreadcrumbItem
+              href={`/dashboard/organization/${organization.id}/convention/${convention?.id}`}
+            >
+              {convention?.name}
             </BreadcrumbItem>
           ) : (
             ""
@@ -79,6 +117,16 @@ export default function CollectionLayout({
               href={`/dashboard/organization/${organization.id}/collection/${params.colId}`}
             >
               {collection?.name}
+            </BreadcrumbItem>
+          ) : (
+            ""
+          )}
+
+          {pathname.includes("games") ? (
+            <BreadcrumbItem
+              href={`/dashboard/organization/${organization.id}/games`}
+            >
+              Games
             </BreadcrumbItem>
           ) : (
             ""

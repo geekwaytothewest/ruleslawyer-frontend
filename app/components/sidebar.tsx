@@ -36,6 +36,7 @@ export default function SideBar() {
       frontendFetch("GET", "/userOrgPerm/" + user.id, null, session)
         .then((res: any) => res.json())
         .then((data: any) => {
+          localStorage.setItem("userOrgPerm", data);
           setOrgs(data);
           setLoadingOrgCount(false);
         })
@@ -48,6 +49,7 @@ export default function SideBar() {
       frontendFetch("GET", "/userConPerm/" + user.id, null, session)
         .then((res: any) => res.json())
         .then((data: any) => {
+          localStorage.setItem("userConPerm", data);
           setCons(data);
           setLoadingConCount(false);
         })
@@ -112,14 +114,14 @@ export default function SideBar() {
             </div>
           </Link>
         )}
-        {(cons.length == 1 && !user?.superAdmin) && (
+        {cons.length == 1 && !user?.superAdmin && (
           <Link href={`/dashboard/convention/${cons[0].convention.id}`}>
             <div
               className={clsx(
                 "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
                 {
                   "bg-transparent": pathname.startsWith(
-                    "/dashboard/conventions"
+                    "/dashboard/convention"
                   ),
                 },
                 {
@@ -140,12 +142,12 @@ export default function SideBar() {
                 "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
                 {
                   "bg-transparent": pathname.startsWith(
-                    "/dashboard/conventions"
+                    "/dashboard/convention"
                   ),
                 },
                 {
                   "bg-gwgreen border-right-2": !pathname.startsWith(
-                    "/dashboard/conventions"
+                    "/dashboard/convention"
                   ),
                 }
               )}
@@ -154,23 +156,25 @@ export default function SideBar() {
             </div>
           </Link>
         )}
-        <Link href="/dashboard/games">
-          <div
-            className={clsx(
-              "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
-              {
-                "bg-transparent border-right-0":
-                  pathname.startsWith("/dashboard/games"),
-              },
-              {
-                "bg-gwgreen border-right-2":
-                  !pathname.startsWith("/dashboard/games"),
-              }
-            )}
-          >
-            <h1>Games</h1>
-          </div>
-        </Link>
+        {orgs.length === 1 && !user?.superAdmin && (
+          <Link href="/dashboard/games">
+            <div
+              className={clsx(
+                "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
+                {
+                  "bg-transparent border-right-0":
+                    pathname.startsWith("/dashboard/games"),
+                },
+                {
+                  "bg-gwgreen border-right-2":
+                    !pathname.startsWith("/dashboard/games"),
+                }
+              )}
+            >
+              <h1>Games</h1>
+            </div>
+          </Link>
+        )}
       </div>
       <div className="text-center pt-10 bg-gwdarkgreen h-full">
         <SignOut />

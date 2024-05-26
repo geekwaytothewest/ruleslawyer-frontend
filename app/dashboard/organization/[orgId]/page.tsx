@@ -27,7 +27,21 @@ export default function OrgView({ params }: { params: { orgId: string } }) {
 
   return (
     <div>
-      <Link href={`/dashboard/organization/${params.orgId}/collections`}>Collections</Link>
+      <div>
+        <Link href={`/dashboard/organization/${params.orgId}/conventions`}>
+          Conventions
+        </Link>
+      </div>
+      <div>
+        <Link href={`/dashboard/organization/${params.orgId}/collections`}>
+          Collections
+        </Link>
+      </div>
+      <div>
+        <Link href={`/dashboard/organization/${params.orgId}/games`}>
+          Games
+        </Link>
+      </div>
     </div>
   );
 }

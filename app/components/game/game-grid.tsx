@@ -13,7 +13,7 @@ import { useSession } from "next-auth/react";
 import frontendFetch from "@/utilities/frontendFetch";
 
 export default function GameGrid(props: any) {
-  const { gamesIn } = props;
+  const { gamesIn, orgId } = props;
 
   const [games, setData]: any = useState(null);
   const [searchText, setSearchText]: any = useState("");

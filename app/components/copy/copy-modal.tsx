@@ -71,7 +71,7 @@ export default function CopyModal(props: any) {
       if (filterText && filterText.length > 3) {
         let res = await frontendFetch(
           "GET",
-          `/game/search/${filterText}`,
+          `/org/${copy.organizationId}/games/search/${filterText}`,
           null,
           session,
           signal
