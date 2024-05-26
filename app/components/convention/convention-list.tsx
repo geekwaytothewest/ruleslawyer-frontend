@@ -1,6 +1,6 @@
 "use client";
 import { Accordion, AccordionItem } from "@nextui-org/react";
-import React, { act } from "react";
+import React from "react";
 import ConventionInfo from "./convention-info";
 
 export default function ConventionList(props: any) {
