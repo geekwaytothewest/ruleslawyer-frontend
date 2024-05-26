@@ -36,17 +36,19 @@ export default function CollectionCard(props: any) {
     event: React.MouseEvent<SVGElement, MouseEvent>,
     collectionId: number
   ) => {
-    frontendFetch(
-      "DELETE",
-      "/con/" + conventionId + "/conventionCollection/" + collectionId,
-      {},
-      session
-    )
-      .then((res: any) => res.json())
-      .then((data: any) => {
-        onDeleted();
-      })
-      .catch((err: any) => {});
+    if (confirm("Are you sure you want to detach this collection?")) {
+      frontendFetch(
+        "DELETE",
+        "/con/" + conventionId + "/conventionCollection/" + collectionId,
+        {},
+        session
+      )
+        .then((res: any) => res.json())
+        .then((data: any) => {
+          onDeleted();
+        })
+        .catch((err: any) => {});
+    }
   };
 
   if (isLoading) {
