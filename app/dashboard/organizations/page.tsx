@@ -1,21 +1,25 @@
 import { auth } from "@/auth";
 import backendFetch from "@/utilities/backendFetch";
 import Link from "next/link";
-import React from "react";
+import React, { Key } from "react";
 
 export default async function Dashboard() {
   const session = (await auth()) as any;
   let orgs: any = [];
+  let user: any;
 
   if (session?.user.email) {
-    const resp = await backendFetch("GET", "/userOrgPerm/" + session.user.email);
-    orgs = await resp.json();
+    const respUser = await backendFetch("GET", "/user/" + session.user.email);
+    user = await respUser.json();
+    const respPerm = await backendFetch("GET", "/userOrgPerm/" + user.id);
+    orgs = await respPerm.json();
   }
 
   return (
     <div>
       {orgs.map(
         (o: {
+          organizationId: Key | null | undefined;
           organization: {
             id: React.Key | null | undefined;
             name:
@@ -34,7 +38,7 @@ export default async function Dashboard() {
               | undefined;
           };
         }) => {
-          return <div key={o.organization.id}><Link href={`/dashboard/organization/${o.organization.id}`} className="hover:text-gwgreen">{o.organization.name}</Link></div>;
+          return <div key={o.organizationId}><Link href={`/dashboard/organization/${o.organizationId}`} className="hover:text-gwgreen">{o.organization.name}</Link></div>;
         }
       )}
     </div>
