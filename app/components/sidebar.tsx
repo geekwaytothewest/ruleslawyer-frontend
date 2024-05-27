@@ -157,21 +157,40 @@ export default function SideBar() {
           </Link>
         )}
         {orgs.length === 1 && !user?.superAdmin && (
-          <Link href="/dashboard/games">
+          <Link href={`/dashboard/organization/${orgs[0].organizationId}/games`}>
             <div
               className={clsx(
                 "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
                 {
                   "bg-transparent border-right-0":
-                    pathname.startsWith("/dashboard/games"),
+                    pathname.startsWith(`/dashboard/organization/${orgs[0].organizationId}/games`),
                 },
                 {
                   "bg-gwgreen border-right-2":
-                    !pathname.startsWith("/dashboard/games"),
+                    !pathname.startsWith(`/dashboard/organization/${orgs[0].organizationId}/games`),
                 }
               )}
             >
               <h1>Games</h1>
+            </div>
+          </Link>
+        )}
+        {orgs.length === 1 && !user?.superAdmin && (
+          <Link href={`/dashboard/organization/${orgs[0].organizationId}/collections`}>
+            <div
+              className={clsx(
+                "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
+                {
+                  "bg-transparent border-right-0":
+                    pathname.startsWith(`/dashboard/organization/${orgs[0].organizationId}/collections`),
+                },
+                {
+                  "bg-gwgreen border-right-2":
+                    !pathname.startsWith(`/dashboard/organization/${orgs[0].organizationId}/collections`),
+                }
+              )}
+            >
+              <h1>Collections</h1>
             </div>
           </Link>
         )}
