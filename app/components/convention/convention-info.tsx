@@ -24,6 +24,7 @@ export default function ConventionInfo(props: any) {
   const [isLoading, setLoading]: any = useState(true);
   const [collectionIdToAttach, setCollectionIdToAttach]: any = useState(null);
   const [collections, setCollections]: any = useState(null);
+  const [filteredCollections, setFilteredCollections]: any = useState(null);
   const [readOnly, setReadOnly]: any = useState(true);
   const [user, setUser]: any = useState(null);
   const [isLoadingUser, setLoadingUser]: any = useState(true);
@@ -108,6 +109,19 @@ export default function ConventionInfo(props: any) {
     }
   }, [convention, session, readOnly]);
 
+  useEffect(() => {
+    if (collections) {
+      setFilteredCollections(
+        collections?.filter(
+          (c: { id: any }) =>
+            convention.collections.find(
+              (c2: { collectionId: any; id: any }) => c2.collectionId == c.id
+            ) === undefined
+        )
+      );
+    }
+  }, [collections, convention]);
+
   const onModalClose = () => {
     frontendFetch("GET", "/con/" + id, null, session)
       .then((res: any) => res.json())
@@ -163,12 +177,7 @@ export default function ConventionInfo(props: any) {
             <ModalBody>
               <Select
                 name="collectionSelect"
-                items={collections?.filter(
-                  (c: { id: any }) =>
-                    convention.collections.find(
-                      (c2: { id: any }) => c2.id == c.id
-                    ) == undefined
-                )}
+                items={filteredCollections}
                 label="Collection to Attach"
                 placeholder="Select a collection"
                 onChange={(event) => {
