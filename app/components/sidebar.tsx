@@ -36,7 +36,6 @@ export default function SideBar() {
       frontendFetch("GET", "/userOrgPerm/" + user.id, null, session)
         .then((res: any) => res.json())
         .then((data: any) => {
-          localStorage.setItem("userOrgPerm", data);
           setOrgs(data);
           setLoadingOrgCount(false);
         })
@@ -49,7 +48,6 @@ export default function SideBar() {
       frontendFetch("GET", "/userConPerm/" + user.id, null, session)
         .then((res: any) => res.json())
         .then((data: any) => {
-          localStorage.setItem("userConPerm", data);
           setCons(data);
           setLoadingConCount(false);
         })
@@ -148,6 +146,27 @@ export default function SideBar() {
                 {
                   "bg-gwgreen border-right-2": !pathname.startsWith(
                     `/dashboard/organization/${orgs[0].organizationId}/conventions`
+                  ),
+                }
+              )}
+            >
+              <h1>Conventions</h1>
+            </div>
+          </Link>
+        )}
+        {((cons.length > 1 && orgs.length !== 1) || user?.superAdmin) && (
+          <Link href={`/dashboard/conventions`}>
+            <div
+              className={clsx(
+                "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
+                {
+                  "bg-transparent": pathname.startsWith(
+                    `/dashboard/convention`
+                  ),
+                },
+                {
+                  "bg-gwgreen border-right-2": !pathname.startsWith(
+                    `/dashboard/convention`
                   ),
                 }
               )}
