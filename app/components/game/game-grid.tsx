@@ -32,7 +32,7 @@ export default function GameGrid(props: any) {
       const [limit] = maxResults;
       frontendFetch(
         "GET",
-        "/game/withCopies?limit=" + limit,
+        "/game/withCopies?limit=" + limit + "&filter=" + searchText,
         null,
         session?.data?.token
       )
@@ -43,7 +43,7 @@ export default function GameGrid(props: any) {
         })
         .catch((err: any) => {});
     }
-  }, [session?.data?.token, gamesIn, maxResults]);
+  }, [session?.data?.token, gamesIn, maxResults, searchText]);
 
   if (isLoading) {
     return (
@@ -91,13 +91,6 @@ export default function GameGrid(props: any) {
       </div>
       <div className="flex flex-wrap">
         {games
-          ?.filter(
-            (g: any) =>
-              searchText === null ||
-              searchText === "" ||
-              g.name.toLowerCase().includes(searchText.toLowerCase())
-          )
-          .slice(0, Array.from(maxResults)[0] ?? 50)
           .map(
             (g: {
               copies: any;
