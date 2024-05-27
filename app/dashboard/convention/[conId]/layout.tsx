@@ -14,7 +14,7 @@ export default function ConventionLayout({
   const [collection, setCollection]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
 
-  const session = useSession();
+  const session: any = useSession();
   const pathname = usePathname();
   const params = useParams();
 
@@ -22,7 +22,7 @@ export default function ConventionLayout({
 
   useEffect(() => {
     if (params) {
-      frontendFetch("GET", "/con/" + params.conId, null, session)
+      frontendFetch("GET", "/con/" + params.conId, null, session?.data?.token)
         .then((res: any) => res.json())
         .then((data: any) => {
           setData(data);
@@ -38,7 +38,7 @@ export default function ConventionLayout({
         "GET",
         "/collection/" + params.colId,
         null,
-        session
+        session?.data?.token
       )
         .then((res: any) => res.json())
         .then((data: any) => {

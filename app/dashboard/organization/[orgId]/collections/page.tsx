@@ -13,12 +13,12 @@ export default function OrgCollectionsView({
   const [organization, setOrganization]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
 
-  const session = useSession();
+  const session: any = useSession();
 
   useEffect(() => {}, [session]);
 
   useEffect(() => {
-    frontendFetch("GET", "/org/" + params.orgId, null, session)
+    frontendFetch("GET", "/org/" + params.orgId, null, session?.data?.token)
       .then((res: any) => res.json())
       .then((data: any) => {
         setOrganization(data);
@@ -26,14 +26,14 @@ export default function OrgCollectionsView({
       })
       .catch((err: any) => {});
 
-    frontendFetch("GET", "/org/" + params.orgId + "/collections", null, session)
+    frontendFetch("GET", "/org/" + params.orgId + "/collections", null, session?.data?.token)
       .then((res: any) => res.json())
       .then((data: any) => {
         setData(data);
         setLoading(false);
       })
       .catch((err: any) => {});
-  }, [params.orgId, session]);
+  }, [params.orgId, session?.data?.token]);
 
   if (isLoading) return <p>Loading...</p>;
   if (!collections) return <p>No collection data</p>;

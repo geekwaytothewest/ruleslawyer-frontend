@@ -12,6 +12,7 @@ import {
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import CopyBubbles from "../copy/copy-bubbles";
+import useSWR from "swr";
 
 export default function GameModal(props: any) {
   let { gameIn, gameId, disclosure } = props;
@@ -21,15 +22,14 @@ export default function GameModal(props: any) {
   const [bubbles, setBubbles]: any = useState(null);
   const [gameName, setGameName]: any = useState(null);
   const [readOnly, setReadOnly]: any = useState(true);
-  const [user, setUser]: any = useState(null);
   const [isLoadingUser, setLoadingUser]: any = useState(true);
 
-  const session = useSession();
+  const session: any = useSession();
 
   const { isOpen, onOpen, onClose } = disclosure;
 
   const onSave = () => {
-    frontendFetch("PUT", "/game/" + game.id, { name: gameName }, session)
+    frontendFetch("PUT", "/game/" + game.id, { name: gameName }, session?.data?.token)
       .then((res: any) => res.json())
       .then((data: any) => {
         setData(data);
@@ -47,7 +47,7 @@ export default function GameModal(props: any) {
       setBubbles(<CopyBubbles game={game} />);
       setLoading(false);
     } else {
-      frontendFetch("GET", "/game/" + gameId, null, session)
+      frontendFetch("GET", "/game/" + gameId, null, session?.data?.token)
         .then((res: any) => res.json())
         .then((data: any) => {
           setData(data);
@@ -57,39 +57,40 @@ export default function GameModal(props: any) {
         })
         .catch((err: any) => {});
     }
-  }, [gameIn, gameId, session, game]);
+  }, [gameIn, gameId, session?.data?.token, game]);
 
-  useEffect(() => {
-    frontendFetch("GET", "/user/" + session?.data?.user?.email, null, session)
-      .then((res: any) => res.json())
-      .then((data: any) => {
-        setUser(data);
-        setLoadingUser(false);
-      })
-      .catch((err: any) => {});
-  }, [session]);
+  const user = useSWR(session?.data?.user?.email ?
+    ["GET", "/user/" + session?.data?.user?.email, null, session?.data?.token] : null,
+    ([method, url, body, session]) =>
+      frontendFetch(method, url, body, session).then((res) => res.json())
+  );
+
+  const userOrgPerm = useSWR(user?.data?.id ?
+    ["GET", "/userOrgPerm/" + user.data?.id, null, session?.data?.token] : null,
+    ([method, url, body, session]) =>
+      frontendFetch(method, url, body, session).then((res) => res.json())
+  );
+
+  const userConPerm = useSWR(user?.data?.id ?
+    ["GET", "/userConPerm/" + user.data?.id, null, session?.data?.token] : null,
+    ([method, url, body, session]) =>
+      frontendFetch(method, url, body, session).then((res) => res.json())
+  );
 
   useEffect(() => {
     if (user) {
-      frontendFetch("GET", "/userOrgPerm/" + user.id, null, session)
-        .then((res: any) => res.json())
-        .then((data: any) => {
-          if (
-            data.filter(
-              (d: { organizationId: any; admin: boolean }) =>
-                d.organizationId === game.organizationId && d.admin === true
-            ).length > 0
-          ) {
-            setReadOnly(false);
-          } else {
-            setReadOnly(true);
-          }
+      if (
+        userOrgPerm.data?.filter(
+          (d: { organizationId: any; admin: boolean }) =>
+            d.organizationId === game?.organizationId && d.admin === true
+        ).length > 0
+      ) {
+        setReadOnly(false);
+      }
 
-          setLoading(false);
-        })
-        .catch((err: any) => {});
+      setLoading(false);
     }
-  }, [user, session, game]);
+  }, [user, userConPerm, userOrgPerm, game]);
 
   if (isLoading) return <div>Loading...</div>;
   if (!game) return <div>No game data</div>;

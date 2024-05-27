@@ -18,6 +18,7 @@ import {
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { useAsyncList } from "@react-stately/data";
+import useSWR from "swr";
 
 type game = {
   id: number;
@@ -37,10 +38,9 @@ export default function CopyModal(props: any) {
   const [copyComments, setCopyComments]: any = useState(null);
   const [gameId, setGameId]: any = useState(null);
   const [readOnly, setReadOnly]: any = useState(true);
-  const [user, setUser]: any = useState(null);
   const [isLoadingUser, setLoadingUser]: any = useState(true);
 
-  const session = useSession();
+  const session: any = useSession();
 
   const { isOpen, onOpen, onClose } = disclosure;
 
@@ -56,7 +56,7 @@ export default function CopyModal(props: any) {
         comments: copyComments,
         gameId: Number(gameId),
       },
-      session
+      session?.data?.token
     )
       .then((res: any) => res.json())
       .then((data: any) => {
@@ -76,7 +76,7 @@ export default function CopyModal(props: any) {
           "GET",
           `/org/${copy.organizationId}/games/search/${filterText}`,
           null,
-          session,
+          session?.data?.token,
           signal
         );
         let json = await res.json();
@@ -105,7 +105,7 @@ export default function CopyModal(props: any) {
 
       setLoading(false);
     } else {
-      frontendFetch("GET", "/copy/" + copyId, null, session)
+      frontendFetch("GET", "/copy/" + copyId, null, session?.data?.token)
         .then((res: any) => res.json())
         .then((data: any) => {
           setData(data);
@@ -123,59 +123,55 @@ export default function CopyModal(props: any) {
     }
     // gameList is not a dependency, ignoring this error makes a warning go away
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [copyIn, copy, copyId, session]);
+  }, [copyIn, copy, copyId, session?.data?.token]);
+
+  const user = useSWR(session?.data?.user?.email ?
+    ["GET", "/user/" + session?.data?.user?.email, null, session?.data?.token] : null,
+    ([method, url, body, session]) =>
+      frontendFetch(method, url, body, session).then((res) => res.json())
+  );
+
+  const userOrgPerm = useSWR(user?.data?.id ?
+    ["GET", "/userOrgPerm/" + user.data?.id, null, session?.data?.token] : null,
+    ([method, url, body, session]) =>
+      frontendFetch(method, url, body, session).then((res) => res.json())
+  );
+
+  const userConPerm = useSWR(user?.data?.id ?
+    ["GET", "/userConPerm/" + user.data?.id, null, session?.data?.token] : null,
+    ([method, url, body, session]) =>
+      frontendFetch(method, url, body, session).then((res) => res.json())
+  );
 
   useEffect(() => {
-    frontendFetch("GET", "/user/" + session?.data?.user?.email, null, session)
-      .then((res: any) => res.json())
-      .then((data: any) => {
-        setUser(data);
-        setLoadingUser(false);
-      })
-      .catch((err: any) => {});
-  }, [session]);
+    if (user && copy) {
+      if (
+        userOrgPerm.data?.filter(
+          (d: { organizationId: any; admin: boolean }) =>
+            d.organizationId === copy.organizationId && d.admin === true
+        ).length > 0
+      ) {
+        setReadOnly(false);
+      } else {
+        if (
+          userConPerm.data?.filter(
+            (d: { conventionId: any; admin: boolean }) =>
+              copy.collection.conventions.filter(
+                (c: { conventionId: any }) => d.conventionId === c.conventionId
+              ) && d.admin === true
+          ).length > 0
+        ) {
+          setReadOnly(false);
+        } else {
+          setReadOnly(true);
+        }
 
-  useEffect(() => {
-    if (user) {
-      frontendFetch("GET", "/userOrgPerm/" + user.id, null, session)
-        .then((res: any) => res.json())
-        .then((data: any) => {
-          if (
-            data.filter(
-              (d: { organizationId: any; admin: boolean }) =>
-                d.organizationId === copy.organizationId &&
-                d.admin === true
-            ).length > 0
-          ) {
-            setReadOnly(false);
-          } else {
-            frontendFetch("GET", "/userConPerm/" + user.id, null, session)
-              .then((res: any) => res.json())
-              .then((data: any) => {
-                if (
-                  data.filter(
-                    (d: { conventionId: any; admin: boolean }) =>
-                      copy.collection.conventions.filter(
-                        (c: { conventionId: any }) =>
-                          d.conventionId === c.conventionId
-                      ) && d.admin === true
-                  ).length > 0
-                ) {
-                  setReadOnly(false);
-                } else {
-                  setReadOnly(true);
-                }
+        setLoading(false);
+      }
 
-                setLoading(false);
-              })
-              .catch((err: any) => {});
-          }
-
-          setLoading(false);
-        })
-        .catch((err: any) => {});
+      setLoading(false);
     }
-  }, [user, session, copy]);
+  }, [user, userConPerm, userOrgPerm, copy]);
 
   useEffect(() => {
     if (copy) {
@@ -183,7 +179,7 @@ export default function CopyModal(props: any) {
         "GET",
         "/org/" + copy.organizationId + "/collections",
         null,
-        session
+        session?.data?.token
       )
         .then((res: any) => res.json())
         .then((data: any) => {

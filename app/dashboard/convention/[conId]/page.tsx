@@ -7,19 +7,19 @@ export default function ConView({ params }: { params: { conId: string } }) {
   const [convention, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
 
-  const session = useSession();
+  const session: any = useSession();
 
   useEffect(() => {}, [session]);
 
   useEffect(() => {
-    frontendFetch("GET", "/con/" + params.conId, null, session)
+    frontendFetch("GET", "/con/" + params.conId, null, session?.data?.token)
       .then((res: any) => res.json())
       .then((data: any) => {
         setData(data);
         setLoading(false);
       })
       .catch((err: any) => {});
-  }, [params.conId, session]);
+  }, [params.conId, session?.data?.token]);
 
   if (isLoading) return <p>Loading...</p>;
   if (!convention) return <p>No convention data</p>;

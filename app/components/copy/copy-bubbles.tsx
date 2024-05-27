@@ -12,7 +12,7 @@ export default function CopyBubbles(props: any) {
   const [isLoading, setLoading]: any = useState(true);
 
   const onCloseModal = () => {
-    frontendFetch("GET", "/game/" + game.id, null, session)
+    frontendFetch("GET", "/game/" + game.id, null, session?.data?.token)
       .then((res: any) => res.json())
       .then((data: any) => {
         setData(data.copies);
@@ -21,7 +21,7 @@ export default function CopyBubbles(props: any) {
       .catch((err: any) => {});
   };
 
-  const session = useSession();
+  const session: any = useSession();
 
   useEffect(() => {}, [session]);
 
@@ -30,7 +30,7 @@ export default function CopyBubbles(props: any) {
       setData(game.copies);
       setLoading(false);
     } else {
-      frontendFetch("GET", "/game/" + game.id, null, session)
+      frontendFetch("GET", "/game/" + game.id, null, session?.data?.token)
         .then((res: any) => res.json())
         .then((data: any) => {
           setData(data.copies);
@@ -38,7 +38,7 @@ export default function CopyBubbles(props: any) {
         })
         .catch((err: any) => {});
     }
-  }, [game, session]);
+  }, [game, session?.data?.token]);
 
   if (isLoading) return <div></div>;
   if (!copies) return <div></div>;

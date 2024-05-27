@@ -8,19 +8,19 @@ export default function OrgView({ params }: { params: { orgId: string } }) {
   const [organization, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
 
-  const session = useSession();
+  const session: any = useSession();
 
   useEffect(() => {}, [session]);
 
   useEffect(() => {
-    frontendFetch("GET", "/org/" + params.orgId, null, session)
+    frontendFetch("GET", "/org/" + params.orgId, null, session?.data?.token)
       .then((res: any) => res.json())
       .then((data: any) => {
         setData(data);
         setLoading(false);
       })
       .catch((err: any) => {});
-  }, [params.orgId, session]);
+  }, [params.orgId, session?.data?.token]);
 
   if (isLoading) return <p>Loading...</p>;
   if (!organization) return <p>No organization data</p>;

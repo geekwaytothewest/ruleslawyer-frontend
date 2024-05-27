@@ -6,6 +6,7 @@ import { Skeleton } from "@nextui-org/react";
 import { BiSolidMessageAltError } from "react-icons/bi";
 import { IoLibrary } from "react-icons/io5";
 import { GrDetach } from "react-icons/gr";
+import useSWR from "swr";
 
 export default function CollectionCard(props: any) {
   let { collectionIn, conventionId, onDeleted } = props;
@@ -13,10 +14,9 @@ export default function CollectionCard(props: any) {
   const [collection, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
   const [readOnly, setReadOnly]: any = useState(true);
-  const [user, setUser]: any = useState(null);
   const [isLoadingUser, setLoadingUser]: any = useState(true);
 
-  const session = useSession();
+  const session: any = useSession();
 
   useEffect(() => {}, [session]);
 
@@ -25,7 +25,7 @@ export default function CollectionCard(props: any) {
       setData(collectionIn);
       setLoading(false);
     } else {
-      frontendFetch("GET", "/collection/" + collectionIn.id, null, session)
+      frontendFetch("GET", "/collection/" + collectionIn.id, null, session?.data?.token)
         .then((res: any) => res.json())
         .then((data: any) => {
           setData(data);
@@ -35,57 +35,53 @@ export default function CollectionCard(props: any) {
     }
   }, [collectionIn, session]);
 
-  useEffect(() => {
-    frontendFetch("GET", "/user/" + session?.data?.user?.email, null, session)
-      .then((res: any) => res.json())
-      .then((data: any) => {
-        setUser(data);
-        setLoadingUser(false);
-      })
-      .catch((err: any) => {});
-  }, [session]);
+  const user = useSWR(session?.data?.user?.email ?
+    ["GET", "/user/" + session?.data?.user?.email, null, session?.data?.token] : null,
+    ([method, url, body, session]) =>
+      frontendFetch(method, url, body, session).then((res) => res.json())
+  );
+
+  const userOrgPerm = useSWR(user?.data?.id ?
+    ["GET", "/userOrgPerm/" + user.data?.id, null, session?.data?.token] : null,
+    ([method, url, body, session]) =>
+      frontendFetch(method, url, body, session).then((res) => res.json())
+  );
+
+  const userConPerm = useSWR(user?.data?.id ?
+    ["GET", "/userConPerm/" + user.data?.id, null, session?.data?.token] : null,
+    ([method, url, body, session]) =>
+      frontendFetch(method, url, body, session).then((res) => res.json())
+  );
 
   useEffect(() => {
-    if (user) {
-      frontendFetch("GET", "/userOrgPerm/" + user.id, null, session)
-        .then((res: any) => res.json())
-        .then((data: any) => {
-          if (
-            data.filter(
-              (d: { organizationId: any; admin: boolean }) =>
-                d.organizationId === collection.organizationId &&
-                d.admin === true
-            ).length > 0
-          ) {
-            setReadOnly(false);
-          } else {
-            frontendFetch("GET", "/userConPerm/" + user.id, null, session)
-              .then((res2: any) => res2.json())
-              .then((data2: any) => {
-                if (
-                  data2.filter(
-                    (d: { conventionId: any; admin: boolean }) =>
-                      collection.conventions.filter(
-                        (c: { conventionId: any }) =>
-                          d.conventionId === c.conventionId
-                      ) && d.admin === true
-                  ).length > 0
-                ) {
-                  setReadOnly(false);
-                } else {
-                  setReadOnly(true);
-                }
+    if (user && collection) {
+      if (
+        userOrgPerm.data?.filter(
+          (d: { organizationId: any; admin: boolean }) =>
+            d.organizationId === collection.organizationId && d.admin === true
+        ).length > 0
+      ) {
+        setReadOnly(false);
+      } else {
+        if (
+          userConPerm.data?.filter(
+            (d: { conventionId: any; admin: boolean }) =>
+              collection.conventions.filter(
+                (c: { conventionId: any }) => d.conventionId === c.conventionId
+              ) && d.admin === true
+          ).length > 0
+        ) {
+          setReadOnly(false);
+        } else {
+          setReadOnly(true);
+        }
 
-                setLoading(false);
-              })
-              .catch((err: any) => {});
-          }
+        setLoading(false);
+      }
 
-          setLoading(false);
-        })
-        .catch((err: any) => {});
+      setLoading(false);
     }
-  }, [user, session, collection]);
+  }, [user, userConPerm, userOrgPerm, collection]);
 
   const detachCollection = (
     event: React.MouseEvent<SVGElement, MouseEvent>,
@@ -96,7 +92,7 @@ export default function CollectionCard(props: any) {
         "DELETE",
         "/con/" + conventionId + "/conventionCollection/" + collectionId,
         {},
-        session
+        session?.data?.token
       )
         .then((res: any) => res.json())
         .then((data: any) => {
@@ -106,7 +102,7 @@ export default function CollectionCard(props: any) {
     }
   };
 
-  if (isLoading) {
+  if (isLoading ) {
     return (
       <div className="flex items-center border-2 w-80 h-32 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] border-slate-800">
         <div className="flex-col p-3 w-24">

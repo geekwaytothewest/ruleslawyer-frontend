@@ -15,7 +15,7 @@ export default function OrganizationLayout({
   const [convention, setConvention]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
 
-  const session = useSession();
+  const session: any = useSession();
   const pathname = usePathname();
   const params = useParams();
 
@@ -23,7 +23,7 @@ export default function OrganizationLayout({
 
   useEffect(() => {
     if (params) {
-      frontendFetch("GET", "/org/" + params.orgId, null, session)
+      frontendFetch("GET", "/org/" + params.orgId, null, session?.data?.token)
         .then((res: any) => res.json())
         .then((data: any) => {
           setData(data);
@@ -31,7 +31,7 @@ export default function OrganizationLayout({
         })
         .catch((err: any) => {});
     }
-  }, [params, session]);
+  }, [params, session?.data?.token]);
 
   useEffect(() => {
     if (params.colId) {
@@ -39,7 +39,7 @@ export default function OrganizationLayout({
         "GET",
         "/collection/" + params.colId,
         null,
-        session
+        session?.data?.token
       )
         .then((res: any) => res.json())
         .then((data: any) => {
@@ -48,7 +48,7 @@ export default function OrganizationLayout({
         })
         .catch((err: any) => {});
     }
-  }, [params, session]);
+  }, [params, session?.data?.token]);
 
   useEffect(() => {
     if (params.conId) {
@@ -56,7 +56,7 @@ export default function OrganizationLayout({
         "GET",
         "/con/" + params.conId,
         null,
-        session
+        session?.data?.token
       )
         .then((res: any) => res.json())
         .then((data: any) => {
@@ -65,7 +65,7 @@ export default function OrganizationLayout({
         })
         .catch((err: any) => {});
     }
-  }, [params, session]);
+  }, [params, session?.data?.token]);
 
   if (isLoading) return <p>Loading...</p>;
   if (!organization) return <p>No organization data</p>;

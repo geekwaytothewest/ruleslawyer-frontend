@@ -15,10 +15,10 @@ export default function GameCard(props: any) {
   const [game, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
 
-  const session = useSession();
+  const session: any = useSession();
 
   const onModalClose = () => {
-    frontendFetch("GET", "/game/" + gameId, null, session)
+    frontendFetch("GET", "/game/" + gameId, null, session?.data?.token)
       .then((res: any) => res.json())
       .then((data: any) => {
         setData(data);
@@ -39,7 +39,7 @@ export default function GameCard(props: any) {
       setData(gameIn);
       setLoading(false);
     } else {
-      frontendFetch("GET", "/game/" + gameId, null, session)
+      frontendFetch("GET", "/game/" + gameId, null, session?.data?.token)
         .then((res: any) => res.json())
         .then((data: any) => {
           setData(data);

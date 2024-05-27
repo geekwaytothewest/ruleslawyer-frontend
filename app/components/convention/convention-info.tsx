@@ -16,6 +16,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { GrAttachment } from "react-icons/gr";
+import useSWR from "swr";
 
 export default function ConventionInfo(props: any) {
   let { id } = props;
@@ -26,72 +27,68 @@ export default function ConventionInfo(props: any) {
   const [collections, setCollections]: any = useState(null);
   const [filteredCollections, setFilteredCollections]: any = useState(null);
   const [readOnly, setReadOnly]: any = useState(true);
-  const [user, setUser]: any = useState(null);
   const [isLoadingUser, setLoadingUser]: any = useState(true);
 
-  const session = useSession();
+  const session: any = useSession();
 
   useEffect(() => {}, [session]);
 
   useEffect(() => {
-    frontendFetch("GET", "/con/" + id, null, session)
+    frontendFetch("GET", "/con/" + id, null, session?.data?.token)
       .then((res: any) => res.json())
       .then((data: any) => {
         setData(data);
         setLoading(false);
       })
       .catch((err: any) => {});
-  }, [id, session]);
+  }, [id, session?.data?.token]);
+
+  const user = useSWR(session?.data?.user?.email ?
+    ["GET", "/user/" + session?.data?.user?.email, null, session?.data?.token] : null,
+    ([method, url, body, session]) =>
+      frontendFetch(method, url, body, session).then((res) => res.json())
+  );
+
+  const userOrgPerm = useSWR(user?.data?.id ?
+    ["GET", "/userOrgPerm/" + user.data?.id, null, session?.data?.token] : null,
+    ([method, url, body, session]) =>
+      frontendFetch(method, url, body, session).then((res) => res.json())
+  );
+
+  const userConPerm = useSWR(user?.data?.id ?
+    ["GET", "/userConPerm/" + user.data?.id, null, session?.data?.token] : null,
+    ([method, url, body, session]) =>
+      frontendFetch(method, url, body, session).then((res) => res.json())
+  );
 
   useEffect(() => {
-    frontendFetch("GET", "/user/" + session?.data?.user?.email, null, session)
-      .then((res: any) => res.json())
-      .then((data: any) => {
-        setUser(data);
-        setLoadingUser(false);
-      })
-      .catch((err: any) => {});
-  }, [session]);
+    if (user && convention) {
+      if (
+        userOrgPerm.data?.filter(
+          (d: { organizationId: any; admin: boolean }) =>
+            d.organizationId === convention.organizationId && d.admin === true
+        ).length > 0
+      ) {
+        setReadOnly(false);
+      } else {
+        if (
+          userConPerm.data?.filter(
+            (d: { conventionId: any; admin: boolean }) =>
+              d.conventionId === convention.conventionId &&
+              d.admin === true
+          ).length > 0
+        ) {
+          setReadOnly(false);
+        } else {
+          setReadOnly(true);
+        }
 
-  useEffect(() => {
-    if (user) {
-      frontendFetch("GET", "/userOrgPerm/" + user.id, null, session)
-        .then((res: any) => res.json())
-        .then((data: any) => {
-          if (
-            data.filter(
-              (d: { organizationId: any; admin: boolean }) =>
-                d.organizationId === convention.organizationId &&
-                d.admin === true
-            ).length > 0
-          ) {
-            setReadOnly(false);
-          } else {
-            frontendFetch("GET", "/userConPerm/" + user.id, null, session)
-              .then((res: any) => res.json())
-              .then((data: any) => {
-                if (
-                  data.filter(
-                    (d: { conventionId: any; admin: boolean }) =>
-                      d.conventionId === convention.conventionId &&
-                      d.admin === true
-                  ).length > 0
-                ) {
-                  setReadOnly(false);
-                } else {
-                  setReadOnly(true);
-                }
+        setLoading(false);
+      }
 
-                setLoading(false);
-              })
-              .catch((err: any) => {});
-          }
-
-          setLoading(false);
-        })
-        .catch((err: any) => {});
+      setLoading(false);
     }
-  }, [user, session, convention]);
+  }, [user, userConPerm, userOrgPerm, convention]);
 
   useEffect(() => {
     if (convention && !readOnly) {
@@ -99,7 +96,7 @@ export default function ConventionInfo(props: any) {
         "GET",
         "/org/" + convention.organizationId + "/collections",
         null,
-        session
+        session?.data?.token
       )
         .then((res: any) => res.json())
         .then((data: any) => {
@@ -107,7 +104,7 @@ export default function ConventionInfo(props: any) {
         })
         .catch((err: any) => {});
     }
-  }, [convention, session, readOnly]);
+  }, [convention, session?.data?.token, readOnly]);
 
   useEffect(() => {
     if (collections) {
@@ -123,7 +120,7 @@ export default function ConventionInfo(props: any) {
   }, [collections, convention]);
 
   const onModalClose = () => {
-    frontendFetch("GET", "/con/" + id, null, session)
+    frontendFetch("GET", "/con/" + id, null, session?.data?.token)
       .then((res: any) => res.json())
       .then((data: any) => {
         setData(data);
@@ -137,7 +134,7 @@ export default function ConventionInfo(props: any) {
       "POST",
       "/con/" + id + "/conventionCollection/" + collectionIdToAttach,
       {},
-      session
+      session?.data?.token
     )
       .then((res: any) => res.json())
       .then((data: any) => {
@@ -151,7 +148,7 @@ export default function ConventionInfo(props: any) {
   });
   const { isOpen, onOpen, onClose } = disclosure;
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading || user.isLoading || userOrgPerm.isLoading || userConPerm.isLoading) return <div>Loading...</div>;
 
   return (
     <div>

@@ -7,55 +7,37 @@ import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { SignOut } from "./auth/signout-client";
 import { CircularProgress } from "@nextui-org/react";
+import useSWR from "swr";
 
 export default function SideBar() {
-  const [user, setUser]: any = useState(null);
-  const [orgs, setOrgs]: any = useState(null);
-  const [cons, setCons]: any = useState(null);
   const [isLoadingOrgCount, setLoadingOrgCount]: any = useState(true);
   const [isLoadingConCount, setLoadingConCount]: any = useState(true);
   const [isLoadingUser, setLoadingUser]: any = useState(true);
 
   const pathname = usePathname();
-  const session = useSession();
+  const session: any = useSession();
 
   useEffect(() => {}, [session]);
 
-  useEffect(() => {
-    frontendFetch("GET", "/user/" + session?.data?.user?.email, null, session)
-      .then((res: any) => res.json())
-      .then((data: any) => {
-        setUser(data);
-        setLoadingUser(false);
-      })
-      .catch((err: any) => {});
-  }, [session]);
+  const user = useSWR(session?.data?.user?.email ?
+    ["GET", "/user/" + session?.data?.user?.email, null, session?.data?.token] : null,
+    ([method, url, body, session]) =>
+      frontendFetch(method, url, body, session).then((res) => res.json())
+  );
 
-  useEffect(() => {
-    if (user) {
-      frontendFetch("GET", "/userOrgPerm/" + user.id, null, session)
-        .then((res: any) => res.json())
-        .then((data: any) => {
-          setOrgs(data);
-          setLoadingOrgCount(false);
-        })
-        .catch((err: any) => {});
-    }
-  }, [user, session]);
+  const orgs = useSWR(user?.data?.id ?
+    ["GET", "/userOrgPerm/" + user.data?.id, null, session?.data?.token] : null,
+    ([method, url, body, session]) =>
+      frontendFetch(method, url, body, session).then((res) => res.json())
+  );
 
-  useEffect(() => {
-    if (user) {
-      frontendFetch("GET", "/userConPerm/" + user.id, null, session)
-        .then((res: any) => res.json())
-        .then((data: any) => {
-          setCons(data);
-          setLoadingConCount(false);
-        })
-        .catch((err: any) => {});
-    }
-  }, [user, session]);
+  const cons = useSWR(user?.data?.id ?
+    ["GET", "/userConPerm/" + user.data?.id, null, session?.data?.token] : null,
+    ([method, url, body, session]) =>
+      frontendFetch(method, url, body, session).then((res) => res.json())
+  );
 
-  if (isLoadingOrgCount | isLoadingConCount | isLoadingUser) {
+  if (user.isLoading || cons.isLoading || orgs.isLoading) {
     return (
       <div className="min-w-48 mr-10">
         <div className="text-center bg-gwdarkgreen h-full">
@@ -70,8 +52,8 @@ export default function SideBar() {
   return (
     <div className="min-w-48 mr-10">
       <div>
-        {orgs.length === 1 && !user?.superAdmin && (
-          <Link href={`/dashboard/organization/${orgs[0].organizationId}`}>
+        {orgs.data?.length === 1 && !user?.data?.superAdmin && (
+          <Link href={`/dashboard/organization/${orgs.data[0].organizationId}`}>
             <div
               className={clsx(
                 "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
@@ -87,11 +69,11 @@ export default function SideBar() {
                 }
               )}
             >
-              <h1>{orgs[0].organization.name}</h1>
+              <h1>{orgs.data[0].organization.name}</h1>
             </div>
           </Link>
         )}
-        {(orgs.length > 1 || user?.superAdmin) && (
+        {(orgs.data?.length > 1 || user?.data?.superAdmin) && (
           <Link href="/dashboard/organizations">
             <div
               className={clsx(
@@ -112,8 +94,8 @@ export default function SideBar() {
             </div>
           </Link>
         )}
-        {cons.length == 1 && !user?.superAdmin && (
-          <Link href={`/dashboard/convention/${cons[0].convention.id}`}>
+        {cons.data?.length == 1 && !user?.data?.superAdmin && (
+          <Link href={`/dashboard/convention/${cons.data[0].convention.id}`}>
             <div
               className={clsx(
                 "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
@@ -129,23 +111,23 @@ export default function SideBar() {
                 }
               )}
             >
-              <h1>{cons[0].convention.name}</h1>
+              <h1>{cons.data[0].convention.name}</h1>
             </div>
           </Link>
         )}
-        {((cons.length > 1 && orgs.length == 1) || user?.superAdmin) && (
-          <Link href={`/dashboard/organization/${orgs[0].organizationId}/conventions`}>
+        {((cons.data?.length > 1 && orgs.data?.length == 1) || user?.data?.superAdmin) && (
+          <Link href={`/dashboard/organization/${orgs.data[0].organizationId}/conventions`}>
             <div
               className={clsx(
                 "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
                 {
                   "bg-transparent": pathname.startsWith(
-                    `/dashboard/organization/${orgs[0].organizationId}/conventions`
+                    `/dashboard/organization/${orgs.data[0].organizationId}/conventions`
                   ),
                 },
                 {
                   "bg-gwgreen border-right-2": !pathname.startsWith(
-                    `/dashboard/organization/${orgs[0].organizationId}/conventions`
+                    `/dashboard/organization/${orgs.data[0].organizationId}/conventions`
                   ),
                 }
               )}
@@ -154,7 +136,7 @@ export default function SideBar() {
             </div>
           </Link>
         )}
-        {(cons.length > 1 && orgs.length !== 1) && (
+        {(cons.data?.length > 1 && orgs.data?.length !== 1) && (
           <Link href={`/dashboard/conventions`}>
             <div
               className={clsx(
@@ -175,18 +157,18 @@ export default function SideBar() {
             </div>
           </Link>
         )}
-        {orgs.length === 1 && !user?.superAdmin && (
-          <Link href={`/dashboard/organization/${orgs[0].organizationId}/games`}>
+        {orgs.data?.length === 1 && !user?.data?.superAdmin && (
+          <Link href={`/dashboard/organization/${orgs.data[0].organizationId}/games`}>
             <div
               className={clsx(
                 "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
                 {
                   "bg-transparent border-right-0":
-                    pathname.startsWith(`/dashboard/organization/${orgs[0].organizationId}/games`),
+                    pathname.startsWith(`/dashboard/organization/${orgs.data[0].organizationId}/games`),
                 },
                 {
                   "bg-gwgreen border-right-2":
-                    !pathname.startsWith(`/dashboard/organization/${orgs[0].organizationId}/games`),
+                    !pathname.startsWith(`/dashboard/organization/${orgs.data[0].organizationId}/games`),
                 }
               )}
             >
@@ -194,18 +176,18 @@ export default function SideBar() {
             </div>
           </Link>
         )}
-        {orgs.length === 1 && !user?.superAdmin && (
-          <Link href={`/dashboard/organization/${orgs[0].organizationId}/collections`}>
+        {orgs.data?.length === 1 && !user?.data?.superAdmin && (
+          <Link href={`/dashboard/organization/${orgs.data[0].organizationId}/collections`}>
             <div
               className={clsx(
                 "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
                 {
                   "bg-transparent border-right-0":
-                    pathname.startsWith(`/dashboard/organization/${orgs[0].organizationId}/collections`),
+                    pathname.startsWith(`/dashboard/organization/${orgs.data[0].organizationId}/collections`),
                 },
                 {
                   "bg-gwgreen border-right-2":
-                    !pathname.startsWith(`/dashboard/organization/${orgs[0].organizationId}/collections`),
+                    !pathname.startsWith(`/dashboard/organization/${orgs.data[0].organizationId}/collections`),
                 }
               )}
             >

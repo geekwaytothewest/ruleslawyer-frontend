@@ -20,7 +20,7 @@ export default function GameGrid(props: any) {
   const [isLoading, setLoading]: any = useState(true);
   const [maxResults, setMaxResults] = React.useState<Selection>(new Set([50]));
 
-  const session = useSession();
+  const session: any = useSession();
 
   useEffect(() => {}, [session]);
 
@@ -29,7 +29,7 @@ export default function GameGrid(props: any) {
       setData(gamesIn);
       setLoading(false);
     } else {
-      frontendFetch("GET", "/game/withCopies", null, session)
+      frontendFetch("GET", "/game/withCopies", null, session?.data?.token)
         .then((res: any) => res.json())
         .then((data: any) => {
           setData(data);
@@ -37,7 +37,7 @@ export default function GameGrid(props: any) {
         })
         .catch((err: any) => {});
     }
-  }, [session, gamesIn]);
+  }, [session?.data?.token, gamesIn]);
 
   if (isLoading) {
     return (

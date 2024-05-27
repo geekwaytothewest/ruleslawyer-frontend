@@ -13,19 +13,19 @@ export default function OrgCollectionView({
   const [collection, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
 
-  const session = useSession();
+  const session: any = useSession();
 
   useEffect(() => {}, [session]);
 
   useEffect(() => {
-    frontendFetch("GET", "/collection/" + params.colId, null, session)
+    frontendFetch("GET", "/collection/" + params.colId, null, session?.data?.token)
       .then((res: any) => res.json())
       .then((data: any) => {
         setData(data);
         setLoading(false);
       })
       .catch((err: any) => {});
-  }, [params.colId, session]);
+  }, [params.colId, session?.data?.token]);
 
   if (isLoading) return <p>Loading...</p>;
   if (!collection) return <p>No collection data</p>;
