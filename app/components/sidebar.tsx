@@ -100,12 +100,12 @@ export default function SideBar() {
                 "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
                 {
                   "bg-transparent": pathname.startsWith(
-                    "/dashboard/organizations"
+                    "/dashboard/organization"
                   ),
                 },
                 {
                   "bg-gwgreen border-right-2": !pathname.startsWith(
-                    "/dashboard/organizations"
+                    "/dashboard/organization"
                   ),
                 }
               )}
