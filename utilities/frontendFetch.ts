@@ -15,5 +15,6 @@ export default function frontendFetch(
     },
     body: body ? JSON.stringify(body) : null,
     signal: signal,
+    cache: 'force-cache'
   });
 }
