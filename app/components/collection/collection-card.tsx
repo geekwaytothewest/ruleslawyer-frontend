@@ -33,7 +33,7 @@ export default function CollectionCard(props: any) {
         })
         .catch((err: any) => {});
     }
-  }, [collectionIn, session]);
+  }, [collectionIn, session?.data?.token]);
 
   const user = useSWR(session?.data?.user?.email ?
     ["GET", "/user/" + session?.data?.user?.email, null, session?.data?.token] : null,
@@ -66,7 +66,7 @@ export default function CollectionCard(props: any) {
         if (
           userConPerm.data?.filter(
             (d: { conventionId: any; admin: boolean }) =>
-              collection.conventions.filter(
+              collection.conventions?.filter(
                 (c: { conventionId: any }) => d.conventionId === c.conventionId
               ) && d.admin === true
           ).length > 0
