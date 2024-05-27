@@ -154,7 +154,7 @@ export default function SideBar() {
             </div>
           </Link>
         )}
-        {((cons.length > 1 && orgs.length !== 1) || user?.superAdmin) && (
+        {(cons.length > 1 && orgs.length !== 1) && (
           <Link href={`/dashboard/conventions`}>
             <div
               className={clsx(
