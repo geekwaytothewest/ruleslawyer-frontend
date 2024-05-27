@@ -211,7 +211,7 @@ export default function CopyModal(props: any) {
                 label="Current collection"
                 placeholder="Select a collection"
                 defaultSelectedKeys={[copy.collectionId]}
-                disabled={readOnly}
+                isDisabled={readOnly}
                 onChange={(event) => {
                   setCopyCollectionId(Number(event.target.value));
                 }}
@@ -230,7 +230,7 @@ export default function CopyModal(props: any) {
                 isLoading={gameList.isLoading}
                 items={gameList.items}
                 onInputChange={gameList.setFilterText}
-                disabled={readOnly}
+                isDisabled={readOnly}
                 onSelectionChange={(key: React.Key | null) =>
                   setGameId(key?.valueOf())
                 }
@@ -246,7 +246,7 @@ export default function CopyModal(props: any) {
                 label="Barcode Label"
                 value={copyBarcodeLabel}
                 onValueChange={(value) => setCopyBarcodeLabel(value)}
-                disabled={readOnly}
+                isDisabled={readOnly}
               />
               <Input
                 name="barcode"
@@ -255,7 +255,7 @@ export default function CopyModal(props: any) {
                 label="Barcode"
                 value={copyBarcode}
                 onValueChange={(value) => setCopyBarcode(value)}
-                disabled={readOnly}
+                isDisabled={readOnly}
               />
               <Textarea
                 name="comments"
@@ -263,14 +263,14 @@ export default function CopyModal(props: any) {
                 placeholder="Enter your comments"
                 value={copyComments ?? ""}
                 onValueChange={(value) => setCopyComments(value)}
-                disabled={readOnly}
+                isDisabled={readOnly}
               />
               {copy.collection?.allowWinning && (
                 <Checkbox
                   name="allowWinning"
                   defaultSelected={copy.winnable}
                   onValueChange={(isSelected) => setCopyWinnable(isSelected)}
-                  disabled={readOnly}
+                  isDisabled={readOnly}
                 >
                   Winnable
                 </Checkbox>

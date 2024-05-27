@@ -111,7 +111,7 @@ export default function GameModal(props: any) {
                   label="Game Name"
                   value={gameName}
                   onValueChange={(value) => setGameName(value)}
-                  disabled={readOnly}
+                  isDisabled={readOnly}
                 />
               ) : (
                 ""
