@@ -135,19 +135,19 @@ export default function SideBar() {
             </div>
           </Link>
         )}
-        {(cons.length > 1 || user?.superAdmin) && (
-          <Link href="/dashboard/conventions">
+        {((cons.length > 1 && orgs.length == 1) || user?.superAdmin) && (
+          <Link href={`/dashboard/organization/${orgs[0].organizationId}/conventions`}>
             <div
               className={clsx(
                 "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
                 {
                   "bg-transparent": pathname.startsWith(
-                    "/dashboard/convention"
+                    `/dashboard/organization/${orgs[0].organizationId}/conventions`
                   ),
                 },
                 {
                   "bg-gwgreen border-right-2": !pathname.startsWith(
-                    "/dashboard/convention"
+                    `/dashboard/organization/${orgs[0].organizationId}/conventions`
                   ),
                 }
               )}
