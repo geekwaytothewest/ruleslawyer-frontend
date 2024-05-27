@@ -126,6 +126,16 @@ export default function CopyModal(props: any) {
   }, [copyIn, copy, copyId, session]);
 
   useEffect(() => {
+    frontendFetch("GET", "/user/" + session?.data?.user?.email, null, session)
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        setUser(data);
+        setLoadingUser(false);
+      })
+      .catch((err: any) => {});
+  }, [session]);
+
+  useEffect(() => {
     if (user) {
       frontendFetch("GET", "/userOrgPerm/" + user.id, null, session)
         .then((res: any) => res.json())

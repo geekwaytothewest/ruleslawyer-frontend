@@ -36,6 +36,16 @@ export default function CollectionCard(props: any) {
   }, [collectionIn, session]);
 
   useEffect(() => {
+    frontendFetch("GET", "/user/" + session?.data?.user?.email, null, session)
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        setUser(data);
+        setLoadingUser(false);
+      })
+      .catch((err: any) => {});
+  }, [session]);
+
+  useEffect(() => {
     if (user) {
       frontendFetch("GET", "/userOrgPerm/" + user.id, null, session)
         .then((res: any) => res.json())
@@ -50,10 +60,10 @@ export default function CollectionCard(props: any) {
             setReadOnly(false);
           } else {
             frontendFetch("GET", "/userConPerm/" + user.id, null, session)
-              .then((res: any) => res.json())
-              .then((data: any) => {
+              .then((res2: any) => res2.json())
+              .then((data2: any) => {
                 if (
-                  data.filter(
+                  data2.filter(
                     (d: { conventionId: any; admin: boolean }) =>
                       collection.conventions.filter(
                         (c: { conventionId: any }) =>
