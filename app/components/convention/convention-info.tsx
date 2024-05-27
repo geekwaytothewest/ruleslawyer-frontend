@@ -24,6 +24,9 @@ export default function ConventionInfo(props: any) {
   const [isLoading, setLoading]: any = useState(true);
   const [collectionIdToAttach, setCollectionIdToAttach]: any = useState(null);
   const [collections, setCollections]: any = useState(null);
+  const [readOnly, setReadOnly]: any = useState(true);
+  const [user, setUser]: any = useState(null);
+  const [isLoadingUser, setLoadingUser]: any = useState(true);
 
   const session = useSession();
 
@@ -40,7 +43,57 @@ export default function ConventionInfo(props: any) {
   }, [id, session]);
 
   useEffect(() => {
-    if (convention) {
+    frontendFetch("GET", "/user/" + session?.data?.user?.email, null, session)
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        setUser(data);
+        setLoadingUser(false);
+      })
+      .catch((err: any) => {});
+  }, [session]);
+
+  useEffect(() => {
+    if (user) {
+      frontendFetch("GET", "/userOrgPerm/" + user.id, null, session)
+        .then((res: any) => res.json())
+        .then((data: any) => {
+          if (
+            data.filter(
+              (d: { organizationId: any; admin: boolean }) =>
+                d.organizationId === convention.organizationId &&
+                d.admin === true
+            ).length > 0
+          ) {
+            setReadOnly(false);
+          } else {
+            frontendFetch("GET", "/userConPerm/" + user.id, null, session)
+              .then((res: any) => res.json())
+              .then((data: any) => {
+                if (
+                  data.filter(
+                    (d: { conventionId: any; admin: boolean }) =>
+                      d.conventionId === convention.conventionId &&
+                      d.admin === true
+                  ).length > 0
+                ) {
+                  setReadOnly(false);
+                } else {
+                  setReadOnly(true);
+                }
+
+                setLoading(false);
+              })
+              .catch((err: any) => {});
+          }
+
+          setLoading(false);
+        })
+        .catch((err: any) => {});
+    }
+  }, [user, session, convention]);
+
+  useEffect(() => {
+    if (convention && !readOnly) {
       frontendFetch(
         "GET",
         "/org/" + convention.organizationId + "/collections",
@@ -53,7 +106,7 @@ export default function ConventionInfo(props: any) {
         })
         .catch((err: any) => {});
     }
-  }, [convention, session]);
+  }, [convention, session, readOnly]);
 
   const onModalClose = () => {
     frontendFetch("GET", "/con/" + id, null, session)
@@ -92,43 +145,54 @@ export default function ConventionInfo(props: any) {
       <h2>{convention.theme}</h2>
       <h3 className="flex">
         Collections:{" "}
-        <GrAttachment className="ml-2 hover:cursor-pointer" onClick={onOpen} />{" "}
+        {readOnly ? (
+          ""
+        ) : (
+          <GrAttachment
+            className="ml-2 hover:cursor-pointer"
+            onClick={onOpen}
+          />
+        )}
       </h3>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalContent>
-          <ModalHeader>Attach Collection</ModalHeader>
-          <ModalBody>
-            <Select
-              name="collectionSelect"
-              items={collections?.filter(
-                (c: { id: any }) =>
-                  convention.collections.find(
-                    (c2: { id: any }) => c2.id == c.id
-                  ) == undefined
-              )}
-              label="Collection to Attach"
-              placeholder="Select a collection"
-              onChange={(event) => {
-                setCollectionIdToAttach(Number(event.target.value));
-              }}
-            >
-              {(collection: any) => (
-                <SelectItem key={collection.id} value={collection.name}>
-                  {collection.name}
-                </SelectItem>
-              )}
-            </Select>
-          </ModalBody>
-          <ModalFooter>
-            <Button color="success" onPress={onSave}>
-              Attach
-            </Button>
-            <Button color="primary" onPress={onClose}>
-              Cancel
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      {readOnly ? (
+        ""
+      ) : (
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalContent>
+            <ModalHeader>Attach Collection</ModalHeader>
+            <ModalBody>
+              <Select
+                name="collectionSelect"
+                items={collections?.filter(
+                  (c: { id: any }) =>
+                    convention.collections.find(
+                      (c2: { id: any }) => c2.id == c.id
+                    ) == undefined
+                )}
+                label="Collection to Attach"
+                placeholder="Select a collection"
+                onChange={(event) => {
+                  setCollectionIdToAttach(Number(event.target.value));
+                }}
+              >
+                {(collection: any) => (
+                  <SelectItem key={collection.id} value={collection.name}>
+                    {collection.name}
+                  </SelectItem>
+                )}
+              </Select>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="success" onPress={onSave}>
+                Attach
+              </Button>
+              <Button color="primary" onPress={onClose}>
+                Cancel
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      )}
       <div className="flex flex-wrap">
         {convention.collections.map(
           (c: {

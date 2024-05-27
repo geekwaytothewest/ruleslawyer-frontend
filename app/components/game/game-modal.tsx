@@ -20,7 +20,7 @@ export default function GameModal(props: any) {
   const [isLoading, setLoading]: any = useState(true);
   const [bubbles, setBubbles]: any = useState(null);
   const [gameName, setGameName]: any = useState(null);
-  const [readOnly, setReadOnly]: any = useState(null);
+  const [readOnly, setReadOnly]: any = useState(true);
   const [user, setUser]: any = useState(null);
   const [isLoadingUser, setLoadingUser]: any = useState(true);
 
@@ -80,9 +80,9 @@ export default function GameModal(props: any) {
                 d.organizationId === game.organizationId && d.admin === true
             ).length > 0
           ) {
-            setReadOnly(true);
-          } else {
             setReadOnly(false);
+          } else {
+            setReadOnly(true);
           }
 
           setLoading(false);
@@ -111,6 +111,7 @@ export default function GameModal(props: any) {
                   label="Game Name"
                   value={gameName}
                   onValueChange={(value) => setGameName(value)}
+                  disabled={readOnly}
                 />
               ) : (
                 ""

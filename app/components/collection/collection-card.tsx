@@ -12,6 +12,9 @@ export default function CollectionCard(props: any) {
 
   const [collection, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
+  const [readOnly, setReadOnly]: any = useState(true);
+  const [user, setUser]: any = useState(null);
+  const [isLoadingUser, setLoadingUser]: any = useState(true);
 
   const session = useSession();
 
@@ -31,6 +34,48 @@ export default function CollectionCard(props: any) {
         .catch((err: any) => {});
     }
   }, [collectionIn, session]);
+
+  useEffect(() => {
+    if (user) {
+      frontendFetch("GET", "/userOrgPerm/" + user.id, null, session)
+        .then((res: any) => res.json())
+        .then((data: any) => {
+          if (
+            data.filter(
+              (d: { organizationId: any; admin: boolean }) =>
+                d.organizationId === collection.organizationId &&
+                d.admin === true
+            ).length > 0
+          ) {
+            setReadOnly(false);
+          } else {
+            frontendFetch("GET", "/userConPerm/" + user.id, null, session)
+              .then((res: any) => res.json())
+              .then((data: any) => {
+                if (
+                  data.filter(
+                    (d: { conventionId: any; admin: boolean }) =>
+                      collection.conventions.filter(
+                        (c: { conventionId: any }) =>
+                          d.conventionId === c.conventionId
+                      ) && d.admin === true
+                  ).length > 0
+                ) {
+                  setReadOnly(false);
+                } else {
+                  setReadOnly(true);
+                }
+
+                setLoading(false);
+              })
+              .catch((err: any) => {});
+          }
+
+          setLoading(false);
+        })
+        .catch((err: any) => {});
+    }
+  }, [user, session, collection]);
 
   const detachCollection = (
     event: React.MouseEvent<SVGElement, MouseEvent>,
@@ -99,7 +144,7 @@ export default function CollectionCard(props: any) {
             <h2>Copies: {collection._count.copies}</h2>
           </span>
         </div>
-        {conventionId ? (
+        {conventionId && !readOnly ? (
           <div className="absolute bottom-5 right-10">
             <GrDetach
               className="hover:text-gwlightblue"

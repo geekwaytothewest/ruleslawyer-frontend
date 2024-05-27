@@ -36,6 +36,9 @@ export default function CopyModal(props: any) {
   const [copyBarcodeLabel, setCopyBarcodeLabel]: any = useState(null);
   const [copyComments, setCopyComments]: any = useState(null);
   const [gameId, setGameId]: any = useState(null);
+  const [readOnly, setReadOnly]: any = useState(true);
+  const [user, setUser]: any = useState(null);
+  const [isLoadingUser, setLoadingUser]: any = useState(true);
 
   const session = useSession();
 
@@ -123,6 +126,48 @@ export default function CopyModal(props: any) {
   }, [copyIn, copy, copyId, session]);
 
   useEffect(() => {
+    if (user) {
+      frontendFetch("GET", "/userOrgPerm/" + user.id, null, session)
+        .then((res: any) => res.json())
+        .then((data: any) => {
+          if (
+            data.filter(
+              (d: { organizationId: any; admin: boolean }) =>
+                d.organizationId === copy.organizationId &&
+                d.admin === true
+            ).length > 0
+          ) {
+            setReadOnly(false);
+          } else {
+            frontendFetch("GET", "/userConPerm/" + user.id, null, session)
+              .then((res: any) => res.json())
+              .then((data: any) => {
+                if (
+                  data.filter(
+                    (d: { conventionId: any; admin: boolean }) =>
+                      copy.collection.conventions.filter(
+                        (c: { conventionId: any }) =>
+                          d.conventionId === c.conventionId
+                      ) && d.admin === true
+                  ).length > 0
+                ) {
+                  setReadOnly(false);
+                } else {
+                  setReadOnly(true);
+                }
+
+                setLoading(false);
+              })
+              .catch((err: any) => {});
+          }
+
+          setLoading(false);
+        })
+        .catch((err: any) => {});
+    }
+  }, [user, session, copy]);
+
+  useEffect(() => {
     if (copy) {
       frontendFetch(
         "GET",
@@ -156,6 +201,7 @@ export default function CopyModal(props: any) {
                 label="Current collection"
                 placeholder="Select a collection"
                 defaultSelectedKeys={[copy.collectionId]}
+                disabled={readOnly}
                 onChange={(event) => {
                   setCopyCollectionId(Number(event.target.value));
                 }}
@@ -174,6 +220,7 @@ export default function CopyModal(props: any) {
                 isLoading={gameList.isLoading}
                 items={gameList.items}
                 onInputChange={gameList.setFilterText}
+                disabled={readOnly}
                 onSelectionChange={(key: React.Key | null) =>
                   setGameId(key?.valueOf())
                 }
@@ -189,6 +236,7 @@ export default function CopyModal(props: any) {
                 label="Barcode Label"
                 value={copyBarcodeLabel}
                 onValueChange={(value) => setCopyBarcodeLabel(value)}
+                disabled={readOnly}
               />
               <Input
                 name="barcode"
@@ -197,6 +245,7 @@ export default function CopyModal(props: any) {
                 label="Barcode"
                 value={copyBarcode}
                 onValueChange={(value) => setCopyBarcode(value)}
+                disabled={readOnly}
               />
               <Textarea
                 name="comments"
@@ -204,21 +253,27 @@ export default function CopyModal(props: any) {
                 placeholder="Enter your comments"
                 value={copyComments ?? ""}
                 onValueChange={(value) => setCopyComments(value)}
+                disabled={readOnly}
               />
               {copy.collection?.allowWinning && (
                 <Checkbox
                   name="allowWinning"
                   defaultSelected={copy.winnable}
                   onValueChange={(isSelected) => setCopyWinnable(isSelected)}
+                  disabled={readOnly}
                 >
                   Winnable
                 </Checkbox>
               )}
             </ModalBody>
             <ModalFooter>
-              <Button color="success" onPress={onSave}>
-                Save
-              </Button>
+              {readOnly ? (
+                ""
+              ) : (
+                <Button color="success" onPress={onSave}>
+                  Save
+                </Button>
+              )}
               <Button color="primary" onPress={onClose}>
                 Close
               </Button>

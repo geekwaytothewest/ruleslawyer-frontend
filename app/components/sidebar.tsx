@@ -73,7 +73,7 @@ export default function SideBar() {
     <div className="min-w-48 mr-10">
       <div>
         {orgs.length === 1 && !user?.superAdmin && (
-          <Link href={`/dashboard/organization/${orgs[0].organization.id}`}>
+          <Link href={`/dashboard/organization/${orgs[0].organizationId}`}>
             <div
               className={clsx(
                 "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
