@@ -29,7 +29,13 @@ export default function GameGrid(props: any) {
       setData(gamesIn);
       setLoading(false);
     } else {
-      frontendFetch("GET", "/game/withCopies", null, session?.data?.token)
+      const [limit] = maxResults;
+      frontendFetch(
+        "GET",
+        "/game/withCopies?limit=" + limit,
+        null,
+        session?.data?.token
+      )
         .then((res: any) => res.json())
         .then((data: any) => {
           setData(data);
@@ -37,7 +43,7 @@ export default function GameGrid(props: any) {
         })
         .catch((err: any) => {});
     }
-  }, [session?.data?.token, gamesIn]);
+  }, [session?.data?.token, gamesIn, maxResults]);
 
   if (isLoading) {
     return (
@@ -78,7 +84,7 @@ export default function GameGrid(props: any) {
           <SelectItem key={1000} value={1000}>
             1000 Games
           </SelectItem>
-          <SelectItem key={games.length} value={games.count}>
+          <SelectItem key={"All"} value={"All"}>
             All Games
           </SelectItem>
         </Select>
@@ -111,7 +117,7 @@ export default function GameGrid(props: any) {
                 | null
                 | undefined;
             }) => {
-              return <GameCard key={g.id} gameIn={g} gameId={g.id}/>;
+              return <GameCard key={g.id} gameIn={g} gameId={g.id} />;
             }
           )}
       </div>
