@@ -1,7 +1,5 @@
 import { SessionProvider } from "next-auth/react";
 import SideBar from "../components/sidebar";
-import { SWRConfig } from "swr";
-import frontendFetch from "@/utilities/frontendFetch";
 
 export default function RootLayout({
   children,
