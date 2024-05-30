@@ -3,7 +3,6 @@ import frontendFetch from "@/utilities/frontendFetch";
 import { useSession } from "next-auth/react";
 import React, { Key, useEffect, useState } from "react";
 import CollectionCard from "../collection/collection-card";
-import { MdLibraryAdd } from "react-icons/md";
 import {
   Button,
   Modal,

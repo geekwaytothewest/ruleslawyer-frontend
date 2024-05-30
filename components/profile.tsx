@@ -1,7 +1,7 @@
-import { auth } from "../../auth";
+import { auth } from "../auth";
 import React from "react";
-import { SignOut } from "@/app/components/auth/signout-server";
-import { SignIn } from "@/app/components/auth/signin";
+import { SignOut } from "@/components/auth/signout-server";
+import { SignIn } from "@/components/auth/signin";
 import Image from "next/image";
 import Link from "next/link";
 
