@@ -1,7 +1,7 @@
 "use client";
 import frontendFetch from "@/utilities/frontendFetch";
 import { useSession } from "next-auth/react";
-import React, { Key, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import CollectionCard from "../collection/collection-card";
 import {
   Button,
@@ -15,7 +15,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { GrAttachment } from "react-icons/gr";
-import useSWR from "swr";
+import usePermissions from "@/swr/usePermissions";
 
 export default function ConventionInfo(props: any) {
   let { id } = props;
@@ -26,7 +26,7 @@ export default function ConventionInfo(props: any) {
   const [collections, setCollections]: any = useState(null);
   const [filteredCollections, setFilteredCollections]: any = useState(null);
   const [readOnly, setReadOnly]: any = useState(true);
-  const [isLoadingUser, setLoadingUser]: any = useState(true);
+  const { permissions, isLoading: isLoadingPermissions, isError }: any = usePermissions();
 
   const session: any = useSession();
 
@@ -42,28 +42,10 @@ export default function ConventionInfo(props: any) {
       .catch((err: any) => {});
   }, [id, session?.data?.token]);
 
-  const user = useSWR(session?.data?.user?.email ?
-    ["GET", "/user/" + session?.data?.user?.email, null, session?.data?.token] : null,
-    ([method, url, body, session]) =>
-      frontendFetch(method, url, body, session).then((res) => res.json())
-  );
-
-  const userOrgPerm = useSWR(user?.data?.id ?
-    ["GET", "/userOrgPerm/" + user.data?.id, null, session?.data?.token] : null,
-    ([method, url, body, session]) =>
-      frontendFetch(method, url, body, session).then((res) => res.json())
-  );
-
-  const userConPerm = useSWR(user?.data?.id ?
-    ["GET", "/userConPerm/" + user.data?.id, null, session?.data?.token] : null,
-    ([method, url, body, session]) =>
-      frontendFetch(method, url, body, session).then((res) => res.json())
-  );
-
   useEffect(() => {
-    if (user && convention) {
+    if (permissions.user && convention) {
       if (
-        userOrgPerm.data?.filter(
+        permissions.organizations.data?.filter(
           (d: { organizationId: any; admin: boolean }) =>
             d.organizationId === convention.organizationId && d.admin === true
         ).length > 0
@@ -71,7 +53,7 @@ export default function ConventionInfo(props: any) {
         setReadOnly(false);
       } else {
         if (
-          userConPerm.data?.filter(
+          permissions.conventions.data?.filter(
             (d: { conventionId: any; admin: boolean }) =>
               d.conventionId === convention.conventionId &&
               d.admin === true
@@ -87,7 +69,7 @@ export default function ConventionInfo(props: any) {
 
       setLoading(false);
     }
-  }, [user, userConPerm, userOrgPerm, convention]);
+  }, [permissions, convention]);
 
   useEffect(() => {
     if (convention && !readOnly) {
@@ -147,7 +129,7 @@ export default function ConventionInfo(props: any) {
   });
   const { isOpen, onOpen, onClose } = disclosure;
 
-  if (isLoading || user.isLoading || userOrgPerm.isLoading || userConPerm.isLoading) return <div>Loading...</div>;
+  if (isLoading || isLoadingPermissions) return <div>Loading...</div>;
 
   return (
     <div>

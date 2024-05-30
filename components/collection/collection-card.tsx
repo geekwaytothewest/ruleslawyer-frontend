@@ -6,7 +6,7 @@ import { Skeleton } from "@nextui-org/react";
 import { BiSolidMessageAltError } from "react-icons/bi";
 import { IoLibrary } from "react-icons/io5";
 import { GrDetach } from "react-icons/gr";
-import useSWR from "swr";
+import usePermissions from "@/swr/usePermissions";
 
 export default function CollectionCard(props: any) {
   let { collectionIn, conventionId, onDeleted } = props;
@@ -14,7 +14,7 @@ export default function CollectionCard(props: any) {
   const [collection, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
   const [readOnly, setReadOnly]: any = useState(true);
-  const [isLoadingUser, setLoadingUser]: any = useState(true);
+  const { permissions, isLoading: isLoadingPermissions, isError }: any = usePermissions();
 
   const session: any = useSession();
 
@@ -35,28 +35,10 @@ export default function CollectionCard(props: any) {
     }
   }, [collectionIn, session?.data?.token]);
 
-  const user = useSWR(session?.data?.user?.email ?
-    ["GET", "/user/" + session?.data?.user?.email, null, session?.data?.token] : null,
-    ([method, url, body, session]) =>
-      frontendFetch(method, url, body, session).then((res) => res.json())
-  );
-
-  const userOrgPerm = useSWR(user?.data?.id ?
-    ["GET", "/userOrgPerm/" + user.data?.id, null, session?.data?.token] : null,
-    ([method, url, body, session]) =>
-      frontendFetch(method, url, body, session).then((res) => res.json())
-  );
-
-  const userConPerm = useSWR(user?.data?.id ?
-    ["GET", "/userConPerm/" + user.data?.id, null, session?.data?.token] : null,
-    ([method, url, body, session]) =>
-      frontendFetch(method, url, body, session).then((res) => res.json())
-  );
-
   useEffect(() => {
-    if (user && collection) {
+    if (permissions.user && collection) {
       if (
-        userOrgPerm.data?.filter(
+        permissions.organizations.data?.filter(
           (d: { organizationId: any; admin: boolean }) =>
             d.organizationId === collection.organizationId && d.admin === true
         ).length > 0
@@ -64,7 +46,7 @@ export default function CollectionCard(props: any) {
         setReadOnly(false);
       } else {
         if (
-          userConPerm.data?.filter(
+          permissions.conventions.data?.filter(
             (d: { conventionId: any; admin: boolean }) =>
               collection.conventions?.filter(
                 (c: { conventionId: any }) => d.conventionId === c.conventionId
@@ -81,7 +63,7 @@ export default function CollectionCard(props: any) {
 
       setLoading(false);
     }
-  }, [user, userConPerm, userOrgPerm, collection]);
+  }, [permissions, collection]);
 
   const detachCollection = (
     event: React.MouseEvent<SVGElement, MouseEvent>,
@@ -102,7 +84,7 @@ export default function CollectionCard(props: any) {
     }
   };
 
-  if (isLoading ) {
+  if (isLoading || isLoadingPermissions ) {
     return (
       <div className="flex items-center border-2 w-80 h-32 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] border-slate-800">
         <div className="flex-col p-3 w-24">

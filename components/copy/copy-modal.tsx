@@ -18,7 +18,7 @@ import {
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { useAsyncList } from "@react-stately/data";
-import useSWR from "swr";
+import usePermissions from "@/swr/usePermissions";
 
 type game = {
   id: number;
@@ -38,7 +38,7 @@ export default function CopyModal(props: any) {
   const [copyComments, setCopyComments]: any = useState(null);
   const [gameId, setGameId]: any = useState(null);
   const [readOnly, setReadOnly]: any = useState(true);
-  const [isLoadingUser, setLoadingUser]: any = useState(true);
+  const { permissions, isLoading: isLoadingPermissions, isError }: any = usePermissions();
 
   const session: any = useSession();
 
@@ -125,28 +125,10 @@ export default function CopyModal(props: any) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [copyIn, copy, copyId, session?.data?.token]);
 
-  const user = useSWR(session?.data?.user?.email ?
-    ["GET", "/user/" + session?.data?.user?.email, null, session?.data?.token] : null,
-    ([method, url, body, session]) =>
-      frontendFetch(method, url, body, session).then((res) => res.json())
-  );
-
-  const userOrgPerm = useSWR(user?.data?.id ?
-    ["GET", "/userOrgPerm/" + user.data?.id, null, session?.data?.token] : null,
-    ([method, url, body, session]) =>
-      frontendFetch(method, url, body, session).then((res) => res.json())
-  );
-
-  const userConPerm = useSWR(user?.data?.id ?
-    ["GET", "/userConPerm/" + user.data?.id, null, session?.data?.token] : null,
-    ([method, url, body, session]) =>
-      frontendFetch(method, url, body, session).then((res) => res.json())
-  );
-
   useEffect(() => {
-    if (user && copy) {
+    if (permissions.user && copy) {
       if (
-        userOrgPerm.data?.filter(
+        permissions.organizations.data?.filter(
           (d: { organizationId: any; admin: boolean }) =>
             d.organizationId === copy.organizationId && d.admin === true
         ).length > 0
@@ -154,7 +136,7 @@ export default function CopyModal(props: any) {
         setReadOnly(false);
       } else {
         if (
-          userConPerm.data?.filter(
+          permissions.con.data?.filter(
             (d: { conventionId: any; admin: boolean }) =>
               copy.collection.conventions.filter(
                 (c: { conventionId: any }) => d.conventionId === c.conventionId
@@ -171,7 +153,7 @@ export default function CopyModal(props: any) {
 
       setLoading(false);
     }
-  }, [user, userConPerm, userOrgPerm, copy]);
+  }, [permissions, copy]);
 
   useEffect(() => {
     if (copy) {
@@ -189,7 +171,7 @@ export default function CopyModal(props: any) {
     }
   }, [copy, session]);
 
-  if (isLoading) return <div></div>;
+  if (isLoading || isLoadingPermissions) return <div></div>;
   if (!copy) return <div></div>;
 
   return (

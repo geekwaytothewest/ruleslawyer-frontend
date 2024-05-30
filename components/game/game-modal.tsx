@@ -12,7 +12,7 @@ import {
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import CopyBubbles from "../copy/copy-bubbles";
-import useSWR from "swr";
+import usePermissions from "@/swr/usePermissions";
 
 export default function GameModal(props: any) {
   let { gameIn, gameId, disclosure } = props;
@@ -22,7 +22,7 @@ export default function GameModal(props: any) {
   const [bubbles, setBubbles]: any = useState(null);
   const [gameName, setGameName]: any = useState(null);
   const [readOnly, setReadOnly]: any = useState(true);
-  const [isLoadingUser, setLoadingUser]: any = useState(true);
+  const { permissions, isLoading: isLoadingPermissions, isError }: any = usePermissions();
 
   const session: any = useSession();
 
@@ -59,28 +59,10 @@ export default function GameModal(props: any) {
     }
   }, [gameIn, gameId, session?.data?.token, game]);
 
-  const user = useSWR(session?.data?.user?.email ?
-    ["GET", "/user/" + session?.data?.user?.email, null, session?.data?.token] : null,
-    ([method, url, body, session]) =>
-      frontendFetch(method, url, body, session).then((res) => res.json())
-  );
-
-  const userOrgPerm = useSWR(user?.data?.id ?
-    ["GET", "/userOrgPerm/" + user.data?.id, null, session?.data?.token] : null,
-    ([method, url, body, session]) =>
-      frontendFetch(method, url, body, session).then((res) => res.json())
-  );
-
-  const userConPerm = useSWR(user?.data?.id ?
-    ["GET", "/userConPerm/" + user.data?.id, null, session?.data?.token] : null,
-    ([method, url, body, session]) =>
-      frontendFetch(method, url, body, session).then((res) => res.json())
-  );
-
   useEffect(() => {
-    if (user) {
+    if (permissions.user) {
       if (
-        userOrgPerm.data?.filter(
+        permissions.organizations.data?.filter(
           (d: { organizationId: any; admin: boolean }) =>
             d.organizationId === game?.organizationId && d.admin === true
         ).length > 0
@@ -90,9 +72,9 @@ export default function GameModal(props: any) {
 
       setLoading(false);
     }
-  }, [user, userConPerm, userOrgPerm, game]);
+  }, [permissions, game]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading || isLoadingPermissions) return <div>Loading...</div>;
   if (!game) return <div>No game data</div>;
 
   return (
