@@ -1,5 +1,5 @@
 "use client";
-import ConventionInfo from "@/app/components/convention/convention-info";
+import ConventionInfo from "@/components/convention/convention-info";
 import React from "react";
 
 export default function ConView({ params }: { params: { orgId: string, conId: string } }) {

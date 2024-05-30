@@ -1,4 +1,4 @@
-import ConventionList from "@/app/components/convention/convention-list";
+import ConventionList from "@/components/convention/convention-list";
 import { auth } from "@/auth";
 import backendFetch from "@/utilities/backendFetch";
 import React from "react";

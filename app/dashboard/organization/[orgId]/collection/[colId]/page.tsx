@@ -1,5 +1,5 @@
 "use client";
-import GameGrid from "@/app/components/game/game-grid";
+import GameGrid from "@/components/game/game-grid";
 import frontendFetch from "@/utilities/frontendFetch";
 import { useSession } from "next-auth/react";
 import Link from "next/link";

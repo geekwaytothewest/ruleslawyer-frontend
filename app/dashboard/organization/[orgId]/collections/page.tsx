@@ -1,5 +1,5 @@
 "use client";
-import CollectionCard from "@/app/components/collection/collection-card";
+import CollectionCard from "@/components/collection/collection-card";
 import frontendFetch from "@/utilities/frontendFetch";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";

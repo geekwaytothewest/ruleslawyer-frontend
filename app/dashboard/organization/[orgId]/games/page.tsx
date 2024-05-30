@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import React, { useEffect } from "react";
 
-const GameGrid = dynamic(() => import("@/app/components/game/game-grid"), {
+const GameGrid = dynamic(() => import("@/components/game/game-grid"), {
   loading: () => <p>Loading...</p>,
 });
 
