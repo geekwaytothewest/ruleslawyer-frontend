@@ -18,7 +18,7 @@ import {
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { useAsyncList } from "@react-stately/data";
-import usePermissions from "@/swr/usePermissions";
+import usePermissions from "@/utilities/swr/usePermissions";
 
 type game = {
   id: number;

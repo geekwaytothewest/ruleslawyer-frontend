@@ -12,7 +12,7 @@ import {
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import CopyBubbles from "../copy/copy-bubbles";
-import usePermissions from "@/swr/usePermissions";
+import usePermissions from "@/utilities/swr/usePermissions";
 
 export default function GameModal(props: any) {
   let { gameIn, gameId, disclosure } = props;

@@ -6,7 +6,7 @@ import { Skeleton } from "@nextui-org/react";
 import { BiSolidMessageAltError } from "react-icons/bi";
 import { IoLibrary } from "react-icons/io5";
 import { GrDetach } from "react-icons/gr";
-import usePermissions from "@/swr/usePermissions";
+import usePermissions from "@/utilities/swr/usePermissions";
 
 export default function CollectionCard(props: any) {
   let { collectionIn, conventionId, onDeleted } = props;

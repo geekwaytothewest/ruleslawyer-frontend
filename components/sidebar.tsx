@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { SignOut } from "./auth/signout-client";
 import { CircularProgress } from "@nextui-org/react";
-import usePermissions from "@/swr/usePermissions";
+import usePermissions from "@/utilities/swr/usePermissions";
 
 export default function SideBar() {
   const { permissions, isLoading, isError }: any = usePermissions();

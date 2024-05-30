@@ -15,7 +15,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { GrAttachment } from "react-icons/gr";
-import usePermissions from "@/swr/usePermissions";
+import usePermissions from "@/utilities/swr/usePermissions";
 
 export default function ConventionInfo(props: any) {
   let { id } = props;
