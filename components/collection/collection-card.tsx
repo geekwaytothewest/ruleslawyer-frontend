@@ -40,7 +40,7 @@ export default function CollectionCard(props: any) {
       if (
         permissions.organizations.data?.filter(
           (d: { organizationId: any; admin: boolean }) =>
-            d.organizationId === collection.organizationId && d.admin === true
+            d.organizationId == collection.organizationId && d.admin === true
         ).length > 0
       ) {
         setReadOnly(false);
@@ -49,7 +49,7 @@ export default function CollectionCard(props: any) {
           permissions.conventions.data?.filter(
             (d: { conventionId: any; admin: boolean }) =>
               collection.conventions?.filter(
-                (c: { conventionId: any }) => d.conventionId === c.conventionId
+                (c: { conventionId: any }) => d.conventionId == c.conventionId
               ) && d.admin === true
           ).length > 0
         ) {

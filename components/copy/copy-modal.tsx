@@ -130,7 +130,7 @@ export default function CopyModal(props: any) {
       if (
         permissions.organizations.data?.filter(
           (d: { organizationId: any; admin: boolean }) =>
-            d.organizationId === copy.organizationId && d.admin === true
+            d.organizationId == copy.organizationId && d.admin === true
         ).length > 0
       ) {
         setReadOnly(false);
@@ -140,7 +140,7 @@ export default function CopyModal(props: any) {
             (d: { conventionId: any; admin: boolean }) =>
               copy.collection.conventions.filter(
                 (c: { conventionId: any }) => d.conventionId === c.conventionId
-              ) && d.admin === true
+              ) && d.admin == true
           ).length > 0
         ) {
           setReadOnly(false);

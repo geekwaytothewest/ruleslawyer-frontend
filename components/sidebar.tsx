@@ -19,7 +19,7 @@ export default function SideBar() {
   if (isLoading) {
     return (
       <div className="min-w-48 mr-10">
-        <div className="text-center bg-gwdarkgreen h-full">
+        <div className="text-center bg-gwdarkgreen h-48 rounded-br-lg">
           <div className="flex justify-center w-full pt-10">
             <CircularProgress isIndeterminate={true} label="Loading..." />
           </div>
@@ -197,7 +197,7 @@ export default function SideBar() {
             </Link>
           )}
       </div>
-      <div className="text-center pt-10 bg-gwdarkgreen h-full">
+      <div className="text-center pt-10 bg-gwdarkgreen h-48 rounded-br-lg ">
         <SignOut />
       </div>
     </div>

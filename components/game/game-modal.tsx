@@ -64,7 +64,7 @@ export default function GameModal(props: any) {
       if (
         permissions.organizations.data?.filter(
           (d: { organizationId: any; admin: boolean }) =>
-            d.organizationId === game?.organizationId && d.admin === true
+            d.organizationId == game?.organizationId && d.admin === true
         ).length > 0
       ) {
         setReadOnly(false);

@@ -19,7 +19,7 @@ export default async function OrgConventionsView({
 
   return (
     <div>
-      <ConventionList conventions={cons} organizationId={params.orgId} />
+      <ConventionList conventionsIn={cons} organizationId={params.orgId} />
     </div>
   );
 }

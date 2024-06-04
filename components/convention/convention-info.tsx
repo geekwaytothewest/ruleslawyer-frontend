@@ -47,7 +47,7 @@ export default function ConventionInfo(props: any) {
       if (
         permissions.organizations.data?.filter(
           (d: { organizationId: any; admin: boolean }) =>
-            d.organizationId === convention.organizationId && d.admin === true
+            d.organizationId == convention.organizationId && d.admin === true
         ).length > 0
       ) {
         setReadOnly(false);
@@ -55,7 +55,7 @@ export default function ConventionInfo(props: any) {
         if (
           permissions.conventions.data?.filter(
             (d: { conventionId: any; admin: boolean }) =>
-              d.conventionId === convention.conventionId &&
+              d.conventionId == convention.conventionId &&
               d.admin === true
           ).length > 0
         ) {
