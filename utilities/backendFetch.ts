@@ -10,6 +10,5 @@ export default async function backendFetch(method: string, url: string, body?: a
       Authorization: `Bearer ${session?.token}`,
     },
     body: body ? JSON.stringify(body) : null,
-    cache: 'force-cache'
   });
 }
