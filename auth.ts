@@ -56,6 +56,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             refreshToken: responseTokens.refresh_token ?? token.refresh_token,
           }
         } catch (error) {
+          token.accessToken = undefined;
+          token.refreshToken = undefined;
+          token.expiresAt = undefined;
           console.error("Error refreshing access token", error)
           // The error property can be used client-side to handle the refresh token error
           return { ...token, error: "RefreshAccessTokenError" as const }
