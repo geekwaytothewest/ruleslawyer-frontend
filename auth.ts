@@ -21,6 +21,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         token.accessToken = account.access_token;
       }
 
+      if (token?.exp && token.exp < new Date().getMilliseconds()) {
+        signOut();
+      }
+
       return token;
     },
     redirect: async ({ url, baseUrl }) => {
