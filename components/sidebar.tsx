@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 import Link from "next/link";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { SignOut } from "./auth/signout-client";
 import { CircularProgress } from "@nextui-org/react";
 import usePermissions from "@/utilities/swr/usePermissions";
@@ -12,7 +11,6 @@ export default function SideBar() {
   const { permissions, isLoading, isError }: any = usePermissions();
 
   const pathname = usePathname();
-  const session: any = useSession();
 
   if (isLoading) {
     return (
