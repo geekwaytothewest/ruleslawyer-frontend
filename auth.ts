@@ -40,7 +40,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
               client_id: process.env.AUTH0_CLIENT_ID!,
               client_secret: process.env.AUTH0_CLIENT_SECRET!,
               grant_type: "refresh_token",
-              refresh_token: token.refresh_token as string,
+              refresh_token: token.refreshToken as string,
             }),
             method: "POST",
           })
@@ -53,7 +53,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             ...token,
             accessToken: responseTokens.access_token,
             expiresAt: Math.floor(Date.now() / 1000 + (responseTokens.expires_in as number)),
-            refreshToken: responseTokens.refresh_token ?? token.refresh_token,
+            refreshToken: responseTokens.refresh_token ?? token.refreshToken,
           }
         } catch (error) {
           token.accessToken = undefined;
