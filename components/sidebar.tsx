@@ -14,8 +14,6 @@ export default function SideBar() {
   const pathname = usePathname();
   const session: any = useSession();
 
-  useEffect(() => {}, [session]);
-
   if (isLoading) {
     return (
       <div className="min-w-48 mr-10">

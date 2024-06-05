@@ -1,10 +1,6 @@
 "use client";
-import {
-  Accordion,
-  AccordionItem,
-  useDisclosure,
-} from "@nextui-org/react";
-import React, { useEffect, useState } from "react";
+import { Accordion, AccordionItem, useDisclosure } from "@nextui-org/react";
+import React, { act, useEffect, useState } from "react";
 import ConventionInfo from "./convention-info";
 import { IoMdAddCircle } from "react-icons/io";
 import ConventionModal from "./convention-modal";
@@ -17,6 +13,7 @@ export default function ConventionList(props: any) {
   const [conventions, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
   const [activeConvention, setActiveConvention]: any = useState(undefined);
+  const [selectedKeys, setSelectedKeys]: any = React.useState(new Set([""]));
 
   const session: any = useSession();
 
@@ -42,17 +39,27 @@ export default function ConventionList(props: any) {
 
   useEffect(() => {
     if (activeConvention === undefined) {
-      setActiveConvention(
-        conventions?.find(
-          (c: any) =>
-            c.startDate < Date.now() && Date.parse(c.endDate) > Date.now()
-        )
+      //Is a convention currently running? Make it active
+      let active = conventions?.find(
+        (c: any) =>
+          Date.parse(c.startDate) < Date.now() && Date.parse(c.endDate) > Date.now()
       );
 
-      if (activeConvention === undefined) {
-        setActiveConvention(
-          conventions?.find((c: any) => Date.parse(c.startDate) > Date.now())
+      if (active) {
+        setActiveConvention(active);
+        setSelectedKeys(new Set([String(active.id)]));
+      }
+
+      //If we didn't get an active convention, get the next convention and make it active
+      if (!active) {
+        active = conventions?.findLast(
+          (c: any) => Date.parse(c.startDate) > Date.now()
         );
+
+        if (active) {
+          setActiveConvention(active);
+          setSelectedKeys(new Set([String(active.id)]));
+        }
       }
     }
   }, [conventions, activeConvention]);
@@ -90,7 +97,8 @@ export default function ConventionList(props: any) {
     <div>
       <Accordion
         variant="bordered"
-        defaultExpandedKeys={[String(activeConvention?.id)]}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
       >
         {conventions?.map(
           (c: { id: React.Key | null | undefined; name: string }) => {

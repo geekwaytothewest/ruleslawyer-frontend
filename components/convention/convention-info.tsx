@@ -36,8 +36,6 @@ export default function ConventionInfo(props: any) {
 
   const session: any = useSession();
 
-  useEffect(() => {}, [session]);
-
   useEffect(() => {
     frontendFetch("GET", "/con/" + id, null, session?.data?.token)
       .then((res: any) => res.json())

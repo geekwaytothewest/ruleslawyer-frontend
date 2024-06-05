@@ -38,8 +38,6 @@ export default function GameModal(props: any) {
       .catch((err: any) => {});
   };
 
-  useEffect(() => {}, [session]);
-
   useEffect(() => {
     if (gameIn) {
       setData(gameIn);

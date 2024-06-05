@@ -52,7 +52,7 @@ export default function ConventionModal(props: any) {
     if (convention) {
       frontendFetch(
         "PUT",
-        "/convention/" + convention.id,
+        "/con/" + convention.id,
         {
           name: conventionName,
           theme: conventionTheme,

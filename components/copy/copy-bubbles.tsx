@@ -23,8 +23,6 @@ export default function CopyBubbles(props: any) {
 
   const session: any = useSession();
 
-  useEffect(() => {}, [session]);
-
   useEffect(() => {
     if (game.copies) {
       setData(game.copies);

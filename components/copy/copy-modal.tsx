@@ -90,8 +90,6 @@ export default function CopyModal(props: any) {
     },
   });
 
-  useEffect(() => {}, [session]);
-
   useEffect(() => {
     if (copyIn) {
       setData(copyIn);

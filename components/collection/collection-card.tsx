@@ -18,8 +18,6 @@ export default function CollectionCard(props: any) {
 
   const session: any = useSession();
 
-  useEffect(() => {}, [session]);
-
   useEffect(() => {
     if (collectionIn) {
       setData(collectionIn);

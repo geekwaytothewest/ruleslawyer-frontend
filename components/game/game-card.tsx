@@ -32,8 +32,6 @@ export default function GameCard(props: any) {
   });
   const { isOpen, onOpen, onClose } = disclosure;
 
-  useEffect(() => {}, [session]);
-
   useEffect(() => {
     if (gameIn) {
       setData(gameIn);
