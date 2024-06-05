@@ -19,9 +19,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       if (account && account.access_token) {
         // set access_token to the token payload
         token.accessToken = account.access_token;
+        token.expiresAt = account.expires_at;
       }
 
-      if (token?.exp && token.exp < new Date().getMilliseconds()) {
+      if (new Date().getMilliseconds() < (token.expiresAt as number) * 1000) {
         signOut();
       }
 
