@@ -34,10 +34,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         token.refreshToken
       ) {
         try {
-          // The `token_endpoint` can be found in the provider's documentation. Or if they support OIDC,
-          // at their `/.well-known/openid-configuration` endpoint.
-          // i.e. https://accounts.google.com/.well-known/openid-configuration
-          const response = await fetch("https://oauth2.googleapis.com/token", {
+          const response = await fetch("https://geekway.auth0.com/oauth/token", {
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: new URLSearchParams({
               client_id: process.env.AUTH0_CLIENT_ID!,
