@@ -1,5 +1,14 @@
 "use client";
-import { Accordion, AccordionItem, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react";
+import {
+  Accordion,
+  AccordionItem,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  useDisclosure,
+} from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import ConventionInfo from "./convention-info";
 import { IoMdAddCircle } from "react-icons/io";
@@ -21,7 +30,12 @@ export default function ConventionList(props: any) {
       setData(conventionsIn);
       setLoading(false);
     } else {
-      frontendFetch("GET", "/org/" + organizationId + "/conventions", null, session?.data?.token)
+      frontendFetch(
+        "GET",
+        "/org/" + organizationId + "/conventions",
+        null,
+        session?.data?.token
+      )
         .then((res: any) => res.json())
         .then((data: any) => {
           setData(data);
@@ -33,20 +47,28 @@ export default function ConventionList(props: any) {
 
   useEffect(() => {
     if (activeConvention === undefined) {
-      setActiveConvention(conventions?.find(
-        (c: any) => c.startDate < Date.now() && Date.parse(c.endDate) > Date.now()
-      ));
+      setActiveConvention(
+        conventions?.find(
+          (c: any) =>
+            c.startDate < Date.now() && Date.parse(c.endDate) > Date.now()
+        )
+      );
 
       if (activeConvention === undefined) {
-        setActiveConvention(conventions?.find(
-          (c: any) => Date.parse(c.startDate) > Date.now()
-        ));
+        setActiveConvention(
+          conventions?.find((c: any) => Date.parse(c.startDate) > Date.now())
+        );
       }
     }
-  }, [conventions, activeConvention])
+  }, [conventions, activeConvention]);
 
   const onModalClose = () => {
-    frontendFetch("GET", "/org/" + organizationId + "/conventions", null, session?.data?.token)
+    frontendFetch(
+      "GET",
+      "/org/" + organizationId + "/conventions",
+      null,
+      session?.data?.token
+    )
       .then((res: any) => res.json())
       .then((data: any) => {
         setData(data);
@@ -55,11 +77,19 @@ export default function ConventionList(props: any) {
       .catch((err: any) => {});
   };
 
-  const disclosure = useDisclosure({
+  const createDisclosure = useDisclosure({
     onClose: onModalClose,
   });
 
-  const { isOpen: isOpenCreate, onOpen: onOpenCreate, onClose: onCloseCreate } = disclosure;
+  const {
+    isOpen: isOpenCreate,
+    onOpen: onOpenCreate,
+    onClose: onCloseCreate,
+  } = createDisclosure;
+
+  const editDisclosure = useDisclosure({
+    onClose: onModalClose,
+  });
 
   return (
     <div>
@@ -71,15 +101,21 @@ export default function ConventionList(props: any) {
           (c: { id: React.Key | null | undefined; name: string }) => {
             return (
               <AccordionItem key={c.id} aria-label={c.name} title={c.name}>
-                <ConventionInfo id={c.id} />
+                <ConventionInfo id={c.id} editDisclosure={editDisclosure} />
               </AccordionItem>
             );
           }
         )}
       </Accordion>
 
-      <IoMdAddCircle className="text-7xl absolute bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer" onClick={onOpenCreate} />
-      <ConventionModal disclosure={disclosure} organizationId={organizationId} ></ConventionModal>
+      <IoMdAddCircle
+        className="text-7xl absolute bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer"
+        onClick={onOpenCreate}
+      />
+      <ConventionModal
+        disclosure={createDisclosure}
+        organizationId={organizationId}
+      ></ConventionModal>
     </div>
   );
 }

@@ -16,9 +16,11 @@ import {
 } from "@nextui-org/react";
 import { GrAttachment } from "react-icons/gr";
 import usePermissions from "@/utilities/swr/usePermissions";
+import ConventionModal from "./convention-modal";
+import { FaEdit } from "react-icons/fa";
 
 export default function ConventionInfo(props: any) {
-  let { id } = props;
+  let { id, editDisclosure } = props;
 
   const [convention, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
@@ -26,7 +28,11 @@ export default function ConventionInfo(props: any) {
   const [collections, setCollections]: any = useState(null);
   const [filteredCollections, setFilteredCollections]: any = useState(null);
   const [readOnly, setReadOnly]: any = useState(true);
-  const { permissions, isLoading: isLoadingPermissions, isError }: any = usePermissions();
+  const {
+    permissions,
+    isLoading: isLoadingPermissions,
+    isError,
+  }: any = usePermissions();
 
   const session: any = useSession();
 
@@ -55,8 +61,7 @@ export default function ConventionInfo(props: any) {
         if (
           permissions.conventions.data?.filter(
             (d: { conventionId: any; admin: boolean }) =>
-              d.conventionId == convention.conventionId &&
-              d.admin === true
+              d.conventionId == convention.conventionId && d.admin === true
           ).length > 0
         ) {
           setReadOnly(false);
@@ -129,10 +134,16 @@ export default function ConventionInfo(props: any) {
   });
   const { isOpen, onOpen, onClose } = disclosure;
 
+  const {
+    isOpen: isOpenEdit,
+    onOpen: onOpenEdit,
+    onClose: onCloseEdit,
+  } = editDisclosure;
+
   if (isLoading || isLoadingPermissions) return <div>Loading...</div>;
 
   return (
-    <div>
+    <div className="relative">
       <h1>{convention.name}</h1>
       <h2>{convention.theme}</h2>
       <h3 className="flex">
@@ -214,6 +225,16 @@ export default function ConventionInfo(props: any) {
           }
         )}
       </div>
+      <FaEdit
+        className="text-7xl absolute bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer"
+        onClick={onOpenEdit}
+      />
+      <ConventionModal
+        conventionIn={convention}
+        conventionId={id}
+        organizationId={convention.organizationId}
+        disclosure={editDisclosure}
+      />
     </div>
   );
 }

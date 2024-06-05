@@ -21,6 +21,7 @@ import {
   parseZonedDateTime,
   now,
   getLocalTimeZone,
+  parseAbsoluteToLocal,
 } from "@internationalized/date";
 
 export default function ConventionModal(props: any) {
@@ -111,8 +112,8 @@ export default function ConventionModal(props: any) {
       setTTEConventionId(conventionIn.tteConventionId);
       setConventionTypeId(conventionIn.conventionTypeId);
 
-      const parsedStart = parseZonedDateTime(conventionIn.startDate);
-      const parsedEnd = parseZonedDateTime(conventionIn.endDate);
+      const parsedStart = parseAbsoluteToLocal(conventionIn.startDate);
+      const parsedEnd = parseAbsoluteToLocal(conventionIn.endDate);
 
       setStartDate(parsedStart);
       setStartTime(parsedStart);
@@ -131,8 +132,8 @@ export default function ConventionModal(props: any) {
           setTTEConventionId(data.tteConventionId);
           setConventionTypeId(data.conventionTypeId);
 
-          const parsedStart = parseZonedDateTime(data.startDate);
-          const parsedEnd = parseZonedDateTime(data.endDate);
+          const parsedStart = parseAbsoluteToLocal(conventionIn.startDate);
+          const parsedEnd = parseAbsoluteToLocal(conventionIn.endDate);
 
           setStartDate(parsedStart);
           setStartTime(parsedStart);
