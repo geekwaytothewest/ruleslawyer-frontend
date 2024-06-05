@@ -226,7 +226,7 @@ export default function ConventionInfo(props: any) {
         )}
       </div>
       <FaEdit
-        className="text-7xl absolute bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer"
+        className="text-3xl absolute bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer"
         onClick={onOpenEdit}
       />
       <ConventionModal
