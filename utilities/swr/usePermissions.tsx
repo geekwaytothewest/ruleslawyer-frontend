@@ -10,28 +10,27 @@ export default function usePermissions() {
       ? [
           "GET",
           "/user/" + session?.data?.user?.email,
-          null,
           session?.data?.token,
         ]
       : null,
-    ([method, url, body, session]) =>
-      frontendFetch(method, url, body, session).then((res) => res.json())
+    ([method, url, session]) =>
+      frontendFetch(method, url, null, session).then((res) => res.json())
   );
 
   const orgs = useSWR(
     user?.data?.id
-      ? ["GET", "/userOrgPerm/" + user.data?.id, null, session?.data?.token]
+      ? ["GET", "/userOrgPerm/" + user.data?.id, session?.data?.token]
       : null,
-    ([method, url, body, session]) =>
-      frontendFetch(method, url, body, session).then((res) => res.json())
+    ([method, url, session]) =>
+      frontendFetch(method, url, null, session).then((res) => res.json())
   );
 
   const cons = useSWR(
     user?.data?.id
-      ? ["GET", "/userConPerm/" + user.data?.id, null, session?.data?.token]
+      ? ["GET", "/userConPerm/" + user.data?.id, session?.data?.token]
       : null,
-    ([method, url, body, session]) =>
-      frontendFetch(method, url, body, session).then((res) => res.json())
+    ([method, url, session]) =>
+      frontendFetch(method, url, null, session).then((res) => res.json())
   );
 
   const permissions = {
