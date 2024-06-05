@@ -2,11 +2,6 @@
 import {
   Accordion,
   AccordionItem,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
   useDisclosure,
 } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
