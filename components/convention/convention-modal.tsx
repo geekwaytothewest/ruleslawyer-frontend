@@ -110,7 +110,7 @@ export default function ConventionModal(props: any) {
       setConventionName(conventionIn.name);
       setConventionTheme(conventionIn.theme);
       setTTEConventionId(conventionIn.tteConventionId);
-      setConventionTypeId(conventionIn.conventionTypeId);
+      setConventionTypeId(conventionIn.typeId);
 
       const parsedStart = parseAbsoluteToLocal(conventionIn.startDate);
       const parsedEnd = parseAbsoluteToLocal(conventionIn.endDate);
@@ -130,7 +130,7 @@ export default function ConventionModal(props: any) {
           setConventionName(data.name);
           setConventionTheme(data.theme);
           setTTEConventionId(data.tteConventionId);
-          setConventionTypeId(data.conventionTypeId);
+          setConventionTypeId(data.typeId);
 
           const parsedStart = parseAbsoluteToLocal(conventionIn.startDate);
           const parsedEnd = parseAbsoluteToLocal(conventionIn.endDate);
@@ -144,6 +144,8 @@ export default function ConventionModal(props: any) {
         })
         .catch((err: any) => {});
     } else {
+      setStartDate(now(getLocalTimeZone()));
+      setEndDate(now(getLocalTimeZone()));
       setLoading(false);
     }
   }, [conventionId, conventionIn, session?.data?.token]);
@@ -221,7 +223,7 @@ export default function ConventionModal(props: any) {
               <Select
                 name="conventionTypeSelect"
                 items={conventionTypes}
-                label="Current convention type"
+                label="Convention Type"
                 placeholder="Select a convention type"
                 defaultSelectedKeys={[conventionTypeId]}
                 isDisabled={readOnly}
@@ -257,7 +259,8 @@ export default function ConventionModal(props: any) {
               />
               <Input
                 name="tteConventionId"
-                type="TTE Convention Id"
+                type="text"
+                label="TTE Convention Id"
                 placeholder="Enter the convention id from Tabletop.Events"
                 value={tteConventionId ?? ""}
                 onValueChange={(value) => setTTEConventionId(value)}
@@ -268,14 +271,14 @@ export default function ConventionModal(props: any) {
                 isRequired
                 showMonthAndYearPickers
                 onChange={(value) => setStartDate(value)}
-                defaultValue={now(getLocalTimeZone())}
+                defaultValue={startDate}
               />
               <DatePicker
                 label="End Date"
                 isRequired
                 showMonthAndYearPickers
                 onChange={(value) => setEndDate(value)}
-                defaultValue={now(getLocalTimeZone())}
+                defaultValue={endDate}
               />
             </ModalBody>
             <ModalFooter>
