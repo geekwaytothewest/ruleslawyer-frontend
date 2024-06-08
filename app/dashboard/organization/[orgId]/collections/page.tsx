@@ -1,5 +1,6 @@
 "use client";
 import CollectionCard from "@/components/collection/collection-card";
+import CollectionList from "@/components/collection/collection-list";
 import frontendFetch from "@/utilities/frontendFetch";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
@@ -37,12 +38,6 @@ export default function OrgCollectionsView({
   if (!collections) return <p>No collection data</p>;
 
   return (
-    <div className="flex flex-wrap">
-      {collections.map(
-        (c: { id: React.Key | null | undefined; name: string | null }) => {
-          return <CollectionCard key={c.id} collectionIn={c} />;
-        }
-      )}
-    </div>
+    <CollectionList collectionsIn={collections} organizationId={params.orgId} />
   );
 }

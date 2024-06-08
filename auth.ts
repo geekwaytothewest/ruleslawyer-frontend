@@ -31,7 +31,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       if (
         token &&
         token.expiresAt &&
-        new Date().getMilliseconds() < ((token.expiresAt as number) * 1000) &&
+        new Date().getMilliseconds() > ((token.expiresAt as number) * 1000) &&
         token.refreshToken
       ) {
         try {

@@ -22,8 +22,6 @@ export default function GameGrid(props: any) {
 
   const session: any = useSession();
 
-  useEffect(() => {}, [session]);
-
   useEffect(() => {
     if (gamesIn) {
       setData(gamesIn);

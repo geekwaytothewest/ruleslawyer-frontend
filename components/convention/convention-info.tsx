@@ -18,6 +18,8 @@ import { GrAttachment } from "react-icons/gr";
 import usePermissions from "@/utilities/swr/usePermissions";
 import ConventionModal from "./convention-modal";
 import { FaEdit } from "react-icons/fa";
+import { IoMdAddCircle } from "react-icons/io";
+import CollectionModal from "../collection/collection-modal";
 
 export default function ConventionInfo(props: any) {
   let { id, editDisclosure } = props;
@@ -132,6 +134,15 @@ export default function ConventionInfo(props: any) {
   });
   const { isOpen, onOpen, onClose } = disclosure;
 
+  const createCollectionDisclosure = useDisclosure({
+    onClose: onModalClose,
+  });
+  const {
+    isOpen: isOpenCreate,
+    onOpen: onOpenCreate,
+    onClose: onCloseCreate,
+  } = createCollectionDisclosure;
+
   const {
     isOpen: isOpenEdit,
     onOpen: onOpenEdit,
@@ -149,10 +160,16 @@ export default function ConventionInfo(props: any) {
         {readOnly ? (
           ""
         ) : (
-          <GrAttachment
-            className="ml-2 hover:cursor-pointer"
-            onClick={onOpen}
-          />
+          <div className="flex">
+            <IoMdAddCircle
+              className="ml-2 hover:cursor-pointer hover:text-gwgreen"
+              onClick={onOpenCreate}
+            />
+            <GrAttachment
+              className="ml-2 hover:cursor-pointer hover:text-gwgreen"
+              onClick={onOpen}
+            />
+          </div>
         )}
       </h3>
       {readOnly ? (
@@ -232,6 +249,11 @@ export default function ConventionInfo(props: any) {
         conventionId={id}
         organizationId={convention.organizationId}
         disclosure={editDisclosure}
+      />
+      <CollectionModal
+        disclosure={createCollectionDisclosure}
+        conventionId={convention.id}
+        organizationId={convention.organizationId}
       />
     </div>
   );

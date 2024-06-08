@@ -98,8 +98,6 @@ export default function ConventionModal(props: any) {
     }
   };
 
-  useEffect(() => {}, [session]);
-
   useEffect(() => {
     if (conventionIn) {
       setData(conventionIn);

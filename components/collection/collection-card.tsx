@@ -2,11 +2,14 @@
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import frontendFetch from "@/utilities/frontendFetch";
-import { Skeleton } from "@nextui-org/react";
+import { Skeleton, useDisclosure } from "@nextui-org/react";
 import { BiSolidMessageAltError } from "react-icons/bi";
 import { IoLibrary } from "react-icons/io5";
 import { GrDetach } from "react-icons/gr";
 import usePermissions from "@/utilities/swr/usePermissions";
+import { FaEdit } from "react-icons/fa";
+import CollectionModal from "./collection-modal";
+import { FaTrashCan } from "react-icons/fa6";
 
 export default function CollectionCard(props: any) {
   let { collectionIn, conventionId, onDeleted } = props;
@@ -14,7 +17,11 @@ export default function CollectionCard(props: any) {
   const [collection, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
   const [readOnly, setReadOnly]: any = useState(true);
-  const { permissions, isLoading: isLoadingPermissions, isError }: any = usePermissions();
+  const {
+    permissions,
+    isLoading: isLoadingPermissions,
+    isError,
+  }: any = usePermissions();
 
   const session: any = useSession();
 
@@ -23,7 +30,12 @@ export default function CollectionCard(props: any) {
       setData(collectionIn);
       setLoading(false);
     } else {
-      frontendFetch("GET", "/collection/" + collectionIn.id, null, session?.data?.token)
+      frontendFetch(
+        "GET",
+        "/collection/" + collectionIn.id,
+        null,
+        session?.data?.token
+      )
         .then((res: any) => res.json())
         .then((data: any) => {
           setData(data);
@@ -63,6 +75,27 @@ export default function CollectionCard(props: any) {
     }
   }, [permissions, collection]);
 
+  const onModalClose = () => {
+    frontendFetch(
+      "GET",
+      "/collection/" + collection.id,
+      null,
+      session?.data?.token
+    )
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        setData(data);
+        setLoading(false);
+      })
+      .catch((err: any) => {});
+  };
+
+  const disclosure = useDisclosure({
+    onClose: onModalClose,
+  });
+
+  const { isOpen: isOpen, onOpen: onOpen, onClose: onClose } = disclosure;
+
   const detachCollection = (
     event: React.MouseEvent<SVGElement, MouseEvent>,
     collectionId: number
@@ -74,15 +107,32 @@ export default function CollectionCard(props: any) {
         {},
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res: any) => {
           onDeleted();
         })
         .catch((err: any) => {});
     }
   };
 
-  if (isLoading || isLoadingPermissions ) {
+  const deleteCollection = (
+    event: React.MouseEvent<SVGElement, MouseEvent>,
+    collectionId: number
+  ) => {
+    if (confirm("Are you sure you want to delete this collection?")) {
+      frontendFetch(
+        "DELETE",
+        "/collection/" + collectionId,
+        {},
+        session?.data?.token
+      )
+        .then((res: any) => {
+          onDeleted();
+        })
+        .catch((err: any) => {});
+    }
+  };
+
+  if (isLoading || isLoadingPermissions) {
     return (
       <div className="flex items-center border-2 w-80 h-32 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] border-slate-800">
         <div className="flex-col p-3 w-24">
@@ -140,7 +190,35 @@ export default function CollectionCard(props: any) {
         ) : (
           ""
         )}
+        {!readOnly &&
+        !conventionId &&
+        collection._count.copies === 0 &&
+        collection._count.conventions === 0 ? (
+          <div className="absolute right-10">
+            <FaTrashCan
+              className="hover:text-gwgreen hover:cursor-pointer"
+              onClick={(e) => deleteCollection(e, collection.id)}
+            />
+          </div>
+        ) : (
+          ""
+        )}
+        {!readOnly ? (
+          <div className="absolute top-5 right-10">
+            <FaEdit
+              className="hover:text-gwgreen hover:cursor-pointer"
+              onClick={onOpen}
+            />
+          </div>
+        ) : (
+          ""
+        )}
       </div>
+      <CollectionModal
+        collectionIn={collection}
+        organizationId={collection.organizationId}
+        disclosure={disclosure}
+      />
     </div>
   );
 }

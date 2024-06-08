@@ -19,8 +19,6 @@ export default function OrganizationLayout({
   const pathname = usePathname();
   const params = useParams();
 
-  useEffect(() => {}, [session]);
-
   useEffect(() => {
     if (params) {
       frontendFetch("GET", "/org/" + params.orgId, null, session?.data?.token)
