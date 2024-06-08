@@ -18,8 +18,6 @@ export default function ConventionLayout({
   const pathname = usePathname();
   const params = useParams();
 
-  useEffect(() => {}, [session]);
-
   useEffect(() => {
     if (params) {
       frontendFetch("GET", "/con/" + params.conId, null, session?.data?.token)

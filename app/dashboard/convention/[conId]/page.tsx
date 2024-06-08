@@ -9,8 +9,6 @@ export default function ConView({ params }: { params: { conId: string } }) {
 
   const session: any = useSession();
 
-  useEffect(() => {}, [session]);
-
   useEffect(() => {
     frontendFetch("GET", "/con/" + params.conId, null, session?.data?.token)
       .then((res: any) => res.json())

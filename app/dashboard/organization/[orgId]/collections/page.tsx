@@ -15,8 +15,6 @@ export default function OrgCollectionsView({
 
   const session: any = useSession();
 
-  useEffect(() => {}, [session]);
-
   useEffect(() => {
     frontendFetch("GET", "/org/" + params.orgId, null, session?.data?.token)
       .then((res: any) => res.json())
