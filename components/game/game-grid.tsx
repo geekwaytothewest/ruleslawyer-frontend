@@ -7,10 +7,13 @@ import {
   Select,
   SelectItem,
   Selection,
+  useDisclosure,
 } from "@nextui-org/react";
 import { LuPackageSearch } from "react-icons/lu";
 import { useSession } from "next-auth/react";
 import frontendFetch from "@/utilities/frontendFetch";
+import { IoMdAddCircle } from "react-icons/io";
+import CopyModal from "../copy/copy-modal";
 
 export default function GameGrid(props: any) {
   const { collectionId } = props;
@@ -19,6 +22,7 @@ export default function GameGrid(props: any) {
   const [searchText, setSearchText]: any = useState("");
   const [isLoading, setLoading]: any = useState(true);
   const [maxResults, setMaxResults] = React.useState<Selection>(new Set([50]));
+  let trigger = 0;
 
   const session: any = useSession();
 
@@ -28,7 +32,12 @@ export default function GameGrid(props: any) {
 
       frontendFetch(
         "GET",
-        "/collection/" + collectionId + "?limit=" + limit + "&filter=" + searchText,
+        "/collection/" +
+          collectionId +
+          "?limit=" +
+          limit +
+          "&filter=" +
+          searchText,
         null,
         session?.data?.token
       )
@@ -70,7 +79,19 @@ export default function GameGrid(props: any) {
         })
         .catch((err: any) => {});
     }
-  }, [session?.data?.token, collectionId, maxResults, searchText]);
+  }, [session?.data?.token, collectionId, maxResults, searchText, trigger]);
+
+  const onModalClose = () => {
+    trigger++;
+  };
+
+  const createDisclosure = useDisclosure({
+    onClose: onModalClose,
+  });
+
+  const {
+    onOpen: onOpenCreate,
+  } = createDisclosure;
 
   if (isLoading) {
     return (
@@ -140,6 +161,15 @@ export default function GameGrid(props: any) {
           }
         )}
       </div>
+
+      <IoMdAddCircle
+        className="text-7xl absolute bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer"
+        onClick={onOpenCreate}
+      />
+      <CopyModal
+        disclosure={createDisclosure}
+        organizationId={games[0].organizationId}
+      ></CopyModal>
     </div>
   );
 }

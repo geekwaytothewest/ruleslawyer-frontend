@@ -26,7 +26,7 @@ type game = {
 };
 
 export default function CopyModal(props: any) {
-  let { copyIn, copyId, disclosure } = props;
+  let { copyIn, copyId, organizationId, disclosure } = props;
 
   const [copy, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
@@ -38,35 +38,64 @@ export default function CopyModal(props: any) {
   const [copyComments, setCopyComments]: any = useState(null);
   const [gameId, setGameId]: any = useState(null);
   const [readOnly, setReadOnly]: any = useState(true);
-  const { permissions, isLoading: isLoadingPermissions, isError }: any = usePermissions();
+  const {
+    permissions,
+    isLoading: isLoadingPermissions,
+    isError,
+  }: any = usePermissions();
 
   const session: any = useSession();
 
   const { isOpen, onOpen, onClose } = disclosure;
 
   const onSave = () => {
-    frontendFetch(
-      "PUT",
-      "/copy/" + copy.id,
-      {
-        collectionId: copyCollectionId,
-        winnable: copyWinnable,
-        barcodeLabel: copyBarcodeLabel,
-        barcode: copyBarcode,
-        comments: copyComments,
-        gameId: Number(gameId),
-      },
-      session?.data?.token
-    )
-      .then((res: any) => res.json())
-      .then((data: any) => {
-        copy.collection = data.collection;
-        copy.collectionId = data.collectionId;
-        copy.game = data.game;
-        copy.gameId = data.gameId;
-        onClose();
-      })
-      .catch((err: any) => {});
+    if (copy) {
+      frontendFetch(
+        "PUT",
+        "/copy/" + copy.id,
+        {
+          collectionId: copyCollectionId,
+          winnable: copyWinnable,
+          barcodeLabel: copyBarcodeLabel,
+          barcode: copyBarcode,
+          comments: copyComments,
+          gameId: Number(gameId),
+        },
+        session?.data?.token
+      )
+        .then((res: any) => res.json())
+        .then((data: any) => {
+          copy.collection = data.collection;
+          copy.collectionId = data.collectionId;
+          copy.game = data.game;
+          copy.gameId = data.gameId;
+          onClose();
+        })
+        .catch((err: any) => {});
+    } else {
+      frontendFetch(
+        "POST",
+        "/copy",
+        {
+          collectionId: copyCollectionId,
+          winnable: copyWinnable,
+          barcodeLabel: copyBarcodeLabel,
+          barcode: copyBarcode,
+          comments: copyComments,
+          gameId: Number(gameId),
+        },
+        session?.data?.token
+      )
+        .then((res: any) => res.json())
+        .then((data: any) => {
+          copy.collection = data.collection;
+          copy.collectionId = data.collectionId;
+          copy.game = data.game;
+          copy.gameId = data.gameId;
+          onClose();
+        })
+        .catch((err: any) => {});
+    }
   };
 
   let gameList = useAsyncList<game>({
@@ -74,7 +103,7 @@ export default function CopyModal(props: any) {
       if (filterText && filterText.length > 3) {
         let res = await frontendFetch(
           "GET",
-          `/org/${copy.organizationId}/games/search/${filterText}`,
+          `/org/${copy ? copy.organizationId : organizationId}/games/search/${filterText}`,
           null,
           session?.data?.token,
           signal
@@ -102,7 +131,7 @@ export default function CopyModal(props: any) {
       gameList.setFilterText(copyIn.game.name);
 
       setLoading(false);
-    } else {
+    } else if (copyId) {
       frontendFetch("GET", "/copy/" + copyId, null, session?.data?.token)
         .then((res: any) => res.json())
         .then((data: any) => {
@@ -118,6 +147,8 @@ export default function CopyModal(props: any) {
           setLoading(false);
         })
         .catch((err: any) => {});
+    } else {
+      setLoading(false);
     }
     // gameList is not a dependency, ignoring this error makes a warning go away
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -145,19 +176,17 @@ export default function CopyModal(props: any) {
         } else {
           setReadOnly(true);
         }
-
-        setLoading(false);
       }
-
-      setLoading(false);
+    } else if (organizationId) {
+      setReadOnly(false);
     }
-  }, [permissions, copy]);
+  }, [permissions, copy, organizationId]);
 
   useEffect(() => {
-    if (copy) {
+    if (copy || organizationId) {
       frontendFetch(
         "GET",
-        "/org/" + copy.organizationId + "/collections",
+        "/org/" + (copy ? copy.organizationId : organizationId) + "/collections",
         null,
         session?.data?.token
       )
@@ -167,10 +196,9 @@ export default function CopyModal(props: any) {
         })
         .catch((err: any) => {});
     }
-  }, [copy, session]);
+  }, [organizationId, copy, session]);
 
   if (isLoading || isLoadingPermissions) return <div></div>;
-  if (!copy) return <div></div>;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -178,7 +206,7 @@ export default function CopyModal(props: any) {
         {(onClose) => (
           <div>
             <ModalHeader>
-              {copy.game.name} ({copy.barcodeLabel})
+              {copy ? (copy.game.name + "(" + copy.barcodeLabel + ")") : "Create Copy" }
             </ModalHeader>
             <ModalBody>
               <Select
@@ -186,7 +214,7 @@ export default function CopyModal(props: any) {
                 items={collections}
                 label="Current collection"
                 placeholder="Select a collection"
-                defaultSelectedKeys={[copy.collectionId]}
+                defaultSelectedKeys={[copy ? copy.collectionId : null]}
                 isDisabled={readOnly}
                 onChange={(event) => {
                   setCopyCollectionId(Number(event.target.value));
@@ -241,7 +269,7 @@ export default function CopyModal(props: any) {
                 onValueChange={(value) => setCopyComments(value)}
                 isDisabled={readOnly}
               />
-              {copy.collection?.allowWinning && (
+              {copy?.collection?.allowWinning && (
                 <Checkbox
                   name="allowWinning"
                   defaultSelected={copy.winnable}
