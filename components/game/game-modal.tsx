@@ -22,14 +22,31 @@ export default function GameModal(props: any) {
   const [bubbles, setBubbles]: any = useState(null);
   const [gameName, setGameName]: any = useState(null);
   const [readOnly, setReadOnly]: any = useState(true);
-  const { permissions, isLoading: isLoadingPermissions, isError }: any = usePermissions();
+  const {
+    permissions,
+    isLoading: isLoadingPermissions,
+    isError,
+  }: any = usePermissions();
 
   const session: any = useSession();
 
   const { isOpen, onOpen, onClose } = disclosure;
 
+  const onDelete = () => {
+    frontendFetch("DELETE", "/game/" + game.id, null, session?.data?.token)
+      .then((res: any) => {
+        onClose();
+      })
+      .catch((err: any) => {});
+  };
+
   const onSave = () => {
-    frontendFetch("PUT", "/game/" + game.id, { name: gameName }, session?.data?.token)
+    frontendFetch(
+      "PUT",
+      "/game/" + game.id,
+      { name: gameName },
+      session?.data?.token
+    )
       .then((res: any) => res.json())
       .then((data: any) => {
         setData(data);
@@ -101,6 +118,13 @@ export default function GameModal(props: any) {
               {bubbles}
             </ModalBody>
             <ModalFooter>
+              {!readOnly && game.copies.length === 0 ? (
+                <Button color="danger" onPress={onDelete}>
+                  Delete
+                </Button>
+              ) : (
+                ""
+              )}
               {readOnly ? (
                 ""
               ) : (

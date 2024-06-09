@@ -37,6 +37,7 @@ export default function CopyModal(props: any) {
   const [copyBarcodeLabel, setCopyBarcodeLabel]: any = useState(null);
   const [copyComments, setCopyComments]: any = useState(null);
   const [gameId, setGameId]: any = useState(null);
+  const [newGameName, setNewGameName]: any = useState(null);
   const [readOnly, setReadOnly]: any = useState(true);
   const {
     permissions,
@@ -55,10 +56,9 @@ export default function CopyModal(props: any) {
         "/copy/" + copy.id,
         null,
         session?.data?.token
-      )
-        .then((res: any) => {
-          onClose();
-        });
+      ).then((res: any) => {
+        onClose();
+      });
     }
   };
 
@@ -87,6 +87,25 @@ export default function CopyModal(props: any) {
         })
         .catch((err: any) => {});
     } else {
+      const createCopyGame: any = {
+        game: null,
+      };
+
+      if (gameId === "0") {
+        createCopyGame.game = {
+          create: {
+            organizationId: Number(organizationId),
+            name: newGameName,
+          },
+        };
+      } else {
+        createCopyGame.game = {
+          connect: {
+            id: Number(gameId),
+          },
+        };
+      }
+
       frontendFetch(
         "POST",
         "/org/" + organizationId + "/col/" + copyCollectionId + "/copy",
@@ -95,17 +114,23 @@ export default function CopyModal(props: any) {
           barcodeLabel: copyBarcodeLabel,
           barcode: copyBarcode,
           comments: copyComments,
-          game: { connect: { id: Number(gameId) } },
+          ...createCopyGame,
         },
         session?.data?.token
       )
-        .then((res: any) => {onClose()})
+        .then((res: any) => {
+          onClose();
+        })
         .catch((err: any) => {});
     }
   };
 
   let gameList = useAsyncList<game>({
     async load({ signal, filterText }) {
+      if (filterText === "--- NEW GAME ---") {
+        filterText = "";
+      }
+
       if (filterText && filterText.length > 3) {
         let res = await frontendFetch(
           "GET",
@@ -117,11 +142,12 @@ export default function CopyModal(props: any) {
           signal
         );
         let json = await res.json();
+        json.unshift({ name: "--- NEW GAME ---", id: 0 });
         return {
           items: json,
         };
       } else {
-        return { items: [] };
+        return { items: [{ name: "--- NEW GAME ---", id: 0 }] };
       }
     },
   });
@@ -254,6 +280,17 @@ export default function CopyModal(props: any) {
                   <AutocompleteItem key={item.id}>{item.name}</AutocompleteItem>
                 )}
               </Autocomplete>
+              {gameId === "0" ? (
+                <Input
+                  name="newGameName"
+                  type="text"
+                  label="New Game Name"
+                  value={newGameName}
+                  onValueChange={(value) => setNewGameName(value)}
+                />
+              ) : (
+                ""
+              )}
               <Input
                 name="barcodeLabel"
                 type="text"

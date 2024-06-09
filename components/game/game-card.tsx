@@ -63,20 +63,7 @@ export default function GameCard(props: any) {
   }
 
   if (!game) {
-    return (
-      <div className="flex items-center border-2 w-80 h-32 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] border-slate-800">
-        <div className="flex-col p-3 w-24">
-          <BiSolidMessageAltError size={64} className="text-slate-500" />
-        </div>
-        <div className="flex-col pr-3 w-full">
-          <div className="inline-block align-middle h-full">
-            <span className="inline-block align-middle h-full">
-              Error loading game
-            </span>
-          </div>
-        </div>
-      </div>
-    );
+    return "";
   }
 
   return (
