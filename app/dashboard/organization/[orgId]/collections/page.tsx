@@ -1,6 +1,6 @@
 "use client";
 import CollectionCard from "@/components/collection/collection-card";
-import CollectionList from "@/components/collection/collection-list";
+import CollectionGrid from "@/components/collection/collection-grid";
 import frontendFetch from "@/utilities/frontendFetch";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
@@ -38,6 +38,6 @@ export default function OrgCollectionsView({
   if (!collections) return <p>No collection data</p>;
 
   return (
-    <CollectionList collectionsIn={collections} organizationId={params.orgId} />
+    <CollectionGrid collectionsIn={collections} organizationId={params.orgId} />
   );
 }

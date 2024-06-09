@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import CollectionCard from "./collection-card";
 import CollectionModal from "./collection-modal";
 
-export default function CollectionList(props: any) {
+export default function CollectionGrid(props: any) {
   let { collectionsIn, organizationId } = props;
 
   const [collections, setData]: any = useState(null);
