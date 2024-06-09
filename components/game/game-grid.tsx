@@ -34,6 +34,7 @@ export default function GameGrid(props: any) {
         "GET",
         "/collection/" +
           collectionId +
+          "/copiesByGames" +
           "?limit=" +
           limit +
           "&filter=" +
@@ -43,24 +44,8 @@ export default function GameGrid(props: any) {
       )
         .then((res: any) => res.json())
         .then((data: any) => {
-          const games = data.copies?.map((copy: any) => copy.game);
-          const uniqueGames = games
-            ?.filter(
-              (game: { id: number; name: string }, index: any) =>
-                games.findIndex(
-                  (g: { id: number; name: string }) => g.id === game.id
-                ) === index
-            )
-            .map((game: any) => {
-              game.copies = data.copies
-                .filter((copy: any) => copy.game.id === game.id)
-                .sort((a: any, b: any) =>
-                  a.barcodeLabel.localeCompare(b.barcodeLabel)
-                );
-              return game;
-            });
-
-          setData(uniqueGames);
+          console.log(data);
+          setData(data.games);
           setLoading(false);
         })
         .catch((err: any) => {});
