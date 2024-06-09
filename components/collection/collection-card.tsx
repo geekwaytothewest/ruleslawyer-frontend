@@ -10,6 +10,7 @@ import usePermissions from "@/utilities/swr/usePermissions";
 import { FaEdit } from "react-icons/fa";
 import CollectionModal from "./collection-modal";
 import { FaTrashCan } from "react-icons/fa6";
+import Link from "next/link";
 
 export default function CollectionCard(props: any) {
   let { collectionIn, conventionId, onDeleted } = props;
@@ -165,7 +166,7 @@ export default function CollectionCard(props: any) {
   }
 
   return (
-    <div className="relative">
+    <Link className="relative" href={"/dashboard/organization/" + collection.organizationId + "/collection/" + collection.id}>
       <div className="flex items-center border-2 border-gwblue w-80 h-32 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] cursor-pointer">
         <div className="flex-col p-3 w-24">
           <IoLibrary size={64} />
@@ -219,6 +220,6 @@ export default function CollectionCard(props: any) {
         organizationId={collection.organizationId}
         disclosure={disclosure}
       />
-    </div>
+    </Link>
   );
 }

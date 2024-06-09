@@ -13,7 +13,7 @@ import { useSession } from "next-auth/react";
 import frontendFetch from "@/utilities/frontendFetch";
 
 export default function GameGrid(props: any) {
-  const { gamesIn, orgId } = props;
+  const { collectionId } = props;
 
   const [games, setData]: any = useState(null);
   const [searchText, setSearchText]: any = useState("");
@@ -23,9 +23,38 @@ export default function GameGrid(props: any) {
   const session: any = useSession();
 
   useEffect(() => {
-    if (gamesIn) {
-      setData(gamesIn);
-      setLoading(false);
+    if (collectionId) {
+      const [limit] = maxResults;
+
+      frontendFetch(
+        "GET",
+        "/collection/" + collectionId + "?limit=" + limit + "&filter=" + searchText,
+        null,
+        session?.data?.token
+      )
+        .then((res: any) => res.json())
+        .then((data: any) => {
+          const games = data.copies?.map((copy: any) => copy.game);
+          const uniqueGames = games
+            ?.filter(
+              (game: { id: number; name: string }, index: any) =>
+                games.findIndex(
+                  (g: { id: number; name: string }) => g.id === game.id
+                ) === index
+            )
+            .map((game: any) => {
+              game.copies = data.copies
+                .filter((copy: any) => copy.game.id === game.id)
+                .sort((a: any, b: any) =>
+                  a.barcodeLabel.localeCompare(b.barcodeLabel)
+                );
+              return game;
+            });
+
+          setData(uniqueGames);
+          setLoading(false);
+        })
+        .catch((err: any) => {});
     } else {
       const [limit] = maxResults;
       frontendFetch(
@@ -41,7 +70,7 @@ export default function GameGrid(props: any) {
         })
         .catch((err: any) => {});
     }
-  }, [session?.data?.token, gamesIn, maxResults, searchText]);
+  }, [session?.data?.token, collectionId, maxResults, searchText]);
 
   if (isLoading) {
     return (
@@ -88,29 +117,28 @@ export default function GameGrid(props: any) {
         </Select>
       </div>
       <div className="flex flex-wrap">
-        {games
-          .map(
-            (g: {
-              copies: any;
-              id: React.Key | null | undefined;
-              name:
-                | string
-                | number
-                | bigint
-                | boolean
-                | React.ReactElement<
-                    any,
-                    string | React.JSXElementConstructor<any>
-                  >
-                | Iterable<React.ReactNode>
-                | React.ReactPortal
-                | Promise<React.AwaitedReactNode>
-                | null
-                | undefined;
-            }) => {
-              return <GameCard key={g.id} gameIn={g} gameId={g.id} />;
-            }
-          )}
+        {games.map(
+          (g: {
+            copies: any;
+            id: React.Key | null | undefined;
+            name:
+              | string
+              | number
+              | bigint
+              | boolean
+              | React.ReactElement<
+                  any,
+                  string | React.JSXElementConstructor<any>
+                >
+              | Iterable<React.ReactNode>
+              | React.ReactPortal
+              | Promise<React.AwaitedReactNode>
+              | null
+              | undefined;
+          }) => {
+            return <GameCard key={g.id} gameIn={g} gameId={g.id} />;
+          }
+        )}
       </div>
     </div>
   );

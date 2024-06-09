@@ -60,6 +60,8 @@ export default function CollectionList(props: any) {
     onClose: onCloseCreate,
   } = createDisclosure;
 
+  if (isLoading) return <div>Loading...</div>
+
   return (
     <div>
       <div className="flex flex-wrap">
