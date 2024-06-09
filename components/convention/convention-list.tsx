@@ -112,9 +112,10 @@ export default function ConventionList(props: any) {
       </Accordion>
 
       <IoMdAddCircle
-        className="text-7xl absolute bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer"
+        className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer"
         onClick={onOpenCreate}
       />
+
       <ConventionModal
         disclosure={createDisclosure}
         organizationId={organizationId}
