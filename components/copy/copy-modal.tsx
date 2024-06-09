@@ -32,7 +32,7 @@ export default function CopyModal(props: any) {
   const [isLoading, setLoading]: any = useState(true);
   const [collections, setCollections]: any = useState(null);
   const [copyCollectionId, setCopyCollectionId]: any = useState(null);
-  const [copyWinnable, setCopyWinnable]: any = useState(null);
+  const [copyWinnable, setCopyWinnable]: any = useState(false);
   const [copyBarcode, setCopyBarcode]: any = useState(null);
   const [copyBarcodeLabel, setCopyBarcodeLabel]: any = useState(null);
   const [copyComments, setCopyComments]: any = useState(null);
@@ -47,6 +47,20 @@ export default function CopyModal(props: any) {
   const session: any = useSession();
 
   const { isOpen, onOpen, onClose } = disclosure;
+
+  const onDelete = () => {
+    if (copy) {
+      frontendFetch(
+        "DELETE",
+        "/copy/" + copy.id,
+        null,
+        session?.data?.token
+      )
+        .then((res: any) => {
+          onClose();
+        });
+    }
+  };
 
   const onSave = () => {
     if (copy) {
@@ -75,25 +89,17 @@ export default function CopyModal(props: any) {
     } else {
       frontendFetch(
         "POST",
-        "/copy",
+        "/org/" + organizationId + "/col/" + copyCollectionId + "/copy",
         {
-          collectionId: copyCollectionId,
           winnable: copyWinnable,
           barcodeLabel: copyBarcodeLabel,
           barcode: copyBarcode,
           comments: copyComments,
-          gameId: Number(gameId),
+          game: { connect: { id: Number(gameId) } },
         },
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
-          copy.collection = data.collection;
-          copy.collectionId = data.collectionId;
-          copy.game = data.game;
-          copy.gameId = data.gameId;
-          onClose();
-        })
+        .then((res: any) => {onClose()})
         .catch((err: any) => {});
     }
   };
@@ -103,13 +109,14 @@ export default function CopyModal(props: any) {
       if (filterText && filterText.length > 3) {
         let res = await frontendFetch(
           "GET",
-          `/org/${copy ? copy.organizationId : organizationId}/games/search/${filterText}`,
+          `/org/${
+            copy ? copy.organizationId : organizationId
+          }/games/search/${filterText}`,
           null,
           session?.data?.token,
           signal
         );
         let json = await res.json();
-
         return {
           items: json,
         };
@@ -186,7 +193,9 @@ export default function CopyModal(props: any) {
     if (copy || organizationId) {
       frontendFetch(
         "GET",
-        "/org/" + (copy ? copy.organizationId : organizationId) + "/collections",
+        "/org/" +
+          (copy ? copy.organizationId : organizationId) +
+          "/collections",
         null,
         session?.data?.token
       )
@@ -206,7 +215,9 @@ export default function CopyModal(props: any) {
         {(onClose) => (
           <div>
             <ModalHeader>
-              {copy ? (copy.game.name + "(" + copy.barcodeLabel + ")") : "Create Copy" }
+              {copy
+                ? copy.game.name + "(" + copy.barcodeLabel + ")"
+                : "Create Copy"}
             </ModalHeader>
             <ModalBody>
               <Select
@@ -281,6 +292,13 @@ export default function CopyModal(props: any) {
               )}
             </ModalBody>
             <ModalFooter>
+              {!readOnly && copy ? (
+                <Button color="danger" onPress={onDelete}>
+                  Delete
+                </Button>
+              ) : (
+                ""
+              )}
               {readOnly ? (
                 ""
               ) : (

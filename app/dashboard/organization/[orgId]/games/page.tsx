@@ -10,5 +10,5 @@ export default async function OrgGameView({
 }: {
   params: { orgId: string };
 }) {
-  return <GameGrid orgId={params.orgId} />;
+  return <GameGrid organizationId={params.orgId} />;
 }

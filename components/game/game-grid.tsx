@@ -16,13 +16,13 @@ import { IoMdAddCircle } from "react-icons/io";
 import CopyModal from "../copy/copy-modal";
 
 export default function GameGrid(props: any) {
-  const { collectionId } = props;
+  const { collectionId, organizationId } = props;
 
   const [games, setData]: any = useState(null);
   const [searchText, setSearchText]: any = useState("");
   const [isLoading, setLoading]: any = useState(true);
   const [maxResults, setMaxResults] = React.useState<Selection>(new Set([50]));
-  let trigger = 0;
+  const [trigger, setTrigger]: any = useState(0);
 
   const session: any = useSession();
 
@@ -82,7 +82,7 @@ export default function GameGrid(props: any) {
   }, [session?.data?.token, collectionId, maxResults, searchText, trigger]);
 
   const onModalClose = () => {
-    trigger++;
+    setTrigger(trigger + 1);
   };
 
   const createDisclosure = useDisclosure({
@@ -168,7 +168,7 @@ export default function GameGrid(props: any) {
       />
       <CopyModal
         disclosure={createDisclosure}
-        organizationId={games[0].organizationId}
+        organizationId={organizationId}
       ></CopyModal>
     </div>
   );
