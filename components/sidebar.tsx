@@ -178,12 +178,12 @@ export default function SideBar() {
                   "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
                   {
                     "bg-transparent border-right-0": pathname.startsWith(
-                      `/dashboard/organization/${permissions.organizations.data[0].organizationId}/collections`
+                      `/dashboard/organization/${permissions.organizations.data[0].organizationId}/collection`
                     ),
                   },
                   {
                     "bg-gwgreen border-right-2": !pathname.startsWith(
-                      `/dashboard/organization/${permissions.organizations.data[0].organizationId}/collections`
+                      `/dashboard/organization/${permissions.organizations.data[0].organizationId}/collection`
                     ),
                   }
                 )}
