@@ -6,16 +6,19 @@ import CopyModal from "./copy-modal";
 import { useDisclosure } from "@nextui-org/react";
 import { BsBox2Heart } from "react-icons/bs";
 export default function CopyBubbles(props: any) {
-  let { game, bubbleStyle } = props;
+  let { game, bubbleStyle, disclosure } = props;
 
   const [copies, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
+
+  const { onClose } = disclosure;
 
   const onCloseModal = () => {
     frontendFetch("GET", "/game/" + game.id, null, session?.data?.token)
       .then((res: any) => res.json())
       .then((data: any) => {
         setData(data.copies);
+        onClose();
         setLoading(false);
       })
       .catch((err: any) => {});

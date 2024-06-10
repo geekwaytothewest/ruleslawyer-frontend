@@ -83,6 +83,10 @@ export default function ConventionList(props: any) {
     onClose: onModalClose,
   });
 
+  const importDisclosure = useDisclosure({
+    onClose: onModalClose,
+  });
+
   const {
     isOpen: isOpenCreate,
     onOpen: onOpenCreate,

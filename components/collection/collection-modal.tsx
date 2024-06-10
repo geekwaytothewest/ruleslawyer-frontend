@@ -15,13 +15,20 @@ import React, { useEffect, useState } from "react";
 import usePermissions from "@/utilities/swr/usePermissions";
 
 export default function CollectionModal(props: any) {
-  let { collectionIn, collectionId, organizationId, disclosure, conventionId } =
-    props;
+  let {
+    collectionIn,
+    collectionId,
+    organizationId,
+    disclosure,
+    conventionId,
+    importFile,
+  } = props;
 
   const [collection, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
   const [collectionName, setCollectionName]: any = useState(null);
   const [allowWinning, setAllowWinning]: any = useState(false);
+  const [importCSV, setImportCSV]: any = useState(null);
   const [readOnly, setReadOnly]: any = useState(true);
 
   const {
@@ -33,6 +40,10 @@ export default function CollectionModal(props: any) {
   const session: any = useSession();
 
   const { isOpen, onOpen, onClose } = disclosure;
+
+  const handleImportCSV = async (event: any) => {
+    setImportCSV(event.target.files[0]);
+  };
 
   const onSave = () => {
     if (collection) {
@@ -50,6 +61,42 @@ export default function CollectionModal(props: any) {
           onClose();
         })
         .catch((err: any) => {});
+    } else if (importFile) {
+      const formData = new FormData();
+
+      formData.append("name", collectionName);
+      formData.append("allowWinning", allowWinning);
+      formData.append("importCSV", importCSV, "import.csv");
+
+      frontendFetch(
+        "POST",
+        "/org/" + organizationId + "/col",
+        formData,
+        session?.data?.token,
+        undefined,
+        true
+      )
+        .then((res: any) => res.json())
+        .then((data: any) => {
+          if (conventionId) {
+            frontendFetch(
+              "POST",
+              "/con/" + conventionId + "/conventionCollection/" + data.id,
+              {
+                name: collectionName,
+                allowWinning: allowWinning,
+              },
+              session?.data?.token
+            )
+              .then((res: any) => res.json())
+              .then((data: any) => {
+                onClose();
+              })
+              .catch((err: any) => {});
+          } else {
+            onClose();
+          }
+        })
     } else {
       frontendFetch(
         "POST",
@@ -164,7 +211,8 @@ export default function CollectionModal(props: any) {
         {(onClose) => (
           <div>
             <ModalHeader>
-              {collection ? "Edit" : "Create"} Collection
+              {collection ? "Edit" : importFile ? "Import" : "Create"}{" "}
+              Collection
             </ModalHeader>
             <ModalBody>
               <Input
@@ -183,13 +231,14 @@ export default function CollectionModal(props: any) {
               >
                 Allow Winning
               </Checkbox>
+              {importFile ? <input name="importFile" type="file" onChange={handleImportCSV}/> : ""}
             </ModalBody>
             <ModalFooter>
               {readOnly ? (
                 ""
               ) : (
                 <Button color="success" onPress={onSave}>
-                  Save
+                  { importFile ? "Import" : "Save" }
                 </Button>
               )}
               <Button color="primary" onPress={onClose}>

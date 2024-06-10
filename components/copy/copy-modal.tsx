@@ -242,7 +242,7 @@ export default function CopyModal(props: any) {
           <div>
             <ModalHeader>
               {copy
-                ? copy.game.name + "(" + copy.barcodeLabel + ")"
+                ? copy.game.name + " (" + copy.barcodeLabel + ")"
                 : "Create Copy"}
             </ModalHeader>
             <ModalBody>

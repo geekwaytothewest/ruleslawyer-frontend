@@ -122,6 +122,9 @@ export default function CollectionCard(props: any) {
     event: React.MouseEvent<SVGElement, MouseEvent>,
     collectionId: number
   ) => {
+    event.preventDefault();
+    event.stopPropagation();
+
     if (confirm("Are you sure you want to delete this collection?")) {
       frontendFetch(
         "DELETE",

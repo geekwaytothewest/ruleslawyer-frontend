@@ -6,6 +6,7 @@ import frontendFetch from "@/utilities/frontendFetch";
 import { useSession } from "next-auth/react";
 import CollectionCard from "./collection-card";
 import CollectionModal from "./collection-modal";
+import { TbPackageImport } from "react-icons/tb";
 
 export default function CollectionGrid(props: any) {
   let { collectionsIn, organizationId } = props;
@@ -60,6 +61,16 @@ export default function CollectionGrid(props: any) {
     onClose: onCloseCreate,
   } = createDisclosure;
 
+  const importDisclosure = useDisclosure({
+    onClose: onModalClose,
+  });
+
+  const {
+    isOpen: isOpenImport,
+    onOpen: onOpenImport,
+    onClose: onCloseImport,
+  } = importDisclosure;
+
   if (isLoading) return <div>Loading...</div>
 
   return (
@@ -79,13 +90,25 @@ export default function CollectionGrid(props: any) {
         )}
       </div>
 
+      <TbPackageImport
+        className="text-7xl fixed bottom-28 right-8 hover:text-gwgreen hover:cursor-pointer"
+        onClick={onOpenImport}
+      />
+
       <IoMdAddCircle
         className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer"
         onClick={onOpenCreate}
       />
+
       <CollectionModal
         disclosure={createDisclosure}
         organizationId={organizationId}
+      ></CollectionModal>
+
+      <CollectionModal
+        disclosure={importDisclosure}
+        organizationId={organizationId}
+        importFile={true}
       ></CollectionModal>
     </div>
   );

@@ -20,6 +20,7 @@ import ConventionModal from "./convention-modal";
 import { FaEdit } from "react-icons/fa";
 import { IoMdAddCircle } from "react-icons/io";
 import CollectionModal from "../collection/collection-modal";
+import { TbPackageImport } from "react-icons/tb";
 
 export default function ConventionInfo(props: any) {
   let { id, editDisclosure } = props;
@@ -137,11 +138,22 @@ export default function ConventionInfo(props: any) {
   const createCollectionDisclosure = useDisclosure({
     onClose: onModalClose,
   });
+
   const {
     isOpen: isOpenCreate,
     onOpen: onOpenCreate,
     onClose: onCloseCreate,
   } = createCollectionDisclosure;
+
+  const importCollectionDisclosure = useDisclosure({
+    onClose: onModalClose,
+  });
+
+  const {
+    isOpen: isOpenImport,
+    onOpen: onOpenImport,
+    onClose: onCloseImport,
+  } = importCollectionDisclosure;
 
   const {
     isOpen: isOpenEdit,
@@ -164,6 +176,10 @@ export default function ConventionInfo(props: any) {
             <IoMdAddCircle
               className="ml-2 hover:cursor-pointer hover:text-gwgreen"
               onClick={onOpenCreate}
+            />
+            <TbPackageImport
+              className="ml-2 hover:cursor-pointer hover:text-gwgreen"
+              onClick={onOpenImport}
             />
             <GrAttachment
               className="ml-2 hover:cursor-pointer hover:text-gwgreen"
@@ -254,6 +270,12 @@ export default function ConventionInfo(props: any) {
         disclosure={createCollectionDisclosure}
         conventionId={convention.id}
         organizationId={convention.organizationId}
+      />
+      <CollectionModal
+        disclosure={importCollectionDisclosure}
+        conventionId={convention.id}
+        organizationId={convention.organizationId}
+        importFile={true}
       />
     </div>
   );

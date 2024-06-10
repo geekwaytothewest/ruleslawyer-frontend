@@ -8,6 +8,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  useDisclosure,
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -22,6 +23,7 @@ export default function GameModal(props: any) {
   const [bubbles, setBubbles]: any = useState(null);
   const [gameName, setGameName]: any = useState(null);
   const [readOnly, setReadOnly]: any = useState(true);
+  const [trigger, setTrigger]: any = useState(0);
   const {
     permissions,
     isLoading: isLoadingPermissions,
@@ -31,6 +33,19 @@ export default function GameModal(props: any) {
   const session: any = useSession();
 
   const { isOpen, onOpen, onClose } = disclosure;
+
+  const onCopyModalClose = () => {
+    if (gameIn) {
+      gameId = gameIn.id
+      gameIn = undefined;
+    }
+
+    setTrigger(trigger + 1);
+  }
+
+  const copyDisclosure = useDisclosure({
+    onClose: onCopyModalClose,
+  });
 
   const onDelete = () => {
     frontendFetch("DELETE", "/game/" + game.id, null, session?.data?.token)
@@ -56,10 +71,10 @@ export default function GameModal(props: any) {
   };
 
   useEffect(() => {
-    if (gameIn) {
+    if (gameIn && trigger === 0) {
       setData(gameIn);
       setGameName(gameIn.name);
-      setBubbles(<CopyBubbles game={game} />);
+      setBubbles(<CopyBubbles game={game} disclosure={copyDisclosure} />);
       setLoading(false);
     } else {
       frontendFetch("GET", "/game/" + gameId, null, session?.data?.token)
@@ -67,12 +82,14 @@ export default function GameModal(props: any) {
         .then((data: any) => {
           setData(data);
           setGameName(game.name);
-          setBubbles(<CopyBubbles game={game} />);
+          setBubbles(<CopyBubbles game={game} disclosure={copyDisclosure} />);
           setLoading(false);
         })
         .catch((err: any) => {});
     }
-  }, [gameIn, gameId, session?.data?.token, game]);
+  // copyDisclosure is not a dependancy - remove a warning and prevent errors
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameIn, gameId, session?.data?.token, game, trigger]);
 
   useEffect(() => {
     if (permissions.user) {

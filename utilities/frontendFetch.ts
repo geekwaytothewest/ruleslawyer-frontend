@@ -3,18 +3,30 @@ export default function frontendFetch(
   url: string,
   body?: any,
   session?: any,
-  signal?: AbortSignal
+  signal?: AbortSignal,
+  multiPart?: boolean
 ) {
   if (!session) return Promise.reject("No token in session");
 
+  const headers: any = {
+    Authorization: `Bearer ${session}`,
+  };
+
+  if (!multiPart) {
+    headers["Content-Type"] = "application/json";
+
+    if (body) {
+      body = JSON.stringify(body);
+    } else {
+      body = null;
+    }
+  }
+
   return fetch(process.env.NEXT_PUBLIC_API_URL + url, {
     method: method,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${session}`,
-    },
-    body: body ? JSON.stringify(body) : null,
+    headers: headers,
+    body: body,
     signal: signal,
-    next: {revalidate: 60}
+    next: { revalidate: 60 },
   });
 }
