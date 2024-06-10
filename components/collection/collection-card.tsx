@@ -174,7 +174,7 @@ export default function CollectionCard(props: any) {
         <div className="flex-col p-3 w-24">
           <IoLibrary size={64} />
         </div>
-        <div className="flex-col pr-3 w-full">
+        <div className="flex-col pr-3 w-40">
           <span className="inline-block align-middle h-full">
             <h1>
               {collection.name !== ""
@@ -195,7 +195,6 @@ export default function CollectionCard(props: any) {
           ""
         )}
         {!readOnly &&
-        !conventionId &&
         collection._count.copies === 0 &&
         collection._count.conventions === 0 ? (
           <div className="absolute right-10">
