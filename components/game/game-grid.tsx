@@ -44,7 +44,6 @@ export default function GameGrid(props: any) {
       )
         .then((res: any) => res.json())
         .then((data: any) => {
-          console.log(data);
           setData(data.games);
           setLoading(false);
         })
