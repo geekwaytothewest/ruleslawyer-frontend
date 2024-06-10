@@ -13,9 +13,8 @@ export default function frontendFetch(
   };
 
   if (!multiPart) {
-    headers["Content-Type"] = "application/json";
-
     if (body) {
+      headers["Content-Type"] = "application/json";
       body = JSON.stringify(body);
     } else {
       body = null;

@@ -81,11 +81,8 @@ export default function CollectionModal(props: any) {
           if (conventionId) {
             frontendFetch(
               "POST",
-              "/con/" + conventionId + "/conventionCollection/" + data.id,
-              {
-                name: collectionName,
-                allowWinning: allowWinning,
-              },
+              "/con/" + conventionId + "/conventionCollection/" + data.collectionId,
+              null,
               session?.data?.token
             )
               .then((res: any) => res.json())
@@ -113,10 +110,7 @@ export default function CollectionModal(props: any) {
             frontendFetch(
               "POST",
               "/con/" + conventionId + "/conventionCollection/" + data.id,
-              {
-                name: collectionName,
-                allowWinning: allowWinning,
-              },
+              null,
               session?.data?.token
             )
               .then((res: any) => res.json())

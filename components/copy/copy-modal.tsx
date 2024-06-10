@@ -51,14 +51,16 @@ export default function CopyModal(props: any) {
 
   const onDelete = () => {
     if (copy) {
-      frontendFetch(
-        "DELETE",
-        "/copy/" + copy.id,
-        null,
-        session?.data?.token
-      ).then((res: any) => {
-        onClose();
-      });
+      if (confirm("Are you sure you want to delete this collection?")) {
+        frontendFetch(
+          "DELETE",
+          "/copy/" + copy.id,
+          null,
+          session?.data?.token
+        ).then((res: any) => {
+          onClose();
+        });
+      }
     }
   };
 

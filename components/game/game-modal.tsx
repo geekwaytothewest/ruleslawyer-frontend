@@ -36,23 +36,25 @@ export default function GameModal(props: any) {
 
   const onCopyModalClose = () => {
     if (gameIn) {
-      gameId = gameIn.id
+      gameId = gameIn.id;
       gameIn = undefined;
     }
 
     setTrigger(trigger + 1);
-  }
+  };
 
   const copyDisclosure = useDisclosure({
     onClose: onCopyModalClose,
   });
 
   const onDelete = () => {
-    frontendFetch("DELETE", "/game/" + game.id, null, session?.data?.token)
-      .then((res: any) => {
-        onClose();
-      })
-      .catch((err: any) => {});
+    if (confirm("Are you sure you want to delete this collection?")) {
+      frontendFetch("DELETE", "/game/" + game.id, null, session?.data?.token)
+        .then((res: any) => {
+          onClose();
+        })
+        .catch((err: any) => {});
+    }
   };
 
   const onSave = () => {
@@ -87,8 +89,8 @@ export default function GameModal(props: any) {
         })
         .catch((err: any) => {});
     }
-  // copyDisclosure is not a dependancy - remove a warning and prevent errors
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // copyDisclosure is not a dependancy - remove a warning and prevent errors
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameIn, gameId, session?.data?.token, game, trigger]);
 
   useEffect(() => {
