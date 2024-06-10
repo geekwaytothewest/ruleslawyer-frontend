@@ -101,6 +101,9 @@ export default function CollectionCard(props: any) {
     event: React.MouseEvent<SVGElement, MouseEvent>,
     collectionId: number
   ) => {
+    event.preventDefault();
+    event.stopPropagation();
+
     if (confirm("Are you sure you want to detach this collection?")) {
       frontendFetch(
         "DELETE",
@@ -208,7 +211,11 @@ export default function CollectionCard(props: any) {
           <div className="absolute top-5 right-10">
             <FaEdit
               className="hover:text-gwgreen hover:cursor-pointer"
-              onClick={onOpen}
+              onClick={(e) => {
+                 e.preventDefault();
+                 e.stopPropagation();
+                 onOpen();
+              }}
             />
           </div>
         ) : (
