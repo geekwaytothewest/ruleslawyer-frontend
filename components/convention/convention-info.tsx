@@ -24,7 +24,7 @@ import CollectionModal from "../collection/collection-modal";
 import { TbPackageImport } from "react-icons/tb";
 import { DateFormatter } from "@internationalized/date";
 export default function ConventionInfo(props: any) {
-  let { id } = props;
+  let { id, hideTitle, hideSubtitle } = props;
 
   const [convention, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
@@ -174,9 +174,9 @@ export default function ConventionInfo(props: any) {
 
   return (
     <div className="relative">
-      <div className="text-gwgreen">
-        <h1>{convention.name}</h1>
-        <h2 className="mb-8">{convention.theme}</h2>
+      <div className="text-gwgreen" hidden={(hideTitle && hideSubtitle)}>
+        <h1 hidden={hideTitle}>{convention.name}</h1>
+        <h2 className="mb-8" hidden={hideSubtitle}>{convention.theme}</h2>
       </div>
 
       <p>

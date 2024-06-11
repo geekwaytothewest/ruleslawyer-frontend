@@ -42,7 +42,8 @@ export default function ConventionList(props: any) {
       //Is a convention currently running? Make it active
       let active = conventions?.find(
         (c: any) =>
-          Date.parse(c.startDate) < Date.now() && Date.parse(c.endDate) > Date.now()
+          Date.parse(c.startDate) < Date.now() &&
+          Date.parse(c.endDate) > Date.now()
       );
 
       if (active) {
@@ -101,10 +102,18 @@ export default function ConventionList(props: any) {
         onSelectionChange={setSelectedKeys}
       >
         {conventions?.map(
-          (c: { id: React.Key | null | undefined; name: string }) => {
+          (c: {
+            theme: string;
+            id: React.Key | null | undefined;
+            name: string;
+          }) => {
             return (
-              <AccordionItem key={c.id} aria-label={c.name} title={c.name}>
-                <ConventionInfo id={c.id} />
+              <AccordionItem
+                key={c.id}
+                title={<span className="text-gwgreen">{c.name}</span>}
+                subtitle={<span className="text-gwgreen">{c.theme}</span>}
+              >
+                <ConventionInfo id={c.id} hideTitle={true} hideSubtitle={true} />
               </AccordionItem>
             );
           }
