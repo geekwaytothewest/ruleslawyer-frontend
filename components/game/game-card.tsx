@@ -99,7 +99,13 @@ export default function GameCard(props: any) {
   return (
     <div>
       <div
-        onClick={readOnly ? () => {alert("Not Yet Implmeneted.")} : onOpen}
+        onClick={
+          readOnly
+            ? () => {
+                alert("Not Yet Implmeneted.");
+              }
+            : onOpen
+        }
         className="flex items-center border-2 border-gwblue w-80 h-32 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] cursor-pointer"
       >
         <div className="flex-col p-3 w-24">
