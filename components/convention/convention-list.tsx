@@ -109,7 +109,10 @@ export default function ConventionList(props: any) {
           }) => {
             return (
               <AccordionItem
-                classNames={{ title: "data-[open=true]text-gwgreen", subtitle: "text-gwgreen" }}
+                classNames={{
+                  title: "data-[open=true]:text-gwgreen hover:text-gwgreen",
+                  subtitle: "text-gwblue",
+                }}
                 key={c.id}
                 title={c.name}
                 subtitle={c.theme}
