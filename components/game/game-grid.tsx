@@ -15,17 +15,46 @@ import { useSession } from "next-auth/react";
 import frontendFetch from "@/utilities/frontendFetch";
 import { IoMdAddCircle } from "react-icons/io";
 import CopyModal from "../copy/copy-modal";
+import usePermissions from "@/utilities/swr/usePermissions";
 
 export default function GameGrid(props: any) {
-  const { collectionId, organizationId } = props;
+  const { collectionId, organizationId, showHeader } = props;
 
   const [games, setData]: any = useState(null);
+  const [header, setHeader]: any = useState("");
   const [searchText, setSearchText]: any = useState("");
   const [isLoading, setLoading]: any = useState(true);
   const [maxResults, setMaxResults] = React.useState<Selection>(new Set([50]));
   const [trigger, setTrigger]: any = useState(0);
+  const [readOnly, setReadOnly]: any = useState(true);
+  const {
+    permissions,
+    isLoading: isLoadingPermissions,
+    isError,
+  }: any = usePermissions();
 
   const session: any = useSession();
+
+  useEffect(() => {
+    if (permissions.user) {
+      if (permissions.user.superAdmin) {
+        setReadOnly(false);
+      } else if (organizationId) {
+        if (
+          permissions.organizations.data?.filter(
+            (d: { organizationId: any; admin: boolean }) =>
+              d.organizationId == organizationId && d.admin === true
+          ).length > 0
+        ) {
+          setReadOnly(false);
+        } else {
+          setReadOnly(true);
+        }
+      } else {
+        setReadOnly(true);
+      }
+    }
+  }, [permissions, organizationId]);
 
   useEffect(() => {
     if (collectionId) {
@@ -45,6 +74,7 @@ export default function GameGrid(props: any) {
       )
         .then((res: any) => res.json())
         .then((data: any) => {
+          setHeader("Collection: " + data.name);
           setData(data.games);
           setLoading(false);
         })
@@ -86,6 +116,7 @@ export default function GameGrid(props: any) {
 
   return (
     <div>
+      {showHeader ? <h1>{header}</h1> : ""}
       <div className="flex m-10">
         <Input
           name="search"
@@ -145,16 +176,20 @@ export default function GameGrid(props: any) {
         )}
       </div>
 
-      <Tooltip
-        content="Create Game"
-        showArrow={true}
-        color="success"
-        delay={1000}
-      >
-        <span className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
-          <IoMdAddCircle onClick={onOpenCreate} />
-        </span>
-      </Tooltip>
+      {readOnly ? (
+        ""
+      ) : (
+        <Tooltip
+          content="Create Game"
+          showArrow={true}
+          color="success"
+          delay={1000}
+        >
+          <span className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
+            <IoMdAddCircle onClick={onOpenCreate} />
+          </span>
+        </Tooltip>
+      )}
 
       <CopyModal
         disclosure={createDisclosure}

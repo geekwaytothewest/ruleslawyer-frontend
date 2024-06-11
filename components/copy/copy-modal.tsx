@@ -39,7 +39,6 @@ export default function CopyModal(props: any) {
   const [gameId, setGameId]: any = useState(null);
   const [newGameName, setNewGameName]: any = useState(null);
   const [readOnly, setReadOnly]: any = useState(true);
-  const [saveDisabled, setSaveDisabled]: any = useState(false);
   const {
     permissions,
     isLoading: isLoadingPermissions,
@@ -204,7 +203,7 @@ export default function CopyModal(props: any) {
           setReadOnly(false);
         } else {
           if (
-            permissions.con.data?.filter(
+            permissions.conventions.data?.filter(
               (d: { conventionId: any; admin: boolean }) =>
                 copy.collection.conventions.filter(
                   (c: { conventionId: any }) =>

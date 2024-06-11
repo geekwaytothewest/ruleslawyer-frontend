@@ -28,6 +28,7 @@ export default function ConventionList(props: any) {
   }: any = usePermissions();
 
   const session: any = useSession();
+
   useEffect(() => {
     if (permissions.user) {
       if (permissions.user.superAdmin) {
