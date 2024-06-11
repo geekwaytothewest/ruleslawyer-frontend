@@ -6,11 +6,20 @@ import { usePathname } from "next/navigation";
 import { SignOut } from "./auth/signout-client";
 import { CircularProgress } from "@nextui-org/react";
 import usePermissions from "@/utilities/swr/usePermissions";
+import { signIn, useSession } from "next-auth/react";
 
 export default function SideBar() {
   const { permissions, isLoading, isError }: any = usePermissions();
 
   const pathname = usePathname();
+
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    if ((session as any)?.error === "RefreshAccessTokenError") {
+      signIn(); // Force sign in to hopefully resolve error
+    }
+  }, [session]);
 
   if (isLoading) {
     return (
