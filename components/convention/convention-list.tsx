@@ -53,13 +53,21 @@ export default function ConventionList(props: any) {
     if (conventionsIn) {
       setData(conventionsIn);
       setLoading(false);
-    } else {
+    } else if (organizationId) {
       frontendFetch(
         "GET",
         "/org/" + organizationId + "/conventions",
         null,
         session?.data?.token
       )
+        .then((res: any) => res.json())
+        .then((data: any) => {
+          setData(data);
+          setLoading(false);
+        })
+        .catch((err: any) => {});
+    } else {
+      frontendFetch("GET", "/con", null, session?.data?.token)
         .then((res: any) => res.json())
         .then((data: any) => {
           setData(data);
@@ -160,17 +168,20 @@ export default function ConventionList(props: any) {
         )}
       </Accordion>
 
-
-      <Tooltip
-        content="Create Convention"
-        showArrow={true}
-        color="success"
-        delay={1000}
-      >
-        <span className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
-          <IoMdAddCircle onClick={onOpenCreate} />
-        </span>
-      </Tooltip>
+      {readOnly ? (
+        ""
+      ) : (
+        <Tooltip
+          content="Create Convention"
+          showArrow={true}
+          color="success"
+          delay={1000}
+        >
+          <span className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
+            <IoMdAddCircle onClick={onOpenCreate} />
+          </span>
+        </Tooltip>
+      )}
 
       <ConventionModal
         disclosure={createDisclosure}

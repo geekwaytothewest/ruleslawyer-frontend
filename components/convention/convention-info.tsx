@@ -326,16 +326,20 @@ export default function ConventionInfo(props: any) {
         )}
       </div>
 
-      <Tooltip
-        content={"Edit " + convention.name}
-        showArrow={true}
-        color="success"
-        delay={1000}
-      >
-        <span className="text-3xl absolute bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
-          <FaEdit onClick={onOpenEdit} />
-        </span>
-      </Tooltip>
+      {readOnly ? (
+        ""
+      ) : (
+        <Tooltip
+          content={"Edit " + convention.name}
+          showArrow={true}
+          color="success"
+          delay={1000}
+        >
+          <span className="text-3xl absolute bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
+            <FaEdit onClick={onOpenEdit} />
+          </span>
+        </Tooltip>
+      )}
       <ConventionModal
         conventionIn={convention}
         conventionId={id}
