@@ -109,11 +109,16 @@ export default function ConventionList(props: any) {
           }) => {
             return (
               <AccordionItem
+                classNames={{ title: "data-[open=true]text-gwgreen", subtitle: "text-gwgreen" }}
                 key={c.id}
-                title={<span className="text-gwgreen">{c.name}</span>}
-                subtitle={<span className="text-gwgreen">{c.theme}</span>}
+                title={c.name}
+                subtitle={c.theme}
               >
-                <ConventionInfo id={c.id} hideTitle={true} hideSubtitle={true} />
+                <ConventionInfo
+                  id={c.id}
+                  hideTitle={true}
+                  hideSubtitle={true}
+                />
               </AccordionItem>
             );
           }
