@@ -112,7 +112,7 @@ export default function GameModal(props: any) {
   if (!game) return <div>No game data</div>;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
+    <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="outside">
       <ModalContent>
         {(onClose) => (
           <form
@@ -121,47 +121,45 @@ export default function GameModal(props: any) {
               onSave();
             }}
           >
-            <div>
-              <ModalHeader>
-                {game.name !== "" ? game.name : "[unknown name]"}
-              </ModalHeader>
-              <ModalBody>
-                {game.name != "" ? (
-                  <Input
-                    name="gameName"
-                    type="text"
-                    isRequired
-                    label="Game Name"
-                    value={gameName}
-                    onValueChange={(value) => setGameName(value)}
-                    isDisabled={readOnly}
-                  />
-                ) : (
-                  ""
-                )}
+            <ModalHeader>
+              {game.name !== "" ? game.name : "[unknown name]"}
+            </ModalHeader>
+            <ModalBody>
+              {game.name != "" ? (
+                <Input
+                  name="gameName"
+                  type="text"
+                  isRequired
+                  label="Game Name"
+                  value={gameName}
+                  onValueChange={(value) => setGameName(value)}
+                  isDisabled={readOnly}
+                />
+              ) : (
+                ""
+              )}
 
-                {bubbles}
-              </ModalBody>
-              <ModalFooter>
-                {!readOnly && game.copies.length === 0 ? (
-                  <Button color="danger" onPress={onDelete}>
-                    Delete
-                  </Button>
-                ) : (
-                  ""
-                )}
-                {readOnly ? (
-                  ""
-                ) : (
-                  <Button color="success" type="submit">
-                    Save
-                  </Button>
-                )}
-                <Button color="primary" onPress={onClose}>
-                  Close
+              {bubbles}
+            </ModalBody>
+            <ModalFooter>
+              {!readOnly && game.copies.length === 0 ? (
+                <Button color="danger" onPress={onDelete}>
+                  Delete
                 </Button>
-              </ModalFooter>
-            </div>
+              ) : (
+                ""
+              )}
+              {readOnly ? (
+                ""
+              ) : (
+                <Button color="success" type="submit">
+                  Save
+                </Button>
+              )}
+              <Button color="primary" onPress={onClose}>
+                Close
+              </Button>
+            </ModalFooter>
           </form>
         )}
       </ModalContent>
