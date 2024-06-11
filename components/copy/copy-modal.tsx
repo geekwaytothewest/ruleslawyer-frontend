@@ -133,12 +133,12 @@ export default function CopyModal(props: any) {
         filterText = "";
       }
 
-      if (filterText && filterText.length > 3) {
+      if (filterText) {
         let res = await frontendFetch(
           "GET",
           `/org/${
             copy ? copy.organizationId : organizationId
-          }/games/search/${filterText}`,
+          }/games/autocomplete/${filterText}`,
           null,
           session?.data?.token,
           signal
@@ -255,6 +255,7 @@ export default function CopyModal(props: any) {
                 placeholder="Select a collection"
                 defaultSelectedKeys={[copy ? copy.collectionId : null]}
                 isDisabled={readOnly}
+                isRequired
                 onChange={(event) => {
                   setCopyCollectionId(Number(event.target.value));
                 }}
@@ -274,6 +275,7 @@ export default function CopyModal(props: any) {
                 items={gameList.items}
                 onInputChange={gameList.setFilterText}
                 isDisabled={readOnly}
+                isRequired
                 onSelectionChange={(key: React.Key | null) =>
                   setGameId(key?.valueOf())
                 }
@@ -288,6 +290,7 @@ export default function CopyModal(props: any) {
                   type="text"
                   label="New Game Name"
                   value={newGameName}
+                  isRequired
                   onValueChange={(value) => setNewGameName(value)}
                 />
               ) : (
