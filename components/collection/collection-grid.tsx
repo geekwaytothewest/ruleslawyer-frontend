@@ -93,7 +93,7 @@ export default function CollectionGrid(props: any) {
         content="Import Collection"
         showArrow={true}
         color="success"
-        delay={500}
+        delay={1000}
       >
         <span className="text-7xl fixed bottom-28 right-8 hover:text-gwgreen hover:cursor-pointer">
           <TbPackageImport onClick={onOpenImport} />
@@ -103,7 +103,7 @@ export default function CollectionGrid(props: any) {
         content="Create Collection"
         showArrow={true}
         color="success"
-        delay={500}
+        delay={1000}
       >
         <span className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
           <IoMdAddCircle onClick={onOpenCreate} />

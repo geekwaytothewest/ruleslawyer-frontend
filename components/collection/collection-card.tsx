@@ -202,7 +202,7 @@ export default function CollectionCard(props: any) {
               content={"Detach " + collection.name}
               showArrow={true}
               color="success"
-              delay={500}
+              delay={1000}
             >
               <span>
                 <GrDetach
@@ -224,7 +224,7 @@ export default function CollectionCard(props: any) {
               content={"Delete " + collection.name}
               showArrow={true}
               color="success"
-              delay={500}
+              delay={1000}
             >
               <span>
                 <FaTrashCan
@@ -243,7 +243,7 @@ export default function CollectionCard(props: any) {
               content={"Edit " + collection.name}
               showArrow={true}
               color="success"
-              delay={500}
+              delay={1000}
             >
               <span>
                 <FaEdit

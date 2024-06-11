@@ -149,7 +149,7 @@ export default function GameGrid(props: any) {
         content="Create Game"
         showArrow={true}
         color="success"
-        delay={500}
+        delay={1000}
       >
         <span className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
           <IoMdAddCircle onClick={onOpenCreate} />

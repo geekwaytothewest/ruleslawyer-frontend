@@ -202,7 +202,7 @@ export default function ConventionInfo(props: any) {
               content="Create Collection"
               showArrow={true}
               color="success"
-              delay={500}
+              delay={1000}
             >
               <span>
                 <IoMdAddCircle
@@ -215,7 +215,7 @@ export default function ConventionInfo(props: any) {
               content="Import Collection"
               showArrow={true}
               color="success"
-              delay={500}
+              delay={1000}
             >
               <span>
                 {" "}
@@ -229,7 +229,7 @@ export default function ConventionInfo(props: any) {
               content="Attach Collection"
               showArrow={true}
               color="success"
-              delay={500}
+              delay={1000}
             >
               <span>
                 <GrAttachment
@@ -314,7 +314,7 @@ export default function ConventionInfo(props: any) {
         content={"Edit " + convention.name}
         showArrow={true}
         color="success"
-        delay={500}
+        delay={1000}
       >
         <span className="text-3xl absolute bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
           <FaEdit onClick={onOpenEdit} />
