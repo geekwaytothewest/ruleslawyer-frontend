@@ -76,7 +76,7 @@ export default function CopyBubbles(props: any) {
           )}
           {c.barcodeLabel}
         </div>
-        <CopyModal disclosure={disclosure} copyIn={c} copyId={c.id} />
+        <CopyModal disclosure={disclosure} copyIn={c} copyId={c.id} organizationId={c.organizationId} />
       </span>
     );
   };

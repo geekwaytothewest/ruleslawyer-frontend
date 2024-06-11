@@ -35,11 +35,6 @@ export default function GameModal(props: any) {
   const { isOpen, onOpen, onClose } = disclosure;
 
   const onCopyModalClose = () => {
-    if (gameIn) {
-      gameId = gameIn.id;
-      gameIn = undefined;
-    }
-
     setTrigger(trigger + 1);
   };
 
@@ -79,7 +74,7 @@ export default function GameModal(props: any) {
       setBubbles(<CopyBubbles game={game} disclosure={copyDisclosure} />);
       setLoading(false);
     } else {
-      frontendFetch("GET", "/game/" + gameId, null, session?.data?.token)
+      frontendFetch("GET", "/game/" + (game ? game.id : gameId), null, session?.data?.token)
         .then((res: any) => res.json())
         .then((data: any) => {
           setData(data);
@@ -91,7 +86,7 @@ export default function GameModal(props: any) {
     }
     // copyDisclosure is not a dependancy - remove a warning and prevent errors
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameIn, gameId, session?.data?.token, game, trigger]);
+  }, [gameIn, gameId, session?.data?.token, trigger]);
 
   useEffect(() => {
     if (permissions.user) {
