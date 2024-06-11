@@ -21,9 +21,11 @@ import { FaEdit } from "react-icons/fa";
 import { IoMdAddCircle } from "react-icons/io";
 import CollectionModal from "../collection/collection-modal";
 import { TbPackageImport } from "react-icons/tb";
-
+import {
+  DateFormatter
+} from "@internationalized/date";
 export default function ConventionInfo(props: any) {
-  let { id, editDisclosure } = props;
+  let { id } = props;
 
   const [convention, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
@@ -38,6 +40,11 @@ export default function ConventionInfo(props: any) {
   }: any = usePermissions();
 
   const session: any = useSession();
+  const formatter = new DateFormatter('en-US', {
+    dateStyle: "full",
+    timeStyle: "full",
+    timeZone: "America/Chicago",
+  });
 
   useEffect(() => {
     frontendFetch("GET", "/con/" + id, null, session?.data?.token)
@@ -111,7 +118,6 @@ export default function ConventionInfo(props: any) {
       .then((res: any) => res.json())
       .then((data: any) => {
         setData(data);
-        setLoading(false);
       })
       .catch((err: any) => {});
   };
@@ -155,6 +161,10 @@ export default function ConventionInfo(props: any) {
     onClose: onCloseImport,
   } = importCollectionDisclosure;
 
+  const editDisclosure = useDisclosure({
+    onClose: onModalClose,
+  })
+
   const {
     isOpen: isOpenEdit,
     onOpen: onOpenEdit,
@@ -166,7 +176,11 @@ export default function ConventionInfo(props: any) {
   return (
     <div className="relative">
       <h1>{convention.name}</h1>
-      <h2>{convention.theme}</h2>
+      <h2 className="mb-8">{convention.theme}</h2>
+
+      <p><b>Start Date: </b>{formatter.format(new Date(convention.startDate))}</p>
+      <p className="mb-8"><b>End Date: </b>{formatter.format(new Date(convention.endDate))}</p>
+
       <h3 className="flex">
         Collections:{" "}
         {readOnly ? (

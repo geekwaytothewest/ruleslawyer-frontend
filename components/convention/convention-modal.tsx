@@ -33,8 +33,8 @@ export default function ConventionModal(props: any) {
   const [conventionName, setConventionName]: any = useState(null);
   const [conventionTheme, setConventionTheme]: any = useState(null);
   const [tteConventionId, setTTEConventionId]: any = useState(null);
-  const [startDate, setStartDate]: any = useState(now(getLocalTimeZone()));
-  const [startTime, setStartTime]: any = useState(now(getLocalTimeZone()));
+  const [startDate, setStartDate]: any = useState(now(getLocalTimeZone()).set({second: 0, millisecond: 0}));
+  const [startTime, setStartTime]: any = useState(now(getLocalTimeZone()).set({second: 0, millisecond: 0}));
   const [endDate, setEndDate]: any = useState(null);
   const [endTime, setEndTime]: any = useState(null);
   const [readOnly, setReadOnly]: any = useState(true);
@@ -107,8 +107,8 @@ export default function ConventionModal(props: any) {
       setTTEConventionId(conventionIn.tteConventionId);
       setConventionTypeId(conventionIn.typeId);
 
-      const parsedStart = parseAbsoluteToLocal(conventionIn.startDate);
-      const parsedEnd = parseAbsoluteToLocal(conventionIn.endDate);
+      const parsedStart = parseAbsoluteToLocal(conventionIn.startDate).set({second: 0, millisecond: 0});
+      const parsedEnd = parseAbsoluteToLocal(conventionIn.endDate).set({second: 0, millisecond: 0});
 
       setStartDate(parsedStart);
       setStartTime(parsedStart);
@@ -127,8 +127,8 @@ export default function ConventionModal(props: any) {
           setTTEConventionId(data.tteConventionId);
           setConventionTypeId(data.typeId);
 
-          const parsedStart = parseAbsoluteToLocal(conventionIn.startDate);
-          const parsedEnd = parseAbsoluteToLocal(conventionIn.endDate);
+          const parsedStart = parseAbsoluteToLocal(conventionIn.startDate).set({second: 0, millisecond: 0});
+          const parsedEnd = parseAbsoluteToLocal(conventionIn.endDate).set({second: 0, millisecond: 0});
 
           setStartDate(parsedStart);
           setStartTime(parsedStart);

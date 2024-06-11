@@ -93,10 +93,6 @@ export default function ConventionList(props: any) {
     onClose: onCloseCreate,
   } = createDisclosure;
 
-  const editDisclosure = useDisclosure({
-    onClose: onModalClose,
-  });
-
   return (
     <div>
       <Accordion
@@ -108,7 +104,7 @@ export default function ConventionList(props: any) {
           (c: { id: React.Key | null | undefined; name: string }) => {
             return (
               <AccordionItem key={c.id} aria-label={c.name} title={c.name}>
-                <ConventionInfo id={c.id} editDisclosure={editDisclosure} />
+                <ConventionInfo id={c.id} />
               </AccordionItem>
             );
           }
@@ -123,7 +119,7 @@ export default function ConventionList(props: any) {
       <ConventionModal
         disclosure={createDisclosure}
         organizationId={organizationId}
-      ></ConventionModal>
+      />
     </div>
   );
 }

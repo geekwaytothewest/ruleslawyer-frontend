@@ -179,12 +179,12 @@ export default function CollectionCard(props: any) {
         </div>
         <div className="flex-col pr-3 w-40">
           <span className="inline-block align-middle h-full">
-            <h1>
+            <p>
               {collection.name !== ""
                 ? collection.name
                 : "[unknown collection]"}
-            </h1>
-            <h2>Copies: {collection._count.copies}</h2>
+            </p>
+            <p>Copies: {collection._count.copies}</p>
           </span>
         </div>
         {conventionId && !readOnly ? (

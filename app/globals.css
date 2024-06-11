@@ -35,3 +35,13 @@ body {
 input, textarea {
   background-color: transparent;
 }
+
+h1 {
+  font-size: x-large;
+  font-weight: bold;
+}
+
+h2 {
+  font-size: larger;
+  font-weight: bold;
+}

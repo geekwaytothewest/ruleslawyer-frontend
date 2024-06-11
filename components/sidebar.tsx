@@ -56,7 +56,7 @@ export default function SideBar() {
                   }
                 )}
               >
-                <h1>{permissions.organizations.data[0].organization.name}</h1>
+                {permissions.organizations.data[0].organization.name}
               </div>
             </Link>
           )}
@@ -78,7 +78,7 @@ export default function SideBar() {
                 }
               )}
             >
-              <h1>Organizations</h1>
+              Organizations
             </div>
           </Link>
         )}
@@ -127,7 +127,7 @@ export default function SideBar() {
                 }
               )}
             >
-              <h1>Conventions</h1>
+              Conventions
             </div>
           </Link>
         )}
@@ -149,7 +149,7 @@ export default function SideBar() {
                   }
                 )}
               >
-                <h1>Conventions</h1>
+                Conventions
               </div>
             </Link>
           )}
@@ -173,7 +173,7 @@ export default function SideBar() {
                   }
                 )}
               >
-                <h1>Games</h1>
+                Games
               </div>
             </Link>
           )}
@@ -197,7 +197,7 @@ export default function SideBar() {
                   }
                 )}
               >
-                <h1>Collections</h1>
+                Collections
               </div>
             </Link>
           )}
