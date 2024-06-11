@@ -95,7 +95,9 @@ export default function GameModal(props: any) {
 
   useEffect(() => {
     if (permissions.user) {
-      if (
+      if (permissions.user.superAdmin) {
+        setReadOnly(false);
+      } else if (
         permissions.organizations.data?.filter(
           (d: { organizationId: any; admin: boolean }) =>
             d.organizationId == game?.organizationId && d.admin === true
@@ -105,6 +107,8 @@ export default function GameModal(props: any) {
       }
 
       setLoading(false);
+    } else {
+      setReadOnly(true);
     }
   }, [permissions, game]);
 

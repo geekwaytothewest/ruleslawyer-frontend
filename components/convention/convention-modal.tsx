@@ -147,7 +147,9 @@ export default function ConventionModal(props: any) {
 
   useEffect(() => {
     if (permissions.user) {
-      if (convention) {
+      if (permissions.user.superAdmin) {
+        setReadOnly(false);
+      } else if (convention) {
         if (
           permissions.organizations.data?.filter(
             (d: { organizationId: any; admin: boolean }) =>
@@ -183,6 +185,8 @@ export default function ConventionModal(props: any) {
       } else {
         setReadOnly(true);
       }
+    } else {
+      setReadOnly(true);
     }
   }, [permissions, convention, organizationId]);
 

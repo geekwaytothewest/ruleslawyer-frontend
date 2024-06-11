@@ -1,11 +1,17 @@
 "use client";
-import { Accordion, AccordionItem, useDisclosure } from "@nextui-org/react";
+import {
+  Accordion,
+  AccordionItem,
+  Tooltip,
+  useDisclosure,
+} from "@nextui-org/react";
 import React, { act, useEffect, useState } from "react";
 import ConventionInfo from "./convention-info";
 import { IoMdAddCircle } from "react-icons/io";
 import ConventionModal from "./convention-modal";
 import frontendFetch from "@/utilities/frontendFetch";
 import { useSession } from "next-auth/react";
+import usePermissions from "@/utilities/swr/usePermissions";
 
 export default function ConventionList(props: any) {
   let { conventionsIn, organizationId } = props;
@@ -14,8 +20,34 @@ export default function ConventionList(props: any) {
   const [isLoading, setLoading]: any = useState(true);
   const [activeConvention, setActiveConvention]: any = useState(undefined);
   const [selectedKeys, setSelectedKeys]: any = React.useState(new Set([""]));
+  const [readOnly, setReadOnly]: any = useState(true);
+  const {
+    permissions,
+    isLoading: isLoadingPermissions,
+    isError,
+  }: any = usePermissions();
 
   const session: any = useSession();
+  useEffect(() => {
+    if (permissions.user) {
+      if (permissions.user.superAdmin) {
+        setReadOnly(false);
+      } else if (organizationId) {
+        if (
+          permissions.organizations.data?.filter(
+            (d: { organizationId: any; admin: boolean }) =>
+              d.organizationId == organizationId && d.admin === true
+          ).length > 0
+        ) {
+          setReadOnly(false);
+        } else {
+          setReadOnly(true);
+        }
+      } else {
+        setReadOnly(true);
+      }
+    }
+  }, [permissions, organizationId]);
 
   useEffect(() => {
     if (conventionsIn) {
@@ -128,10 +160,17 @@ export default function ConventionList(props: any) {
         )}
       </Accordion>
 
-      <IoMdAddCircle
-        className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer"
-        onClick={onOpenCreate}
-      />
+
+      <Tooltip
+        content="Create Convention"
+        showArrow={true}
+        color="success"
+        delay={1000}
+      >
+        <span className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
+          <IoMdAddCircle onClick={onOpenCreate} />
+        </span>
+      </Tooltip>
 
       <ConventionModal
         disclosure={createDisclosure}

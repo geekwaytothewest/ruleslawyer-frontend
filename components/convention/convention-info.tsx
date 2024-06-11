@@ -56,30 +56,38 @@ export default function ConventionInfo(props: any) {
   }, [id, session?.data?.token]);
 
   useEffect(() => {
-    if (permissions.user && convention) {
-      if (
-        permissions.organizations.data?.filter(
-          (d: { organizationId: any; admin: boolean }) =>
-            d.organizationId == convention.organizationId && d.admin === true
-        ).length > 0
-      ) {
+    if (permissions.user) {
+      if (permissions.user.superAdmin) {
         setReadOnly(false);
-      } else {
+      } else if (convention) {
         if (
-          permissions.conventions.data?.filter(
-            (d: { conventionId: any; admin: boolean }) =>
-              d.conventionId == convention.conventionId && d.admin === true
+          permissions.organizations.data?.filter(
+            (d: { organizationId: any; admin: boolean }) =>
+              d.organizationId == convention.organizationId && d.admin === true
           ).length > 0
         ) {
           setReadOnly(false);
         } else {
-          setReadOnly(true);
+          if (
+            permissions.conventions.data?.filter(
+              (d: { conventionId: any; admin: boolean }) =>
+                d.conventionId == convention.conventionId && d.admin === true
+            ).length > 0
+          ) {
+            setReadOnly(false);
+          } else {
+            setReadOnly(true);
+          }
+
+          setLoading(false);
         }
 
         setLoading(false);
+      } else {
+        setReadOnly(true);
       }
-
-      setLoading(false);
+    } else {
+      setReadOnly(true);
     }
   }, [permissions, convention]);
 
