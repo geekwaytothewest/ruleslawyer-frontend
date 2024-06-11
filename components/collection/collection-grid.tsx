@@ -89,12 +89,22 @@ export default function CollectionGrid(props: any) {
           }
         )}
       </div>
-      <Tooltip content="Import Collection" showArrow={true} color="success">
+      <Tooltip
+        content="Import Collection"
+        showArrow={true}
+        color="success"
+        delay={500}
+      >
         <span className="text-7xl fixed bottom-28 right-8 hover:text-gwgreen hover:cursor-pointer">
           <TbPackageImport onClick={onOpenImport} />
         </span>
       </Tooltip>
-      <Tooltip content="Create Collection" showArrow={true} color="success">
+      <Tooltip
+        content="Create Collection"
+        showArrow={true}
+        color="success"
+        delay={500}
+      >
         <span className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
           <IoMdAddCircle onClick={onOpenCreate} />
         </span>

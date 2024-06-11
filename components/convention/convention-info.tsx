@@ -174,9 +174,11 @@ export default function ConventionInfo(props: any) {
 
   return (
     <div className="relative">
-      <div className="text-gwgreen" hidden={(hideTitle && hideSubtitle)}>
+      <div className="text-gwgreen" hidden={hideTitle && hideSubtitle}>
         <h1 hidden={hideTitle}>{convention.name}</h1>
-        <h2 className="mb-8" hidden={hideSubtitle}>{convention.theme}</h2>
+        <h2 className="mb-8" hidden={hideSubtitle}>
+          {convention.theme}
+        </h2>
       </div>
 
       <p>
@@ -200,6 +202,7 @@ export default function ConventionInfo(props: any) {
               content="Create Collection"
               showArrow={true}
               color="success"
+              delay={500}
             >
               <span>
                 <IoMdAddCircle
@@ -212,6 +215,7 @@ export default function ConventionInfo(props: any) {
               content="Import Collection"
               showArrow={true}
               color="success"
+              delay={500}
             >
               <span>
                 {" "}
@@ -225,6 +229,7 @@ export default function ConventionInfo(props: any) {
               content="Attach Collection"
               showArrow={true}
               color="success"
+              delay={500}
             >
               <span>
                 <GrAttachment
@@ -305,11 +310,14 @@ export default function ConventionInfo(props: any) {
         )}
       </div>
 
-      <Tooltip content={"Edit " + convention.name} showArrow={true} color="success">
+      <Tooltip
+        content={"Edit " + convention.name}
+        showArrow={true}
+        color="success"
+        delay={500}
+      >
         <span className="text-3xl absolute bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
-          <FaEdit
-            onClick={onOpenEdit}
-          />
+          <FaEdit onClick={onOpenEdit} />
         </span>
       </Tooltip>
       <ConventionModal

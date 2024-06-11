@@ -145,7 +145,12 @@ export default function GameGrid(props: any) {
         )}
       </div>
 
-      <Tooltip content="Create Game" showArrow={true} color="success">
+      <Tooltip
+        content="Create Game"
+        showArrow={true}
+        color="success"
+        delay={500}
+      >
         <span className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
           <IoMdAddCircle onClick={onOpenCreate} />
         </span>
