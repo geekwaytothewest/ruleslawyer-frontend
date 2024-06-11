@@ -245,6 +245,7 @@ export default function CopyModal(props: any) {
           <div>
             <form
               onSubmit={(e) => {
+                e.preventDefault();
                 onSave();
               }}
             >

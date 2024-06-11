@@ -117,6 +117,7 @@ export default function GameModal(props: any) {
         {(onClose) => (
           <form
             onSubmit={(e) => {
+              e.preventDefault();
               onSave();
             }}
           >

@@ -212,6 +212,7 @@ export default function ConventionModal(props: any) {
         {(onClose) => (
           <form
             onSubmit={(e) => {
+              e.preventDefault();
               onSave();
             }}
           >

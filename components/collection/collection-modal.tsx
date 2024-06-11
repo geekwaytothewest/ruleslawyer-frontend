@@ -208,6 +208,7 @@ export default function CollectionModal(props: any) {
         {(onClose) => (
           <form
             onSubmit={(e) => {
+              e.preventDefault();
               onSave();
             }}
           >
