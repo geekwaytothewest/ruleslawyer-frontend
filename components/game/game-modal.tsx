@@ -74,7 +74,12 @@ export default function GameModal(props: any) {
       setBubbles(<CopyBubbles game={gameIn} disclosure={copyDisclosure} />);
       setLoading(false);
     } else {
-      frontendFetch("GET", "/game/" + (game !== null ? game.id : gameId), null, session?.data?.token)
+      frontendFetch(
+        "GET",
+        "/game/" + (game !== null ? game.id : gameId),
+        null,
+        session?.data?.token
+      )
         .then((res: any) => res.json())
         .then((data: any) => {
           setData(data);
@@ -110,47 +115,53 @@ export default function GameModal(props: any) {
     <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
       <ModalContent>
         {(onClose) => (
-          <>
-            <ModalHeader>
-              {game.name !== "" ? game.name : "[unknown name]"}
-            </ModalHeader>
-            <ModalBody>
-              {game.name != "" ? (
-                <Input
-                  name="gameName"
-                  type="text"
-                  isRequired
-                  label="Game Name"
-                  value={gameName}
-                  onValueChange={(value) => setGameName(value)}
-                  isDisabled={readOnly}
-                />
-              ) : (
-                ""
-              )}
+          <form
+            onSubmit={(e) => {
+              onSave();
+            }}
+          >
+            <div>
+              <ModalHeader>
+                {game.name !== "" ? game.name : "[unknown name]"}
+              </ModalHeader>
+              <ModalBody>
+                {game.name != "" ? (
+                  <Input
+                    name="gameName"
+                    type="text"
+                    isRequired
+                    label="Game Name"
+                    value={gameName}
+                    onValueChange={(value) => setGameName(value)}
+                    isDisabled={readOnly}
+                  />
+                ) : (
+                  ""
+                )}
 
-              {bubbles}
-            </ModalBody>
-            <ModalFooter>
-              {!readOnly && game.copies.length === 0 ? (
-                <Button color="danger" onPress={onDelete}>
-                  Delete
+                {bubbles}
+              </ModalBody>
+              <ModalFooter>
+                {!readOnly && game.copies.length === 0 ? (
+                  <Button color="danger" onPress={onDelete}>
+                    Delete
+                  </Button>
+                ) : (
+                  ""
+                )}
+                {readOnly ? (
+                  ""
+                ) : (
+                  <Button color="success" type="submit">
+                    Save
+                  </Button>
+                )}
+                <Button color="primary" onPress={onClose}>
+                  Close
                 </Button>
-              ) : (
-                ""
-              )}
-              {readOnly ? (
-                ""
-              ) : (
-                <Button color="success" onPress={onSave}>
-                  Save
-                </Button>
-              )}
-              <Button color="primary" onPress={onClose}>
-                Close
-              </Button>
-            </ModalFooter>
-          </>
+              </ModalFooter>
+            </div>
+          </form>
         )}
       </ModalContent>
     </Modal>

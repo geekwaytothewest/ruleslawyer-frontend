@@ -210,85 +210,91 @@ export default function ConventionModal(props: any) {
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalContent>
         {(onClose) => (
-          <div>
-            <ModalHeader>
-              {conventionId ? "Edit" : "Create"} Convention
-            </ModalHeader>
-            <ModalBody>
-              <Select
-                name="conventionTypeSelect"
-                items={conventionTypes}
-                label="Convention Type"
-                placeholder="Select a convention type"
-                defaultSelectedKeys={[conventionTypeId]}
-                isDisabled={readOnly}
-                onChange={(event) => {
-                  setConventionTypeId(Number(event.target.value));
-                }}
-              >
-                {(conventionType: any) => (
-                  <SelectItem
-                    key={conventionType.id}
-                    value={conventionType.name}
-                  >
-                    {conventionType.name}
-                  </SelectItem>
+          <form
+            onSubmit={(e) => {
+              onSave();
+            }}
+          >
+            <div>
+              <ModalHeader>
+                {conventionId ? "Edit" : "Create"} Convention
+              </ModalHeader>
+              <ModalBody>
+                <Select
+                  name="conventionTypeSelect"
+                  items={conventionTypes}
+                  label="Convention Type"
+                  placeholder="Select a convention type"
+                  defaultSelectedKeys={[conventionTypeId]}
+                  isDisabled={readOnly}
+                  onChange={(event) => {
+                    setConventionTypeId(Number(event.target.value));
+                  }}
+                >
+                  {(conventionType: any) => (
+                    <SelectItem
+                      key={conventionType.id}
+                      value={conventionType.name}
+                    >
+                      {conventionType.name}
+                    </SelectItem>
+                  )}
+                </Select>
+                <Input
+                  name="name"
+                  type="text"
+                  isRequired
+                  label="Name"
+                  value={conventionName}
+                  onValueChange={(value) => setConventionName(value)}
+                  isDisabled={readOnly}
+                />
+                <Input
+                  name="theme"
+                  type="text"
+                  label="Theme"
+                  value={conventionTheme}
+                  onValueChange={(value) => setConventionTheme(value)}
+                  isDisabled={readOnly}
+                />
+                <Input
+                  name="tteConventionId"
+                  type="text"
+                  label="TTE Convention Id"
+                  placeholder="Enter the convention id from Tabletop.Events"
+                  value={tteConventionId ?? ""}
+                  onValueChange={(value) => setTTEConventionId(value)}
+                  isDisabled={readOnly}
+                />
+                <DatePicker
+                  label="Start Date"
+                  isRequired
+                  showMonthAndYearPickers
+                  onChange={(value) => setStartDate(value)}
+                  defaultValue={startDate}
+                />
+                <DatePicker
+                  label="End Date"
+                  isRequired
+                  showMonthAndYearPickers
+                  onChange={(value) => setEndDate(value)}
+                  defaultValue={endDate}
+                />
+              </ModalBody>
+              <ModalFooter>
+                {readOnly ? (
+                  ""
+                ) : (
+                  <Button color="success" type="submit">
+                    Save
+                  </Button>
                 )}
-              </Select>
-              <Input
-                name="name"
-                type="text"
-                isRequired
-                label="Name"
-                value={conventionName}
-                onValueChange={(value) => setConventionName(value)}
-                isDisabled={readOnly}
-              />
-              <Input
-                name="theme"
-                type="text"
-                label="Theme"
-                value={conventionTheme}
-                onValueChange={(value) => setConventionTheme(value)}
-                isDisabled={readOnly}
-              />
-              <Input
-                name="tteConventionId"
-                type="text"
-                label="TTE Convention Id"
-                placeholder="Enter the convention id from Tabletop.Events"
-                value={tteConventionId ?? ""}
-                onValueChange={(value) => setTTEConventionId(value)}
-                isDisabled={readOnly}
-              />
-              <DatePicker
-                label="Start Date"
-                isRequired
-                showMonthAndYearPickers
-                onChange={(value) => setStartDate(value)}
-                defaultValue={startDate}
-              />
-              <DatePicker
-                label="End Date"
-                isRequired
-                showMonthAndYearPickers
-                onChange={(value) => setEndDate(value)}
-                defaultValue={endDate}
-              />
-            </ModalBody>
-            <ModalFooter>
-              {readOnly ? (
-                ""
-              ) : (
-                <Button color="success" onPress={onSave}>
-                  Save
+                <Button color="primary" onPress={onClose}>
+                  Close
                 </Button>
-              )}
-              <Button color="primary" onPress={onClose}>
-                Close
-              </Button>
-            </ModalFooter>
-          </div>
+              </ModalFooter>
+            </div>
+          </form>
         )}
       </ModalContent>
     </Modal>

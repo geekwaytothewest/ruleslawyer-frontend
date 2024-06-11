@@ -81,7 +81,10 @@ export default function CollectionModal(props: any) {
           if (conventionId) {
             frontendFetch(
               "POST",
-              "/con/" + conventionId + "/conventionCollection/" + data.collectionId,
+              "/con/" +
+                conventionId +
+                "/conventionCollection/" +
+                data.collectionId,
               null,
               session?.data?.token
             )
@@ -93,7 +96,7 @@ export default function CollectionModal(props: any) {
           } else {
             onClose();
           }
-        })
+        });
     } else {
       frontendFetch(
         "POST",
@@ -203,43 +206,57 @@ export default function CollectionModal(props: any) {
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalContent>
         {(onClose) => (
-          <div>
-            <ModalHeader>
-              {collection ? "Edit" : importFile ? "Import" : "Create"}{" "}
-              Collection
-            </ModalHeader>
-            <ModalBody>
-              <Input
-                name="name"
-                type="text"
-                isRequired
-                label="Name"
-                value={collectionName}
-                onValueChange={(value) => setCollectionName(value)}
-                isDisabled={readOnly}
-              />
-              <Checkbox
-                isSelected={allowWinning}
-                onValueChange={setAllowWinning}
-                isDisabled={readOnly}
-              >
-                Allow Winning
-              </Checkbox>
-              {importFile ? <input name="importFile" type="file" onChange={handleImportCSV}/> : ""}
-            </ModalBody>
-            <ModalFooter>
-              {readOnly ? (
-                ""
-              ) : (
-                <Button color="success" onPress={onSave}>
-                  { importFile ? "Import" : "Save" }
+          <form
+            onSubmit={(e) => {
+              onSave();
+            }}
+          >
+            <div>
+              <ModalHeader>
+                {collection ? "Edit" : importFile ? "Import" : "Create"}{" "}
+                Collection
+              </ModalHeader>
+              <ModalBody>
+                <Input
+                  name="name"
+                  type="text"
+                  isRequired
+                  label="Name"
+                  value={collectionName}
+                  onValueChange={(value) => setCollectionName(value)}
+                  isDisabled={readOnly}
+                />
+                <Checkbox
+                  isSelected={allowWinning}
+                  onValueChange={setAllowWinning}
+                  isDisabled={readOnly}
+                >
+                  Allow Winning
+                </Checkbox>
+                {importFile ? (
+                  <input
+                    name="importFile"
+                    type="file"
+                    onChange={handleImportCSV}
+                  />
+                ) : (
+                  ""
+                )}
+              </ModalBody>
+              <ModalFooter>
+                {readOnly ? (
+                  ""
+                ) : (
+                  <Button color="success" type="submit">
+                    {importFile ? "Import" : "Save"}
+                  </Button>
+                )}
+                <Button color="primary" onPress={onClose}>
+                  Close
                 </Button>
-              )}
-              <Button color="primary" onPress={onClose}>
-                Close
-              </Button>
-            </ModalFooter>
-          </div>
+              </ModalFooter>
+            </div>
+          </form>
         )}
       </ModalContent>
     </Modal>
