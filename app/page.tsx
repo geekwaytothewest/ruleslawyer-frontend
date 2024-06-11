@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Profile from "@/components/profile";
-import { Input } from "@nextui-org/react"
 
 export default async function Home() {
   return (
