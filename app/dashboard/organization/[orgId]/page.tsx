@@ -26,18 +26,27 @@ export default function OrgView({ params }: { params: { orgId: string } }) {
   return (
     <div>
       <div>
-        <Link href={`/dashboard/organization/${params.orgId}/conventions`}>
+        <Link
+          href={`/dashboard/organization/${params.orgId}/conventions`}
+          className="hover:text-gwgreen"
+        >
           Conventions
         </Link>
       </div>
       <div>
-        <Link href={`/dashboard/organization/${params.orgId}/collections`}>
-          Collections
+        <Link
+          href={`/dashboard/organization/${params.orgId}/games`}
+          className="hover:text-gwgreen"
+        >
+          Games
         </Link>
       </div>
       <div>
-        <Link href={`/dashboard/organization/${params.orgId}/games`}>
-          Games
+        <Link
+          href={`/dashboard/organization/${params.orgId}/collections`}
+          className="hover:text-gwgreen"
+        >
+          Collections
         </Link>
       </div>
     </div>
