@@ -246,32 +246,40 @@ export default function ConventionInfo(props: any) {
       ) : (
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalContent>
-            <ModalHeader>Attach Collection</ModalHeader>
-            <ModalBody>
-              <Select
-                name="collectionSelect"
-                items={filteredCollections}
-                label="Collection to Attach"
-                placeholder="Select a collection"
-                onChange={(event) => {
-                  setCollectionIdToAttach(Number(event.target.value));
-                }}
-              >
-                {(collection: any) => (
-                  <SelectItem key={collection.id} value={collection.name}>
-                    {collection.name}
-                  </SelectItem>
-                )}
-              </Select>
-            </ModalBody>
-            <ModalFooter>
-              <Button color="success" onPress={onSave}>
-                Attach
-              </Button>
-              <Button color="primary" onPress={onClose}>
-                Cancel
-              </Button>
-            </ModalFooter>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                onSave();
+              }}
+            >
+              <ModalHeader>Attach Collection</ModalHeader>
+              <ModalBody>
+                <Select
+                  name="collectionSelect"
+                  items={filteredCollections}
+                  label="Collection to Attach"
+                  placeholder="Select a collection"
+                  isRequired
+                  onChange={(event) => {
+                    setCollectionIdToAttach(Number(event.target.value));
+                  }}
+                >
+                  {(collection: any) => (
+                    <SelectItem key={collection.id} value={collection.name}>
+                      {collection.name}
+                    </SelectItem>
+                  )}
+                </Select>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="success" type="submit">
+                  Attach
+                </Button>
+                <Button color="primary" onPress={onClose}>
+                  Cancel
+                </Button>
+              </ModalFooter>
+            </form>
           </ModalContent>
         </Modal>
       )}
