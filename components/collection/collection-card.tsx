@@ -181,10 +181,12 @@ export default function CollectionCard(props: any) {
     <Link
       className="relative"
       href={
-        "/dashboard/organization/" +
-        collection.organizationId +
-        "/collection/" +
-        collection.id
+        readOnly
+          ? "/dashboard/collection/" + collection.id
+          : "/dashboard/organization/" +
+            collection.organizationId +
+            "/collection/" +
+            collection.id
       }
     >
       <div className="flex items-center border-2 border-gwblue w-80 h-32 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] cursor-pointer">

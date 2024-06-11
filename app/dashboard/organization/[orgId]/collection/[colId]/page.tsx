@@ -1,18 +1,15 @@
 "use client";
 import GameGrid from "@/components/game/game-grid";
-import { useSession } from "next-auth/react";
-import React, { useState } from "react";
+import React from "react";
 
 export default function OrgCollectionView({
   params,
 }: {
-  params: { orgId: string; colId: string };
+  params: { colId: string };
 }) {
-  const session: any = useSession();
-
   return (
     <div>
-      <GameGrid collectionId={params.colId} organizationId={params.orgId} />
+      <GameGrid collectionId={params.colId} />
     </div>
   );
 }
