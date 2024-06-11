@@ -71,15 +71,15 @@ export default function GameModal(props: any) {
     if (gameIn && trigger === 0) {
       setData(gameIn);
       setGameName(gameIn.name);
-      setBubbles(<CopyBubbles game={game} disclosure={copyDisclosure} />);
+      setBubbles(<CopyBubbles game={gameIn} disclosure={copyDisclosure} />);
       setLoading(false);
     } else {
-      frontendFetch("GET", "/game/" + (game ? game.id : gameId), null, session?.data?.token)
+      frontendFetch("GET", "/game/" + (game !== null ? game.id : gameId), null, session?.data?.token)
         .then((res: any) => res.json())
         .then((data: any) => {
           setData(data);
-          setGameName(game.name);
-          setBubbles(<CopyBubbles game={game} disclosure={copyDisclosure} />);
+          setGameName(data.name);
+          setBubbles(<CopyBubbles game={data} disclosure={copyDisclosure} />);
           setLoading(false);
         })
         .catch((err: any) => {});
