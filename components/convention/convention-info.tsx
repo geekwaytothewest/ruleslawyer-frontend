@@ -12,6 +12,7 @@ import {
   ModalHeader,
   Select,
   SelectItem,
+  Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
 import { GrAttachment } from "react-icons/gr";
@@ -21,9 +22,7 @@ import { FaEdit } from "react-icons/fa";
 import { IoMdAddCircle } from "react-icons/io";
 import CollectionModal from "../collection/collection-modal";
 import { TbPackageImport } from "react-icons/tb";
-import {
-  DateFormatter
-} from "@internationalized/date";
+import { DateFormatter } from "@internationalized/date";
 export default function ConventionInfo(props: any) {
   let { id } = props;
 
@@ -40,7 +39,7 @@ export default function ConventionInfo(props: any) {
   }: any = usePermissions();
 
   const session: any = useSession();
-  const formatter = new DateFormatter('en-US', {
+  const formatter = new DateFormatter("en-US", {
     dateStyle: "full",
     timeStyle: "full",
     timeZone: "America/Chicago",
@@ -163,7 +162,7 @@ export default function ConventionInfo(props: any) {
 
   const editDisclosure = useDisclosure({
     onClose: onModalClose,
-  })
+  });
 
   const {
     isOpen: isOpenEdit,
@@ -175,30 +174,65 @@ export default function ConventionInfo(props: any) {
 
   return (
     <div className="relative">
-      <h1>{convention.name}</h1>
-      <h2 className="mb-8">{convention.theme}</h2>
+      <div className="text-gwgreen">
+        <h1>{convention.name}</h1>
+        <h2 className="mb-8">{convention.theme}</h2>
+      </div>
 
-      <p><b>Start Date: </b>{formatter.format(new Date(convention.startDate))}</p>
-      <p className="mb-8"><b>End Date: </b>{formatter.format(new Date(convention.endDate))}</p>
+      <p>
+        <b className="text-gwgreen">Start Date: </b>
+        {formatter.format(new Date(convention.startDate))}
+      </p>
+      <p className="mb-8">
+        <b className="text-gwgreen">End Date: </b>
+        {formatter.format(new Date(convention.endDate))}
+      </p>
 
       <h3 className="flex">
-        Collections:{" "}
+        <span className="text-gwgreen">
+          <b>Collections:</b>
+        </span>{" "}
         {readOnly ? (
           ""
         ) : (
           <div className="flex">
-            <IoMdAddCircle
-              className="ml-2 hover:cursor-pointer hover:text-gwgreen"
-              onClick={onOpenCreate}
-            />
-            <TbPackageImport
-              className="ml-2 hover:cursor-pointer hover:text-gwgreen"
-              onClick={onOpenImport}
-            />
-            <GrAttachment
-              className="ml-2 hover:cursor-pointer hover:text-gwgreen"
-              onClick={onOpen}
-            />
+            <Tooltip
+              content="Create Collection"
+              showArrow={true}
+              color="success"
+            >
+              <span>
+                <IoMdAddCircle
+                  className="ml-2 hover:cursor-pointer hover:text-gwgreen"
+                  onClick={onOpenCreate}
+                />
+              </span>
+            </Tooltip>
+            <Tooltip
+              content="Import Collection"
+              showArrow={true}
+              color="success"
+            >
+              <span>
+                {" "}
+                <TbPackageImport
+                  className="ml-2 hover:cursor-pointer hover:text-gwgreen"
+                  onClick={onOpenImport}
+                />
+              </span>
+            </Tooltip>
+            <Tooltip
+              content="Attach Collection"
+              showArrow={true}
+              color="success"
+            >
+              <span>
+                <GrAttachment
+                  className="ml-2 hover:cursor-pointer hover:text-gwgreen"
+                  onClick={onOpen}
+                />
+              </span>
+            </Tooltip>
           </div>
         )}
       </h3>
@@ -270,10 +304,14 @@ export default function ConventionInfo(props: any) {
           }
         )}
       </div>
-      <FaEdit
-        className="text-3xl absolute bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer"
-        onClick={onOpenEdit}
-      />
+
+      <Tooltip content={"Edit " + convention.name} showArrow={true} color="success">
+        <span className="text-3xl absolute bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
+          <FaEdit
+            onClick={onOpenEdit}
+          />
+        </span>
+      </Tooltip>
       <ConventionModal
         conventionIn={convention}
         conventionId={id}

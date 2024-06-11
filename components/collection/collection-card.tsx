@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import frontendFetch from "@/utilities/frontendFetch";
-import { Skeleton, useDisclosure } from "@nextui-org/react";
+import { Skeleton, Tooltip, useDisclosure } from "@nextui-org/react";
 import { BiSolidMessageAltError } from "react-icons/bi";
 import { IoLibrary } from "react-icons/io5";
 import { GrDetach } from "react-icons/gr";
@@ -172,7 +172,15 @@ export default function CollectionCard(props: any) {
   }
 
   return (
-    <Link className="relative" href={"/dashboard/organization/" + collection.organizationId + "/collection/" + collection.id}>
+    <Link
+      className="relative"
+      href={
+        "/dashboard/organization/" +
+        collection.organizationId +
+        "/collection/" +
+        collection.id
+      }
+    >
       <div className="flex items-center border-2 border-gwblue w-80 h-32 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] cursor-pointer">
         <div className="flex-col p-3 w-24">
           <IoLibrary size={64} />
@@ -189,10 +197,19 @@ export default function CollectionCard(props: any) {
         </div>
         {conventionId && !readOnly ? (
           <div className="absolute bottom-5 right-10">
-            <GrDetach
-              className="hover:text-gwlightblue"
-              onClick={(e) => detachCollection(e, collection.id)}
-            />
+            {" "}
+            <Tooltip
+              content={"Detach " + collection.name}
+              showArrow={true}
+              color="success"
+            >
+              <span>
+                <GrDetach
+                  className="hover:text-gwlightblue"
+                  onClick={(e) => detachCollection(e, collection.id)}
+                />
+              </span>
+            </Tooltip>
           </div>
         ) : (
           ""
@@ -201,24 +218,41 @@ export default function CollectionCard(props: any) {
         collection._count.copies === 0 &&
         collection._count.conventions === 0 ? (
           <div className="absolute right-10">
-            <FaTrashCan
-              className="hover:text-gwgreen hover:cursor-pointer"
-              onClick={(e) => deleteCollection(e, collection.id)}
-            />
+            {" "}
+            <Tooltip
+              content={"Delete " + collection.name}
+              showArrow={true}
+              color="success"
+            >
+              <span>
+                <FaTrashCan
+                  className="hover:text-gwgreen hover:cursor-pointer"
+                  onClick={(e) => deleteCollection(e, collection.id)}
+                />
+              </span>
+            </Tooltip>
           </div>
         ) : (
           ""
         )}
         {!readOnly ? (
           <div className="absolute top-5 right-10">
-            <FaEdit
-              className="hover:text-gwgreen hover:cursor-pointer"
-              onClick={(e) => {
-                 e.preventDefault();
-                 e.stopPropagation();
-                 onOpen();
-              }}
-            />
+            <Tooltip
+              content={"Edit " + collection.name}
+              showArrow={true}
+              color="success"
+            >
+              <span>
+                <FaEdit
+                  className="hover:text-gwgreen hover:cursor-pointer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onOpen();
+                  }}
+                />
+              </span>
+            </Tooltip>
           </div>
         ) : (
           ""

@@ -7,6 +7,7 @@ import {
   Select,
   SelectItem,
   Selection,
+  Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
 import { LuPackageSearch } from "react-icons/lu";
@@ -73,9 +74,7 @@ export default function GameGrid(props: any) {
     onClose: onModalClose,
   });
 
-  const {
-    onOpen: onOpenCreate,
-  } = createDisclosure;
+  const { onOpen: onOpenCreate } = createDisclosure;
 
   if (isLoading) {
     return (
@@ -146,10 +145,11 @@ export default function GameGrid(props: any) {
         )}
       </div>
 
-      <IoMdAddCircle
-        className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer"
-        onClick={onOpenCreate}
-      />
+      <Tooltip content="Create Game" showArrow={true} color="success">
+        <span className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
+          <IoMdAddCircle onClick={onOpenCreate} />
+        </span>
+      </Tooltip>
 
       <CopyModal
         disclosure={createDisclosure}

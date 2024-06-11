@@ -1,5 +1,5 @@
 "use client";
-import { useDisclosure } from "@nextui-org/react";
+import { Tooltip, useDisclosure } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { IoMdAddCircle } from "react-icons/io";
 import frontendFetch from "@/utilities/frontendFetch";
@@ -71,7 +71,7 @@ export default function CollectionGrid(props: any) {
     onClose: onCloseImport,
   } = importDisclosure;
 
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div>
@@ -89,16 +89,16 @@ export default function CollectionGrid(props: any) {
           }
         )}
       </div>
-
-      <TbPackageImport
-        className="text-7xl fixed bottom-28 right-8 hover:text-gwgreen hover:cursor-pointer"
-        onClick={onOpenImport}
-      />
-
-      <IoMdAddCircle
-        className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer"
-        onClick={onOpenCreate}
-      />
+      <Tooltip content="Import Collection" showArrow={true} color="success">
+        <span className="text-7xl fixed bottom-28 right-8 hover:text-gwgreen hover:cursor-pointer">
+          <TbPackageImport onClick={onOpenImport} />
+        </span>
+      </Tooltip>
+      <Tooltip content="Create Collection" showArrow={true} color="success">
+        <span className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
+          <IoMdAddCircle onClick={onOpenCreate} />
+        </span>
+      </Tooltip>
 
       <CollectionModal
         disclosure={createDisclosure}
