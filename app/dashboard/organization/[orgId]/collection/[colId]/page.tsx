@@ -5,11 +5,11 @@ import React from "react";
 export default function OrgCollectionView({
   params,
 }: {
-  params: { colId: string };
+  params: { colId: string, orgId: string };
 }) {
   return (
     <div>
-      <GameGrid collectionId={params.colId} />
+      <GameGrid collectionId={params.colId} organizationId={params.orgId} />
     </div>
   );
 }
