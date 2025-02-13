@@ -45,12 +45,12 @@ export default function SideBar() {
                 className={clsx(
                   "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
                   {
-                    "bg-transparent": pathname.startsWith(
+                    "bg-transparent": pathname?.startsWith(
                       "/dashboard/organization"
                     ),
                   },
                   {
-                    "bg-gwgreen border-right-2": !pathname.startsWith(
+                    "bg-gwgreen border-right-2": !pathname?.startsWith(
                       "/dashboard/organization"
                     ),
                   }
@@ -67,12 +67,12 @@ export default function SideBar() {
               className={clsx(
                 "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
                 {
-                  "bg-transparent": pathname.startsWith(
+                  "bg-transparent": pathname?.startsWith(
                     "/dashboard/organization"
                   ),
                 },
                 {
-                  "bg-gwgreen border-right-2": !pathname.startsWith(
+                  "bg-gwgreen border-right-2": !pathname?.startsWith(
                     "/dashboard/organization"
                   ),
                 }
@@ -91,12 +91,12 @@ export default function SideBar() {
                 className={clsx(
                   "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
                   {
-                    "bg-transparent": pathname.startsWith(
+                    "bg-transparent": pathname?.startsWith(
                       "/dashboard/convention"
                     ),
                   },
                   {
-                    "bg-gwgreen border-right-2": !pathname.startsWith(
+                    "bg-gwgreen border-right-2": !pathname?.startsWith(
                       "/dashboard/convention"
                     ),
                   }
@@ -116,12 +116,12 @@ export default function SideBar() {
               className={clsx(
                 "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
                 {
-                  "bg-transparent": pathname.startsWith(
+                  "bg-transparent": pathname?.startsWith(
                     `/dashboard/organization/${permissions.organizations.data[0].organizationId}/conventions`
                   ),
                 },
                 {
-                  "bg-gwgreen border-right-2": !pathname.startsWith(
+                  "bg-gwgreen border-right-2": !pathname?.startsWith(
                     `/dashboard/organization/${permissions.organizations.data[0].organizationId}/conventions`
                   ),
                 }
@@ -138,12 +138,12 @@ export default function SideBar() {
                 className={clsx(
                   "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
                   {
-                    "bg-transparent": pathname.startsWith(
+                    "bg-transparent": pathname?.startsWith(
                       `/dashboard/convention`
                     ),
                   },
                   {
-                    "bg-gwgreen border-right-2": !pathname.startsWith(
+                    "bg-gwgreen border-right-2": !pathname?.startsWith(
                       `/dashboard/convention`
                     ),
                   }
@@ -162,12 +162,12 @@ export default function SideBar() {
                 className={clsx(
                   "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
                   {
-                    "bg-transparent border-right-0": pathname.startsWith(
+                    "bg-transparent border-right-0": pathname?.startsWith(
                       `/dashboard/organization/${permissions.organizations.data[0].organizationId}/games`
                     ),
                   },
                   {
-                    "bg-gwgreen border-right-2": !pathname.startsWith(
+                    "bg-gwgreen border-right-2": !pathname?.startsWith(
                       `/dashboard/organization/${permissions.organizations.data[0].organizationId}/games`
                     ),
                   }
@@ -186,12 +186,12 @@ export default function SideBar() {
                 className={clsx(
                   "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
                   {
-                    "bg-transparent border-right-0": pathname.startsWith(
+                    "bg-transparent border-right-0": pathname?.startsWith(
                       `/dashboard/organization/${permissions.organizations.data[0].organizationId}/collection`
                     ),
                   },
                   {
-                    "bg-gwgreen border-right-2": !pathname.startsWith(
+                    "bg-gwgreen border-right-2": !pathname?.startsWith(
                       `/dashboard/organization/${permissions.organizations.data[0].organizationId}/collection`
                     ),
                   }

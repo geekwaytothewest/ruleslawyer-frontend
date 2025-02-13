@@ -7,6 +7,30 @@ const nextConfig = {
                 hostname: 's.gravatar.com',
                 pathname: '**',
             },
+            {
+              protocol: "https",
+              hostname: "*.googleusercontent.com",
+              port: "",
+              pathname: "**",
+            },
+            {
+                protocol: "https",
+                hostname: "*.auth0.com",
+                port: "",
+                pathname: "**"
+            },
+            {
+                protocol: "https",
+                hostname: "*.fbsbx.com",
+                port: "",
+                pathname: "**"
+            },
+            {
+                protocol: "https",
+                hostname: "*.live.net",
+                port: "",
+                pathname: "**"
+            },
         ],
 
     },

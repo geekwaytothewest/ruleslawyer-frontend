@@ -31,7 +31,7 @@ export default function ConventionLayout({
   }, [params, session]);
 
   useEffect(() => {
-    if (params.colId) {
+    if (params?.colId) {
       frontendFetch(
         "GET",
         "/collection/" + params.colId,
@@ -54,7 +54,7 @@ export default function ConventionLayout({
     <div>
       <div className="mb-5">
         <Breadcrumbs size="lg" color="success" underline="hover">
-          {params.conId !== null && params.conId !== undefined ? (
+          {params?.conId !== null && params?.conId !== undefined ? (
             <BreadcrumbItem href={`/dashboard/convention/${convention.id}`}>
               {convention.name}
             </BreadcrumbItem>
@@ -62,7 +62,7 @@ export default function ConventionLayout({
             ""
           )}
 
-          {pathname.includes("collection") ? (
+          {pathname?.includes("collection") ? (
             <BreadcrumbItem
               href={`/dashboard/convention/${convention.id}/collections`}
             >
@@ -72,9 +72,9 @@ export default function ConventionLayout({
             ""
           )}
 
-          {params.colId !== null && params.colId !== undefined ? (
+          {params?.colId !== null && params?.colId !== undefined ? (
             <BreadcrumbItem
-              href={`/dashboard/organization/${convention.id}/collection/${params.colId}`}
+              href={`/dashboard/organization/${convention.id}/collection/${params?.colId}`}
             >
               {collection?.name}
             </BreadcrumbItem>
