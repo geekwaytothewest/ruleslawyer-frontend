@@ -32,7 +32,7 @@ export default function OrganizationLayout({
   }, [params, session?.data?.token]);
 
   useEffect(() => {
-    if (params.colId) {
+    if (params?.colId) {
       frontendFetch(
         "GET",
         "/collection/" + params.colId,
@@ -49,7 +49,7 @@ export default function OrganizationLayout({
   }, [params, session?.data?.token]);
 
   useEffect(() => {
-    if (params.conId) {
+    if (params?.conId) {
       frontendFetch(
         "GET",
         "/con/" + params.conId,
@@ -72,7 +72,7 @@ export default function OrganizationLayout({
     <div>
       <div className="mb-5">
         <Breadcrumbs size="lg" color="success" underline="hover">
-          {params.orgId !== null && params.orgId !== undefined ? (
+          {params?.orgId !== null && params?.orgId !== undefined ? (
             <BreadcrumbItem href={`/dashboard/organization/${organization.id}`}>
               {organization.name}
             </BreadcrumbItem>
@@ -80,7 +80,7 @@ export default function OrganizationLayout({
             ""
           )}
 
-          {pathname.includes("convention") ? (
+          {pathname?.includes("convention") ? (
             <BreadcrumbItem
               href={`/dashboard/organization/${organization.id}/conventions`}
             >
@@ -90,7 +90,7 @@ export default function OrganizationLayout({
             ""
           )}
 
-          {params.conId !== null && params.conId !== undefined ? (
+          {params?.conId !== null && params?.conId !== undefined ? (
             <BreadcrumbItem
               href={`/dashboard/organization/${organization.id}/convention/${convention?.id}`}
             >
@@ -100,7 +100,7 @@ export default function OrganizationLayout({
             ""
           )}
 
-          {pathname.includes("collection") ? (
+          {pathname?.includes("collection") ? (
             <BreadcrumbItem
               href={`/dashboard/organization/${organization.id}/collections`}
             >
@@ -110,7 +110,7 @@ export default function OrganizationLayout({
             ""
           )}
 
-          {params.colId !== null && params.colId !== undefined ? (
+          {params?.colId !== null && params?.colId !== undefined ? (
             <BreadcrumbItem
               href={`/dashboard/organization/${organization.id}/collection/${params.colId}`}
             >
@@ -120,7 +120,7 @@ export default function OrganizationLayout({
             ""
           )}
 
-          {pathname.includes("games") ? (
+          {pathname?.includes("games") ? (
             <BreadcrumbItem
               href={`/dashboard/organization/${organization.id}/games`}
             >
