@@ -26,7 +26,7 @@ export default function CollectionModal(props: any) {
 
   const [collection, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
-  const [collectionName, setCollectionName]: any = useState(null);
+  const [collectionName, setCollectionName]: any = useState("");
   const [allowWinning, setAllowWinning]: any = useState(false);
   const [importCSV, setImportCSV]: any = useState(null);
   const [readOnly, setReadOnly]: any = useState(true);
