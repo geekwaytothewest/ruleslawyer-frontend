@@ -1,12 +1,12 @@
 "use client";
 import GameGrid from "@/components/game/game-grid";
-import React from "react";
+import React, { use } from "react";
 
-export default function OrgCollectionView({
-  params,
-}: {
-  params: { colId: string, orgId: string };
-}) {
+type Params = Promise<{ orgId: string; colId: string }>;
+
+export default function OrgCollectionView(props: { params: Params }) {
+  const params = use(props.params);
+
   return (
     <div>
       <GameGrid collectionId={params.colId} organizationId={params.orgId} />

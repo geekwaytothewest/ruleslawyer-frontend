@@ -5,10 +5,10 @@ const GameGrid = dynamic(() => import("@/components/game/game-grid"), {
   loading: () => <p>Loading...</p>,
 });
 
-export default async function OrgGameView({
-  params,
-}: {
-  params: { orgId: string };
-}) {
+type Params = Promise<{ orgId: string }>;
+
+export default async function OrgGameView(props: { params: Params }) {
+  const params = await props.params;
+
   return <GameGrid organizationId={params.orgId} />;
 }

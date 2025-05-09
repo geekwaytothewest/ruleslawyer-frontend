@@ -10,8 +10,8 @@ import {
   ModalFooter,
   ModalHeader,
   Select,
-  SelectItem,
-} from "@nextui-org/react";
+  SelectItem
+} from "@heroui/react";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import usePermissions from "@/utilities/swr/usePermissions";
@@ -30,9 +30,9 @@ export default function ConventionModal(props: any) {
   const [isLoadingConventionTypes, setLoadingConventionTypes]: any =
     useState(true);
   const [conventionTypeId, setConventionTypeId]: any = useState(undefined);
-  const [conventionName, setConventionName]: any = useState(null);
-  const [conventionTheme, setConventionTheme]: any = useState(null);
-  const [tteConventionId, setTTEConventionId]: any = useState(null);
+  const [conventionName, setConventionName]: any = useState("");
+  const [conventionTheme, setConventionTheme]: any = useState("");
+  const [tteConventionId, setTTEConventionId]: any = useState("");
   const [startDate, setStartDate]: any = useState(now(getLocalTimeZone()).set({second: 0, millisecond: 0}));
   const [startTime, setStartTime]: any = useState(now(getLocalTimeZone()).set({second: 0, millisecond: 0}));
   const [endDate, setEndDate]: any = useState(null);
@@ -239,7 +239,6 @@ export default function ConventionModal(props: any) {
                   {(conventionType: any) => (
                     <SelectItem
                       key={conventionType.id}
-                      value={conventionType.name}
                     >
                       {conventionType.name}
                     </SelectItem>

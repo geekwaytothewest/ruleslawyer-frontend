@@ -4,7 +4,7 @@ import Link from "next/link";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import { SignOut } from "./auth/signout-client";
-import { CircularProgress } from "@nextui-org/react";
+import { CircularProgress } from "@heroui/react";
 import usePermissions from "@/utilities/swr/usePermissions";
 import { signIn, useSession } from "next-auth/react";
 

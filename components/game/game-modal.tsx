@@ -9,7 +9,7 @@ import {
   ModalFooter,
   ModalHeader,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import CopyBubbles from "../copy/copy-bubbles";
@@ -21,7 +21,7 @@ export default function GameModal(props: any) {
   const [game, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
   const [bubbles, setBubbles]: any = useState(null);
-  const [gameName, setGameName]: any = useState(null);
+  const [gameName, setGameName]: any = useState("");
   const [readOnly, setReadOnly]: any = useState(true);
   const [trigger, setTrigger]: any = useState(0);
   const {

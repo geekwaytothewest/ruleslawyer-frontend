@@ -14,7 +14,7 @@ import {
   SelectItem,
   Tooltip,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { GrAttachment } from "react-icons/gr";
 import usePermissions from "@/utilities/swr/usePermissions";
 import ConventionModal from "./convention-modal";
@@ -273,7 +273,7 @@ export default function ConventionInfo(props: any) {
                   }}
                 >
                   {(collection: any) => (
-                    <SelectItem key={collection.id} value={collection.name}>
+                    <SelectItem key={collection.id}>
                       {collection.name}
                     </SelectItem>
                   )}
@@ -308,7 +308,6 @@ export default function ConventionInfo(props: any) {
                   >
                 | Iterable<React.ReactNode>
                 | React.ReactPortal
-                | Promise<React.AwaitedReactNode>
                 | null
                 | undefined;
             };

@@ -1,11 +1,14 @@
 "use client";
 import frontendFetch from "@/utilities/frontendFetch";
 import { useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, use } from "react";
 
-export default function ConView({ params }: { params: { conId: string } }) {
+type Params = Promise<{ conId: string }>;
+
+export default function ConView(props: { params: Params }) {
   const [convention, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
+  const params = use(props.params);
 
   const session: any = useSession();
 
@@ -24,8 +27,8 @@ export default function ConView({ params }: { params: { conId: string } }) {
 
   return (
     <div>
-        <h1>{convention.name}</h1>
-        <h2>{convention.theme}</h2>
+      <h1>{convention.name}</h1>
+      <h2>{convention.theme}</h2>
     </div>
   );
 }
