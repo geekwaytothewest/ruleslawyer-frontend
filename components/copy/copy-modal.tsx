@@ -14,6 +14,7 @@ import {
   Textarea,
   Autocomplete,
   AutocompleteItem,
+  useDisclosure
 } from "@heroui/react";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
@@ -33,7 +34,7 @@ export default function CopyModal(props: any) {
   const [collections, setCollections]: any = useState(null);
   const [copyCollectionId, setCopyCollectionId]: any = useState(null);
   const [copyWinnable, setCopyWinnable]: any = useState(false);
-  const [copyBarcode, setCopyBarcode]: any = useState(null);
+  const [copyBarcode, setCopyBarcode]: any = useState("");
   const [copyBarcodeLabel, setCopyBarcodeLabel]: any = useState("");
   const [copyComments, setCopyComments]: any = useState("");
   const [gameId, setGameId]: any = useState(null);
@@ -274,7 +275,7 @@ export default function CopyModal(props: any) {
                   }}
                 >
                   {(collection: any) => (
-                    <SelectItem key={collection.id} value={collection.name}>
+                    <SelectItem key={collection.id}>
                       {collection.name}
                     </SelectItem>
                   )}

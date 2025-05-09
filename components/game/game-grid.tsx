@@ -134,19 +134,19 @@ export default function GameGrid(props: any) {
           selectedKeys={maxResults}
           className="w-1/3"
         >
-          <SelectItem key={50} value={50}>
+          <SelectItem key={50}>
             50 Games
           </SelectItem>
-          <SelectItem key={100} value={100}>
+          <SelectItem key={100}>
             100 Games
           </SelectItem>
-          <SelectItem key={500} value={500}>
+          <SelectItem key={500}>
             500 Games
           </SelectItem>
-          <SelectItem key={1000} value={1000}>
+          <SelectItem key={1000}>
             1000 Games
           </SelectItem>
-          <SelectItem key={"All"} value={"All"}>
+          <SelectItem key={"All"}>
             All Games
           </SelectItem>
         </Select>

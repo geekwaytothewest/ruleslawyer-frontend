@@ -2,6 +2,7 @@
 import {
   Accordion,
   AccordionItem,
+  Button,
   Tooltip,
   useDisclosure,
 } from "@heroui/react";
@@ -178,9 +179,12 @@ export default function ConventionList(props: any) {
           color="success"
           delay={1000}
         >
-          <span className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
-            <IoMdAddCircle onClick={onOpenCreate} />
-          </span>
+          <Button
+            onPress={onOpenCreate}
+            className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer"
+          >
+            <IoMdAddCircle />
+          </Button>
         </Tooltip>
       )}
 

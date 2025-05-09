@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.5.1",
-    "@heroui/react": "^2.7.8",
+    "@heroui/react": "^2.8.0-beta.4",
+    "@heroui/system": "^2.4.16-beta.1",
+    "@heroui/theme": "^2.4.16-beta.1",
     "@heroui/use-infinite-scroll": "2.2.9",
     "@internationalized/date": "^3.8.0",
     "@react-stately/data": "^3.12.3",

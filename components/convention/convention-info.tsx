@@ -273,7 +273,7 @@ export default function ConventionInfo(props: any) {
                   }}
                 >
                   {(collection: any) => (
-                    <SelectItem key={collection.id} value={collection.name}>
+                    <SelectItem key={collection.id}>
                       {collection.name}
                     </SelectItem>
                   )}

@@ -10,7 +10,7 @@ import {
   ModalFooter,
   ModalHeader,
   Select,
-  SelectItem,
+  SelectItem
 } from "@heroui/react";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
@@ -239,7 +239,6 @@ export default function ConventionModal(props: any) {
                   {(conventionType: any) => (
                     <SelectItem
                       key={conventionType.id}
-                      value={conventionType.name}
                     >
                       {conventionType.name}
                     </SelectItem>
