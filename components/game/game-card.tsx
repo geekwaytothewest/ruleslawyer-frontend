@@ -2,9 +2,9 @@
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import frontendFetch from "@/utilities/frontendFetch";
-import { useDisclosure } from "@nextui-org/modal";
+import { useDisclosure } from "@heroui/modal";
 import GameModal from "./game-modal";
-import { Skeleton } from "@nextui-org/react";
+import { Skeleton } from "@heroui/react";
 import { BiSolidMessageAltError } from "react-icons/bi";
 import CopyBubbles from "../copy/copy-bubbles";
 import { IoLibrary } from "react-icons/io5";

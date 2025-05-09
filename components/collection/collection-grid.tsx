@@ -1,5 +1,5 @@
 "use client";
-import { Tooltip, useDisclosure } from "@nextui-org/react";
+import { Tooltip, useDisclosure } from "@heroui/react";
 import React, { useEffect, useState } from "react";
 import { IoMdAddCircle } from "react-icons/io";
 import frontendFetch from "@/utilities/frontendFetch";

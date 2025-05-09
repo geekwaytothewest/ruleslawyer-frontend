@@ -9,7 +9,7 @@ import {
   Selection,
   Tooltip,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { LuPackageSearch } from "react-icons/lu";
 import { useSession } from "next-auth/react";
 import frontendFetch from "@/utilities/frontendFetch";

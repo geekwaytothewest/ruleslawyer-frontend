@@ -3,7 +3,7 @@ import frontendFetch from "@/utilities/frontendFetch";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import CopyModal from "./copy-modal";
-import { useDisclosure } from "@nextui-org/react";
+import { useDisclosure } from "@heroui/react";
 import { BsBox2Heart } from "react-icons/bs";
 export default function CopyBubbles(props: any) {
   let { game, bubbleStyle, disclosure } = props;

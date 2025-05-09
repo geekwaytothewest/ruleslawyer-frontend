@@ -14,7 +14,7 @@ import {
   Textarea,
   Autocomplete,
   AutocompleteItem,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { useAsyncList } from "@react-stately/data";
@@ -34,8 +34,8 @@ export default function CopyModal(props: any) {
   const [copyCollectionId, setCopyCollectionId]: any = useState(null);
   const [copyWinnable, setCopyWinnable]: any = useState(false);
   const [copyBarcode, setCopyBarcode]: any = useState(null);
-  const [copyBarcodeLabel, setCopyBarcodeLabel]: any = useState(null);
-  const [copyComments, setCopyComments]: any = useState(null);
+  const [copyBarcodeLabel, setCopyBarcodeLabel]: any = useState("");
+  const [copyComments, setCopyComments]: any = useState("");
   const [gameId, setGameId]: any = useState(null);
   const [newGameName, setNewGameName]: any = useState(null);
   const [readOnly, setReadOnly]: any = useState(true);

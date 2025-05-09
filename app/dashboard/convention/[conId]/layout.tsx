@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import frontendFetch from "@/utilities/frontendFetch";
-import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/react";
+import { BreadcrumbItem, Breadcrumbs } from "@heroui/react";
 import { useParams, usePathname } from "next/navigation";
 
 export default function ConventionLayout({

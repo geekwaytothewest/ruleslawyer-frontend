@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import frontendFetch from "@/utilities/frontendFetch";
-import { Skeleton, Tooltip, useDisclosure } from "@nextui-org/react";
+import { Skeleton, Tooltip, useDisclosure } from "@heroui/react";
 import { BiSolidMessageAltError } from "react-icons/bi";
 import { IoLibrary } from "react-icons/io5";
 import { GrDetach } from "react-icons/gr";

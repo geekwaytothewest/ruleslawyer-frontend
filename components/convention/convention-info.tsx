@@ -14,7 +14,7 @@ import {
   SelectItem,
   Tooltip,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { GrAttachment } from "react-icons/gr";
 import usePermissions from "@/utilities/swr/usePermissions";
 import ConventionModal from "./convention-modal";

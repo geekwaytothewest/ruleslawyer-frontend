@@ -9,7 +9,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import usePermissions from "@/utilities/swr/usePermissions";

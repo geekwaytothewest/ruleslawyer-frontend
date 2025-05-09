@@ -4,7 +4,7 @@ import {
   AccordionItem,
   Tooltip,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import React, { act, useEffect, useState } from "react";
 import ConventionInfo from "./convention-info";
 import { IoMdAddCircle } from "react-icons/io";

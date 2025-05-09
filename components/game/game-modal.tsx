@@ -9,7 +9,7 @@ import {
   ModalFooter,
   ModalHeader,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import CopyBubbles from "../copy/copy-bubbles";
