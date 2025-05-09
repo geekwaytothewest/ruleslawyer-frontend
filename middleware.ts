@@ -1,12 +1,7 @@
-import {
-  withApiAuthRequired,
-} from "@auth0/nextjs-auth0";
-import { NextResponse } from "next/server";
 
-export default withMiddlewareAuthRequired(async function middleware(req) {
-  const res = NextResponse.next();
-  const user = await auth0.getSession(req, res);
-  return res;
-});
+import { NextRequest } from "next/server";
+import { auth0 } from "@/lib/auth0"
 
-export { auth as middleware } from "@/auth";
+export async function middleware(request: NextRequest) {
+  return await auth0.middleware(request)
+}

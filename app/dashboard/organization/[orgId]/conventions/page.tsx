@@ -3,11 +3,10 @@ import { auth } from "@/auth";
 import backendFetch from "@/utilities/backendFetch";
 import React from "react";
 
-export default async function OrgConventionsView({
-  params,
-}: {
-  params: { orgId: string };
-}) {
+type Params = Promise<{ orgId: string }>;
+
+export default async function OrgConventionsView(props: { params: Params }) {
+  const params = await props.params;
   const session = (await auth()) as any;
   let cons: any = [];
 

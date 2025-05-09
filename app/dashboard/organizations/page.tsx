@@ -33,7 +33,6 @@ export default async function Dashboard() {
                 >
               | Iterable<React.ReactNode>
               | React.ReactPortal
-              | Promise<React.AwaitedReactNode>
               | null
               | undefined;
           };

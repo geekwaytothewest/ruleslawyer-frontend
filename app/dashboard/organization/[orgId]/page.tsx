@@ -2,9 +2,13 @@
 import frontendFetch from "@/utilities/frontendFetch";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, use } from "react";
 
-export default function OrgView({ params }: { params: { orgId: string } }) {
+type Params = Promise<{ orgId: string }>;
+
+export default function OrgView(props: { params: Params }) {
+  const params = use(props.params);
+
   const [organization, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
 
