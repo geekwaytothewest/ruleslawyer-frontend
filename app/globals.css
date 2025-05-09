@@ -1,6 +1,14 @@
-@import 'tailwindcss' layer(base);
-
 @import 'tailwindcss';
+
+@theme {
+  --color-gwgreen: #00b259;
+  --color-gwdarkgreen: #005D72;
+  --color-gwblue: #0093d2;
+  --color-gwdarkblue: #002C5F;
+  --color-gwlightblue: #70BCD7;
+  --color-gwred: #FF0000;
+  --color-gwdarkred: #7e0909;
+}
 
 @layer utilities {
   :root {
