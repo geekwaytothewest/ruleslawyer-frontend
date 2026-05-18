@@ -84,7 +84,7 @@ export default function CopyBubbles(props: any) {
   if (bubbleStyle === "statusOnly") {
     const available = copies.filter(
       (c: any) => c.checkOuts.length === 0 || c.checkOuts[0].checkIn !== null
-    );
+    ).sort();
 
     return (
       <div className="flex flex-wrap w-full">
