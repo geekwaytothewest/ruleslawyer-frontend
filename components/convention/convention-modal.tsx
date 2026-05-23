@@ -205,7 +205,7 @@ export default function ConventionModal(props: any) {
         })
         .catch((err: any) => {});
     }
-  }, [organizationId, session]);
+  }, [organizationId, session?.data?.token]);
 
   if (isLoading || isLoadingPermissions || isLoadingConventionTypes)
     return <div></div>;
