@@ -23,6 +23,7 @@ export default function GameGrid(props: any) {
   const [games, setData]: any = useState(null);
   const [header, setHeader]: any = useState("");
   const [searchText, setSearchText]: any = useState("");
+  const [debouncedSearch, setDebouncedSearch]: any = useState("");
   const [isLoading, setLoading]: any = useState(true);
   const [maxResults, setMaxResults] = React.useState<Selection>(new Set([50]));
   const [trigger, setTrigger]: any = useState(0);
@@ -57,6 +58,14 @@ export default function GameGrid(props: any) {
   }, [permissions, organizationId]);
 
   useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchText), 300);
+    return () => clearTimeout(timer);
+  }, [searchText]);
+
+  useEffect(() => {
+    const token = session?.data?.token;
+    if (!token) return;
+
     if (collectionId) {
       const [limit] = maxResults;
 
@@ -68,9 +77,9 @@ export default function GameGrid(props: any) {
           "?limit=" +
           limit +
           "&filter=" +
-          searchText,
+          debouncedSearch,
         null,
-        session?.data?.token
+        token
       )
         .then((res: any) => res.json())
         .then((data: any) => {
@@ -78,23 +87,23 @@ export default function GameGrid(props: any) {
           setData(data.games);
           setLoading(false);
         })
-        .catch((err: any) => {});
+        .catch(() => {});
     } else {
       const [limit] = maxResults;
       frontendFetch(
         "GET",
-        "/game/withCopies?limit=" + limit + "&filter=" + searchText,
+        "/game/withCopies?limit=" + limit + "&filter=" + debouncedSearch,
         null,
-        session?.data?.token
+        token
       )
         .then((res: any) => res.json())
         .then((data: any) => {
           setData(data);
           setLoading(false);
         })
-        .catch((err: any) => {});
+        .catch(() => {});
     }
-  }, [session?.data?.token, collectionId, maxResults, searchText, trigger]);
+  }, [session?.data?.token, collectionId, maxResults, debouncedSearch, trigger]);
 
   useEffect(() => {
     const interval = setInterval(() => setTrigger((t: number) => t + 1), 60000);
