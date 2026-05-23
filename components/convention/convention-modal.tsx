@@ -230,7 +230,7 @@ export default function ConventionModal(props: any) {
                   items={conventionTypes}
                   label="Convention Type"
                   placeholder="Select a convention type"
-                  defaultSelectedKeys={[conventionTypeId]}
+                  defaultSelectedKeys={conventionTypeId != null ? [String(conventionTypeId)] : []}
                   isDisabled={readOnly}
                   onChange={(event) => {
                     setConventionTypeId(Number(event.target.value));
