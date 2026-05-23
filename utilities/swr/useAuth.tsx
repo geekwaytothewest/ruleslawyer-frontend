@@ -6,7 +6,7 @@ import useSWR from "swr";
 export function useAuth() {
   const { user, isLoading } = useUser();
   const { data: tokenData } = useSWR(
-    user ? "/api/auth/token" : null,
+    user ? `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/api/auth/token` : null,
     (url) => fetch(url).then((r) => r.json())
   );
 
