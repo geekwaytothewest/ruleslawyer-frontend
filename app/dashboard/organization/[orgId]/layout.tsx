@@ -19,51 +19,43 @@ export default function OrganizationLayout({
   const pathname = usePathname();
   const params = useParams();
 
-  useEffect(() => {
-    if (params) {
-      frontendFetch("GET", "/org/" + params.orgId, null, session?.data?.token)
-        .then((res: any) => res.json())
-        .then((data: any) => {
-          setData(data);
-          setLoading(false);
-        })
-        .catch((err: any) => {});
-    }
-  }, [params, session?.data?.token]);
+  const orgId = params?.orgId;
+  const colId = params?.colId;
+  const conId = params?.conId;
+  const token = session?.data?.token;
 
   useEffect(() => {
-    if (params?.colId) {
-      frontendFetch(
-        "GET",
-        "/collection/" + params.colId,
-        null,
-        session?.data?.token
-      )
-        .then((res: any) => res.json())
-        .then((data: any) => {
-          setCollection(data);
-          setLoading(false);
-        })
-        .catch((err: any) => {});
-    }
-  }, [params, session?.data?.token]);
+    if (!orgId || !token) return;
+    frontendFetch("GET", "/org/" + orgId, null, token)
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        setData(data);
+        setLoading(false);
+      })
+      .catch(() => {});
+  }, [orgId, token]);
 
   useEffect(() => {
-    if (params?.conId) {
-      frontendFetch(
-        "GET",
-        "/con/" + params.conId,
-        null,
-        session?.data?.token
-      )
-        .then((res: any) => res.json())
-        .then((data: any) => {
-          setConvention(data);
-          setLoading(false);
-        })
-        .catch((err: any) => {});
-    }
-  }, [params, session?.data?.token]);
+    if (!colId || !token) return;
+    frontendFetch("GET", "/collection/" + colId, null, token)
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        setCollection(data);
+        setLoading(false);
+      })
+      .catch(() => {});
+  }, [colId, token]);
+
+  useEffect(() => {
+    if (!conId || !token) return;
+    frontendFetch("GET", "/con/" + conId, null, token)
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        setConvention(data);
+        setLoading(false);
+      })
+      .catch(() => {});
+  }, [conId, token]);
 
   if (isLoading) return <p>Loading...</p>;
   if (!organization) return <p>No organization data</p>;
