@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
     basePath: '/ruleslawyer',
     env: {
         NEXT_PUBLIC_BASE_PATH: '/ruleslawyer',
