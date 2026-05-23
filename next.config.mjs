@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     basePath: '/ruleslawyer',
+    env: {
+        NEXT_PUBLIC_PROFILE_ROUTE: '/ruleslawyer/auth/profile',
+        NEXT_PUBLIC_ACCESS_TOKEN_ROUTE: '/ruleslawyer/auth/access-token',
+    },
     images: {
         remotePatterns: [
             {
