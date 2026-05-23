@@ -7,7 +7,8 @@ export function useAuth() {
   const { user, isLoading } = useUser();
   const { data: tokenData } = useSWR(
     user ? `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/api/auth/token` : null,
-    (url) => fetch(url).then((r) => r.json())
+    (url) => fetch(url).then((r) => r.json()),
+    { revalidateOnFocus: false, dedupingInterval: 300000 }
   );
 
   return {
