@@ -37,7 +37,7 @@ export default async function Dashboard() {
               | undefined;
           };
         }) => {
-          return <div key={o.organizationId}><Link href={`/dashboard/organization/${o.organizationId}`} className="hover:text-gwgreen">{o.organization.name}</Link></div>;
+          return <div key={String(o.organizationId)}><Link href={`/dashboard/organization/${String(o.organizationId)}`} className="hover:text-gwgreen">{o.organization.name}</Link></div>;
         }
       )}
     </div>
