@@ -22,7 +22,7 @@ env:
   # NEXT_PUBLIC_* values are inlined into the bundle at build time, so they must be
   # supplied as a build arg here (not just at runtime in the task definition).
   # TODO: replace with the real public API URL for each environment.
-  NEXT_PUBLIC_API_URL: ${{ inputs.environment == 'prod' && 'https://TODO-prod-domain/api' || 'https://TODO-nonprod-domain/api' }}
+  NEXT_PUBLIC_API_URL: ${{ inputs.environment == 'prod' && 'https://library.geekway.com/api' || 'https://nonprod.library.geekway.com/api' }}
 
 permissions:
   contents: read
