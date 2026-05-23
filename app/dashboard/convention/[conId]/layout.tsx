@@ -28,7 +28,7 @@ export default function ConventionLayout({
         })
         .catch((err: any) => {});
     }
-  }, [params, session]);
+  }, [params, session?.data?.token]);
 
   useEffect(() => {
     if (params?.colId) {
@@ -45,7 +45,7 @@ export default function ConventionLayout({
         })
         .catch((err: any) => {});
     }
-  }, [params, session]);
+  }, [params, session?.data?.token]);
 
   if (isLoading) return <p>Loading...</p>;
   if (!convention) return <p>No convention data</p>;
