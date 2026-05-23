@@ -96,6 +96,11 @@ export default function GameGrid(props: any) {
     }
   }, [session?.data?.token, collectionId, maxResults, searchText, trigger]);
 
+  useEffect(() => {
+    const interval = setInterval(() => setTrigger((t: number) => t + 1), 60000);
+    return () => clearInterval(interval);
+  }, []);
+
   const onModalClose = () => {
     setTrigger(trigger + 1);
   };
