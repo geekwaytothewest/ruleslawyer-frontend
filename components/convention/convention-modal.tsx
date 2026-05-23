@@ -12,7 +12,7 @@ import {
   Select,
   SelectItem
 } from "@heroui/react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/utilities/swr/useAuth";
 import React, { useEffect, useState } from "react";
 import usePermissions from "@/utilities/swr/usePermissions";
 import {
@@ -44,7 +44,7 @@ export default function ConventionModal(props: any) {
     isError,
   }: any = usePermissions();
 
-  const session: any = useSession();
+  const session: any = useAuth();
 
   const { isOpen, onOpen, onClose } = disclosure;
 

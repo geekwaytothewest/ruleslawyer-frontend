@@ -11,7 +11,7 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { LuPackageSearch } from "react-icons/lu";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/utilities/swr/useAuth";
 import frontendFetch from "@/utilities/frontendFetch";
 import { IoMdAddCircle } from "react-icons/io";
 import CopyModal from "../copy/copy-modal";
@@ -33,7 +33,7 @@ export default function GameGrid(props: any) {
     isError,
   }: any = usePermissions();
 
-  const session: any = useSession();
+  const session: any = useAuth();
 
   useEffect(() => {
     if (permissions.user) {

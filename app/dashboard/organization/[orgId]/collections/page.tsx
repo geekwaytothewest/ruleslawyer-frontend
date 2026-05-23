@@ -2,7 +2,7 @@
 import CollectionCard from "@/components/collection/collection-card";
 import CollectionGrid from "@/components/collection/collection-grid";
 import frontendFetch from "@/utilities/frontendFetch";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/utilities/swr/useAuth";
 import React, { useEffect, useState, use } from "react";
 
 type Params = Promise<{ orgId: string }>
@@ -13,7 +13,7 @@ export default function OrgCollectionsView(props: { params: Params }) {
   const [organization, setOrganization]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
 
-  const session: any = useSession();
+  const session: any = useAuth();
 
   useEffect(() => {
     frontendFetch("GET", "/org/" + params.orgId, null, session?.data?.token)

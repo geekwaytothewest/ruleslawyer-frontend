@@ -1,6 +1,6 @@
 "use client";
 import frontendFetch from "@/utilities/frontendFetch";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/utilities/swr/useAuth";
 import Link from "next/link";
 import React, { useEffect, useState, use } from "react";
 
@@ -12,7 +12,7 @@ export default function OrgView(props: { params: Params }) {
   const [organization, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
 
-  const session: any = useSession();
+  const session: any = useAuth();
 
   useEffect(() => {
     frontendFetch("GET", "/org/" + params.orgId, null, session?.data?.token)

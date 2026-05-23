@@ -1,4 +1,4 @@
-import { signOut } from "@/auth";
+import { redirect } from "next/navigation";
 import { VscSignOut } from "react-icons/vsc";
 
 export function SignOut() {
@@ -6,7 +6,7 @@ export function SignOut() {
     <form
       action={async () => {
         "use server";
-        await signOut();
+        redirect("/auth/logout");
       }}
     >
       <button type="submit" className="hover:text-gwgreen">

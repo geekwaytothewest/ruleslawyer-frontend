@@ -1,9 +1,9 @@
 import frontendFetch from "@/utilities/frontendFetch";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/utilities/swr/useAuth";
 import useSWR from "swr";
 
 export default function usePermissions() {
-  const session: any = useSession();
+  const session: any = useAuth();
 
   const user = useSWR(
     session?.data?.user?.email

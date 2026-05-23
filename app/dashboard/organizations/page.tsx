@@ -1,10 +1,10 @@
-import { auth } from "@/auth";
+import { auth0 } from "@/lib/auth0";
 import backendFetch from "@/utilities/backendFetch";
 import Link from "next/link";
 import React, { Key } from "react";
 
 export default async function Dashboard() {
-  const session = (await auth()) as any;
+  const session = await auth0.getSession();
   let orgs: any = [];
   let user: any;
 

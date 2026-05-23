@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/utilities/swr/useAuth";
 import frontendFetch from "@/utilities/frontendFetch";
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/react";
 import { useParams, usePathname } from "next/navigation";
@@ -15,7 +15,7 @@ export default function OrganizationLayout({
   const [convention, setConvention]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
 
-  const session: any = useSession();
+  const session: any = useAuth();
   const pathname = usePathname();
   const params = useParams();
 

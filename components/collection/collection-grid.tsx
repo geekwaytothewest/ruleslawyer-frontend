@@ -3,7 +3,7 @@ import { Tooltip, useDisclosure } from "@heroui/react";
 import React, { useEffect, useState } from "react";
 import { IoMdAddCircle } from "react-icons/io";
 import frontendFetch from "@/utilities/frontendFetch";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/utilities/swr/useAuth";
 import CollectionCard from "./collection-card";
 import CollectionModal from "./collection-modal";
 import { TbPackageImport } from "react-icons/tb";
@@ -14,7 +14,7 @@ export default function CollectionGrid(props: any) {
   const [collections, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
 
-  const session: any = useSession();
+  const session: any = useAuth();
 
   useEffect(() => {
     if (collectionsIn) {

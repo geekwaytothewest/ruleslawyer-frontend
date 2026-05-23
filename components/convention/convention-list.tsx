@@ -11,7 +11,7 @@ import ConventionInfo from "./convention-info";
 import { IoMdAddCircle } from "react-icons/io";
 import ConventionModal from "./convention-modal";
 import frontendFetch from "@/utilities/frontendFetch";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/utilities/swr/useAuth";
 import usePermissions from "@/utilities/swr/usePermissions";
 
 export default function ConventionList(props: any) {
@@ -28,7 +28,7 @@ export default function ConventionList(props: any) {
     isError,
   }: any = usePermissions();
 
-  const session: any = useSession();
+  const session: any = useAuth();
 
   useEffect(() => {
     if (permissions.user) {

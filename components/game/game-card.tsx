@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/utilities/swr/useAuth";
 import frontendFetch from "@/utilities/frontendFetch";
 import { useDisclosure } from "@heroui/modal";
 import GameModal from "./game-modal";
@@ -45,7 +45,7 @@ export default function GameCard(props: any) {
     }
   }, [permissions, game]);
 
-  const session: any = useSession();
+  const session: any = useAuth();
 
   const onModalClose = () => {
     frontendFetch("GET", "/game/" + gameId, null, session?.data?.token)
