@@ -1,4 +1,4 @@
-FROM node:20-alpine AS base
+FROM node:lts-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -21,6 +21,11 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+# NEXT_PUBLIC_* vars are inlined into the client bundle at build time, so the
+# deploy workflow passes the per-environment value in as a build arg.
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
