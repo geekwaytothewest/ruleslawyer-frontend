@@ -267,7 +267,7 @@ export default function CopyModal(props: any) {
                   items={collections}
                   label="Current collection"
                   placeholder="Select a collection"
-                  defaultSelectedKeys={[copy ? copy.collectionId : null]}
+                  defaultSelectedKeys={copy ? [String(copy.collectionId)] : []}
                   isDisabled={readOnly}
                   isRequired
                   onChange={(event) => {
