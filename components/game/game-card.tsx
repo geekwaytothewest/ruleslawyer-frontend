@@ -75,7 +75,7 @@ export default function GameCard(props: any) {
         })
         .catch((err: any) => {});
     }
-  }, [gameIn, gameId, session]);
+  }, [gameIn, gameId, session?.data?.token]);
 
   if (isLoading) {
     return (

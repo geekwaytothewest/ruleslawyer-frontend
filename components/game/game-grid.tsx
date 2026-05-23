@@ -61,6 +61,20 @@ export default function GameGrid(props: any) {
     return () => clearTimeout(timer);
   }, [searchText]);
 
+  const prevDepsRef = React.useRef<any[]>([]);
+  useEffect(() => {
+    const deps = [session?.data?.token, collectionId, maxResults, debouncedSearch, trigger];
+    const prev = prevDepsRef.current;
+    if (prev.length) {
+      deps.forEach((dep, i) => {
+        if (!Object.is(dep, prev[i])) {
+          console.log(`[game-grid] fetch triggered by dep[${i}] changed:`, prev[i], "→", dep);
+        }
+      });
+    }
+    prevDepsRef.current = deps;
+  }, [session?.data?.token, collectionId, maxResults, debouncedSearch, trigger]);
+
   useEffect(() => {
     const token = session?.data?.token;
     if (!token) return;
