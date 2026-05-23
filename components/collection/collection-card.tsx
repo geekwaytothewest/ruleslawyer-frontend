@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/utilities/swr/useAuth";
 import frontendFetch from "@/utilities/frontendFetch";
 import { Skeleton, Tooltip, useDisclosure } from "@heroui/react";
 import { BiSolidMessageAltError } from "react-icons/bi";
@@ -24,7 +24,7 @@ export default function CollectionCard(props: any) {
     isError,
   }: any = usePermissions();
 
-  const session: any = useSession();
+  const session: any = useAuth();
 
   useEffect(() => {
     if (collectionIn) {

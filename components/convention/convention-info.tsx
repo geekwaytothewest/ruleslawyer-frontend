@@ -1,6 +1,6 @@
 "use client";
 import frontendFetch from "@/utilities/frontendFetch";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/utilities/swr/useAuth";
 import React, { useEffect, useState } from "react";
 import CollectionCard from "../collection/collection-card";
 import {
@@ -38,7 +38,7 @@ export default function ConventionInfo(props: any) {
     isError,
   }: any = usePermissions();
 
-  const session: any = useSession();
+  const session: any = useAuth();
   const formatter = new DateFormatter("en-US", {
     dateStyle: "full",
     timeStyle: "full",

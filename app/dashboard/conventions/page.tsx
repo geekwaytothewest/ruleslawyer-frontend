@@ -1,10 +1,10 @@
 import ConventionList from "@/components/convention/convention-list";
-import { auth } from "@/auth";
+import { auth0 } from "@/lib/auth0";
 import backendFetch from "@/utilities/backendFetch";
 import React from "react";
 
 export default async function Dashboard() {
-  const session = (await auth()) as any;
+  const session = await auth0.getSession();
   let cons: any = [];
 
   if (session?.user.email) {

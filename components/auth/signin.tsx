@@ -1,5 +1,5 @@
 import React from "react";
-import { signIn } from "@/auth";
+import { redirect } from "next/navigation";
 import { VscSignIn } from "react-icons/vsc";
 
 export function SignIn() {
@@ -7,7 +7,7 @@ export function SignIn() {
     <form
       action={async () => {
         "use server";
-        await signIn("auth0");
+        redirect("/auth/login");
       }}
     >
       <button type="submit" className="hover:text-gwgreen">

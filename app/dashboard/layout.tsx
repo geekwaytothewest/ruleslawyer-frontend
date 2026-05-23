@@ -1,4 +1,4 @@
-import { SessionProvider } from "next-auth/react";
+import { Auth0Provider } from "@auth0/nextjs-auth0";
 import SideBar from "@/components/sidebar";
 
 export default function RootLayout({
@@ -7,11 +7,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <SessionProvider>
+    <Auth0Provider>
       <div className="flex h-full min-h-screen">
         <SideBar />
         <div className="pt-5 pr-10 w-full">{children}</div>
       </div>
-    </SessionProvider>
+    </Auth0Provider>
   );
 }

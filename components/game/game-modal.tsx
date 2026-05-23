@@ -10,7 +10,7 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@heroui/react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/utilities/swr/useAuth";
 import { useEffect, useState } from "react";
 import CopyBubbles from "../copy/copy-bubbles";
 import usePermissions from "@/utilities/swr/usePermissions";
@@ -30,7 +30,7 @@ export default function GameModal(props: any) {
     isError,
   }: any = usePermissions();
 
-  const session: any = useSession();
+  const session: any = useAuth();
 
   const { isOpen, onOpen, onClose } = disclosure;
 

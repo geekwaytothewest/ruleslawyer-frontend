@@ -1,6 +1,6 @@
 "use client";
 import frontendFetch from "@/utilities/frontendFetch";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/utilities/swr/useAuth";
 import { useEffect, useState } from "react";
 import CopyModal from "./copy-modal";
 import { useDisclosure } from "@heroui/react";
@@ -24,7 +24,7 @@ export default function CopyBubbles(props: any) {
       .catch((err: any) => {});
   };
 
-  const session: any = useSession();
+  const session: any = useAuth();
 
   useEffect(() => {
     if (game?.copies) {
