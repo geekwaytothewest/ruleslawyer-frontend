@@ -18,34 +18,31 @@ export default function ConventionLayout({
   const pathname = usePathname();
   const params = useParams();
 
-  useEffect(() => {
-    if (params) {
-      frontendFetch("GET", "/con/" + params.conId, null, session?.data?.token)
-        .then((res: any) => res.json())
-        .then((data: any) => {
-          setData(data);
-          setLoading(false);
-        })
-        .catch((err: any) => {});
-    }
-  }, [params, session?.data?.token]);
+  const conId = params?.conId;
+  const colId = params?.colId;
+  const token = session?.data?.token;
 
   useEffect(() => {
-    if (params?.colId) {
-      frontendFetch(
-        "GET",
-        "/collection/" + params.colId,
-        null,
-        session?.data?.token
-      )
-        .then((res: any) => res.json())
-        .then((data: any) => {
-          setCollection(data);
-          setLoading(false);
-        })
-        .catch((err: any) => {});
-    }
-  }, [params, session?.data?.token]);
+    if (!conId || !token) return;
+    frontendFetch("GET", "/con/" + conId, null, token)
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        setData(data);
+        setLoading(false);
+      })
+      .catch(() => {});
+  }, [conId, token]);
+
+  useEffect(() => {
+    if (!colId || !token) return;
+    frontendFetch("GET", "/collection/" + colId, null, token)
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        setCollection(data);
+        setLoading(false);
+      })
+      .catch(() => {});
+  }, [colId, token]);
 
   if (isLoading) return <p>Loading...</p>;
   if (!convention) return <p>No convention data</p>;
