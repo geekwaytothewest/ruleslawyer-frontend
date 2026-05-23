@@ -12,6 +12,10 @@ on:
           - nonprod
           - prod
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   ECR_REPOSITORY: ruleslawyer-frontend
   ECS_SERVICE: ruleslawyer-frontend
