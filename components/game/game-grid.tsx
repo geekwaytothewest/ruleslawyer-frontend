@@ -6,7 +6,6 @@ import {
   Input,
   Select,
   SelectItem,
-  Selection,
   Tooltip,
   useDisclosure,
 } from "@heroui/react";
@@ -25,7 +24,7 @@ export default function GameGrid(props: any) {
   const [searchText, setSearchText]: any = useState("");
   const [debouncedSearch, setDebouncedSearch]: any = useState("");
   const [isLoading, setLoading]: any = useState(true);
-  const [maxResults, setMaxResults] = React.useState<Selection>(new Set([50]));
+  const [maxResults, setMaxResults] = React.useState<string | number>(50);
   const [trigger, setTrigger]: any = useState(0);
   const [readOnly, setReadOnly]: any = useState(true);
   const {
@@ -67,15 +66,13 @@ export default function GameGrid(props: any) {
     if (!token) return;
 
     if (collectionId) {
-      const [limit] = maxResults;
-
       frontendFetch(
         "GET",
         "/collection/" +
           collectionId +
           "/copiesByGames" +
           "?limit=" +
-          limit +
+          maxResults +
           "&filter=" +
           debouncedSearch,
         null,
@@ -89,10 +86,9 @@ export default function GameGrid(props: any) {
         })
         .catch(() => {});
     } else {
-      const [limit] = maxResults;
       frontendFetch(
         "GET",
-        "/game/withCopies?limit=" + limit + "&filter=" + debouncedSearch,
+        "/game/withCopies?limit=" + maxResults + "&filter=" + debouncedSearch,
         null,
         token
       )
@@ -144,8 +140,12 @@ export default function GameGrid(props: any) {
         <Select
           name="maxResults"
           label="Max Results"
-          onSelectionChange={setMaxResults}
-          selectedKeys={maxResults}
+          onSelectionChange={(keys) => {
+            if (keys === "all") return;
+            const [first] = keys;
+            if (first !== undefined) setMaxResults(first);
+          }}
+          selectedKeys={new Set([maxResults])}
           className="w-1/3"
         >
           <SelectItem key={50}>
