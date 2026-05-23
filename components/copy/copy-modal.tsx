@@ -241,7 +241,7 @@ export default function CopyModal(props: any) {
         })
         .catch((err: any) => {});
     }
-  }, [organizationId, copy, session]);
+  }, [organizationId, copy, session?.data?.token]);
 
   if (isLoading || isLoadingPermissions) return <div></div>;
 
