@@ -4,4 +4,8 @@ export const auth0 = new Auth0Client({
   authorizationParameters: {
     audience: process.env.AUTH0_AUDIENCE,
   },
+  routes: {
+    profile: "/auth/profile",
+    accessToken: "/auth/access-token",
+  },
 })
