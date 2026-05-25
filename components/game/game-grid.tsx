@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import GameCard from "./game-card";
 import {
+  Button,
   CircularProgress,
   Input,
   Select,
@@ -118,6 +119,9 @@ export default function GameGrid(props: any) {
 
   const { onOpen: onOpenCreate } = createDisclosure;
 
+  function syncAndConnectBGG() {
+  }
+
   if (isLoading) {
     return (
       <div className="flex justify-center w-full pt-10">
@@ -130,6 +134,7 @@ export default function GameGrid(props: any) {
     <div>
       {showHeader ? <h1>{header}</h1> : ""}
       <div className="flex m-10">
+        <Button></Button>
         <Input
           name="search"
           type="text"
