@@ -10,6 +10,33 @@ import CopyBubbles from "../copy/copy-bubbles";
 import { IoLibrary } from "react-icons/io5";
 import usePermissions from "@/utilities/swr/usePermissions";
 
+function getCoverArtSrc(coverArt: any): string | null {
+  if (!coverArt) return null;
+  if (typeof coverArt === "string") return coverArt;
+
+  let bytes: number[] | null = null;
+
+  if (coverArt.type === "Buffer" && coverArt.data != null) {
+    // Standard JSON.stringify(Buffer) format: {type: "Buffer", data: [...]}
+    bytes = Array.from(coverArt.data);
+  } else if (typeof coverArt === "object") {
+    // Numeric-keyed object: {"0": 255, "1": 216, ...}
+    const keys = Object.keys(coverArt);
+    if (keys.length > 0 && keys.every((k) => !isNaN(Number(k)))) {
+      bytes = keys.sort((a, b) => Number(a) - Number(b)).map((k) => coverArt[k]);
+    }
+  }
+
+  if (!bytes || bytes.length === 0) return null;
+
+  const u8 = new Uint8Array(bytes);
+  let mimeType = "image/jpeg";
+  if (u8[0] === 0x89 && u8[1] === 0x50) mimeType = "image/png";
+  else if (u8[0] === 0x47 && u8[1] === 0x49) mimeType = "image/gif";
+  const binary = Array.from(u8).map((b) => String.fromCharCode(b)).join("");
+  return `data:${mimeType};base64,${btoa(binary)}`;
+}
+
 export default function GameCard(props: any) {
   let { gameIn, gameId } = props;
 
@@ -109,7 +136,11 @@ export default function GameCard(props: any) {
         className="flex items-center border-2 border-gwblue w-80 h-32 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] cursor-pointer"
       >
         <div className="flex-col p-3 w-24">
-          <IoLibrary size={64} />
+          {getCoverArtSrc(game.coverArt) ? (
+            <img src={getCoverArtSrc(game.coverArt)!} alt={game.name} className="w-full h-full object-cover" />
+          ) : (
+            <IoLibrary size={64} />
+          )}
         </div>
         <div className="flex-col pr-3 w-full">
           <span className="inline-block align-middle h-full">
