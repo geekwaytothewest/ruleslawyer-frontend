@@ -71,10 +71,9 @@ export default function GameGrid(props: any) {
         "/collection/" +
           collectionId +
           "/copiesByGames" +
-          "?limit=" +
-          maxResults +
-          "&filter=" +
-          debouncedSearch,
+          "?orgId=" + organizationId +
+          "?limit=" + maxResults +
+          "&filter=" + debouncedSearch,
         null,
         token
       )
@@ -88,7 +87,10 @@ export default function GameGrid(props: any) {
     } else {
       frontendFetch(
         "GET",
-        "/game/withCopies?limit=" + maxResults + "&filter=" + debouncedSearch,
+        "/game/withCopies" +
+          "?orgId=" + organizationId +
+          "?limit=" + maxResults +
+          "&filter=" + debouncedSearch,
         null,
         token
       )
