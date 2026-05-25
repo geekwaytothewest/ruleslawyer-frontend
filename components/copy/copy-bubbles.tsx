@@ -1,10 +1,45 @@
 "use client";
 import frontendFetch from "@/utilities/frontendFetch";
 import { useAuth } from "@/utilities/swr/useAuth";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import CopyModal from "./copy-modal";
 import { useDisclosure } from "@heroui/react";
 import { BsBox2Heart } from "react-icons/bs";
+
+function BubbleModal({ c, bubbleStyle, onCloseModal }: any) {
+  const disclosure = useDisclosure({ onClose: onCloseModal });
+  const { onOpen } = disclosure;
+
+  if (bubbleStyle === "boxesOnly") {
+    return (
+      <div>
+        {c.checkOuts.length === 0 || c.checkOuts[0].checkIn !== null ? (
+          <BsBox2Heart className="inline-block mr-2 mb-2 text-gwgreen" />
+        ) : (
+          <BsBox2Heart className="inline-block mr-2 mb-2 text-gwdarkred" />
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <span
+      className="flex-col inline-block mb-2 mr-2 bg-gwdarkblue p-3 rounded-full border-4 border-gwgreen hover:border-gwblue hover:text-gwgreen cursor-pointer"
+      onClick={onOpen}
+    >
+      <div>
+        {c.checkOuts.length === 0 || c.checkOuts[0].checkIn !== null ? (
+          <BsBox2Heart className="inline-block text-gwgreen mr-2 mb-2" />
+        ) : (
+          <BsBox2Heart className="inline-block text-gwdarkred mr-2 mb-2" />
+        )}
+        {c.barcodeLabel}
+      </div>
+      <CopyModal disclosure={disclosure} copyIn={c} copyId={c.id} organizationId={c.organizationId} />
+    </span>
+  );
+}
+
 export default function CopyBubbles(props: any) {
   let { game, bubbleStyle, disclosure } = props;
 
@@ -12,8 +47,9 @@ export default function CopyBubbles(props: any) {
   const [isLoading, setLoading]: any = useState(true);
 
   const { onClose } = disclosure;
+  const session: any = useAuth();
 
-  const onCloseModal = () => {
+  const onCloseModal = useCallback(() => {
     frontendFetch("GET", "/game/" + game.id, null, session?.data?.token)
       .then((res: any) => res.json())
       .then((data: any) => {
@@ -21,10 +57,9 @@ export default function CopyBubbles(props: any) {
         onClose();
         setLoading(false);
       })
-      .catch((err: any) => {});
-  };
-
-  const session: any = useAuth();
+      .catch(() => {});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [game.id, session?.data?.token]);
 
   useEffect(() => {
     if (game?.copies) {
@@ -37,49 +72,12 @@ export default function CopyBubbles(props: any) {
           setData(data.copies);
           setLoading(false);
         })
-        .catch((err: any) => {});
+        .catch(() => {});
     }
-  }, [game, session?.data?.token]);
+  }, [game?.id, session?.data?.token]);
 
   if (isLoading) return <div></div>;
   if (!copies) return <div></div>;
-
-  const BubbleModal = ({ c }: any) => {
-    const disclosure = useDisclosure({
-      onClose: onCloseModal,
-    });
-    const { isOpen, onOpen, onClose } = disclosure;
-
-    if (bubbleStyle === "boxesOnly") {
-      return (
-        <div>
-          {c.checkOuts.length === 0 || c.checkOuts[0].checkIn !== null ? (
-            <BsBox2Heart className="inline-block mr-2 mb-2 text-gwgreen" />
-          ) : (
-            <BsBox2Heart className="inline-block mr-2 mb-2 text-gwdarkred" />
-          )}
-        </div>
-      );
-    }
-
-    return (
-      <span
-        key={c.id}
-        className="flex-col inline-block mb-2 mr-2 bg-gwdarkblue p-3 rounded-full border-4 border-gwgreen hover:border-gwblue hover:text-gwgreen cursor-pointer"
-        onClick={onOpen}
-      >
-        <div>
-          {c.checkOuts.length === 0 || c.checkOuts[0].checkIn !== null ? (
-            <BsBox2Heart className="inline-block text-gwgreen mr-2 mb-2" />
-          ) : (
-            <BsBox2Heart className="inline-block text-gwdarkred mr-2 mb-2" />
-          )}
-          {c.barcodeLabel}
-        </div>
-        <CopyModal disclosure={disclosure} copyIn={c} copyId={c.id} organizationId={c.organizationId} />
-      </span>
-    );
-  };
 
   if (bubbleStyle === "statusOnly") {
     const available = copies.filter(
@@ -107,7 +105,7 @@ export default function CopyBubbles(props: any) {
   return (
     <div className="flex flex-wrap w-full">
       {copies?.map((c: any) => (
-        <BubbleModal key={c.id} c={c} />
+        <BubbleModal key={c.id} c={c} bubbleStyle={bubbleStyle} onCloseModal={onCloseModal} />
       ))}
     </div>
   );

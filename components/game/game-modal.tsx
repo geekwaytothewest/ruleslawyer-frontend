@@ -20,19 +20,18 @@ export default function GameModal(props: any) {
 
   const [game, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
-  const [bubbles, setBubbles]: any = useState(null);
   const [gameName, setGameName]: any = useState("");
+  const [bggId, setBggId]: any = useState("");
   const [readOnly, setReadOnly]: any = useState(true);
   const [trigger, setTrigger]: any = useState(0);
   const {
     permissions,
     isLoading: isLoadingPermissions,
-    isError,
   }: any = usePermissions();
 
   const session: any = useAuth();
 
-  const { isOpen, onOpen, onClose } = disclosure;
+  const { isOpen, onClose } = disclosure;
 
   const onCopyModalClose = () => {
     setTrigger(trigger + 1);
@@ -45,10 +44,10 @@ export default function GameModal(props: any) {
   const onDelete = () => {
     if (confirm("Are you sure you want to delete this collection?")) {
       frontendFetch("DELETE", "/game/" + game.id, null, session?.data?.token)
-        .then((res: any) => {
+        .then(() => {
           onClose();
         })
-        .catch((err: any) => {});
+        .catch(() => {});
     }
   };
 
@@ -64,14 +63,14 @@ export default function GameModal(props: any) {
         setData(data);
         onClose();
       })
-      .catch((err: any) => {});
+      .catch(() => {});
   };
 
   useEffect(() => {
     if (gameIn && trigger === 0) {
       setData(gameIn);
       setGameName(gameIn.name);
-      setBubbles(<CopyBubbles game={gameIn} disclosure={copyDisclosure} />);
+      setBggId(gameIn.bggId);
       setLoading(false);
     } else {
       frontendFetch(
@@ -84,33 +83,32 @@ export default function GameModal(props: any) {
         .then((data: any) => {
           setData(data);
           setGameName(data.name);
-          setBubbles(<CopyBubbles game={data} disclosure={copyDisclosure} />);
+          setBggId(data.bggId);
           setLoading(false);
         })
-        .catch((err: any) => {});
+        .catch(() => {});
     }
-    // copyDisclosure is not a dependancy - remove a warning and prevent errors
+    // copyDisclosure is not a dependency - remove a warning and prevent errors
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameIn, gameId, session?.data?.token, trigger]);
 
   useEffect(() => {
-    if (permissions.user) {
-      if (permissions.user.superAdmin) {
+    if (permissions.user?.data) {
+      if (permissions.user.data.superAdmin) {
         setReadOnly(false);
       } else if (
-        permissions.organizations.data?.filter(
+        permissions.organizations?.data?.filter(
           (d: { organizationId: any; admin: boolean }) =>
             d.organizationId == game?.organizationId && d.admin === true
         ).length > 0
       ) {
         setReadOnly(false);
+      } else {
+        setReadOnly(true);
       }
-
       setLoading(false);
-    } else {
-      setReadOnly(true);
     }
-  }, [permissions, game]);
+  }, [permissions.user?.data, permissions.organizations?.data, game?.organizationId]);
 
   if (isLoading || isLoadingPermissions) return <div>Loading...</div>;
   if (!game) return <div>No game data</div>;
@@ -143,7 +141,17 @@ export default function GameModal(props: any) {
                 ""
               )}
 
-              {bubbles}
+              {game.bggId ? (
+                <Input
+                  name="bggId"
+                  type="text"
+                  label="BoardGameGeek ID"
+                  value={bggId}
+                  onValueChange={(value) => setBggId(value)}
+                />
+              ) : null}
+
+              <CopyBubbles game={game} disclosure={copyDisclosure} />
             </ModalBody>
             <ModalFooter>
               {!readOnly && game.copies.length === 0 ? (
