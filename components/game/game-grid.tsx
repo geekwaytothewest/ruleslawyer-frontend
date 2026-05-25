@@ -72,7 +72,7 @@ export default function GameGrid(props: any) {
           collectionId +
           "/copiesByGames" +
           "?orgId=" + organizationId +
-          "?limit=" + maxResults +
+          "&limit=" + maxResults +
           "&filter=" + debouncedSearch,
         null,
         token
@@ -89,7 +89,7 @@ export default function GameGrid(props: any) {
         "GET",
         "/game/withCopies" +
           "?orgId=" + organizationId +
-          "?limit=" + maxResults +
+          "&limit=" + maxResults +
           "&filter=" + debouncedSearch,
         null,
         token
