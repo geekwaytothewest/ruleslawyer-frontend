@@ -66,6 +66,21 @@ export default function GameModal(props: any) {
       .catch(() => {});
   };
 
+  const onSyncWithBGG = () => {
+    frontendFetch(
+      "PUT",
+      "/game/" + game.id + "/syncWithBGG",
+      null,
+      session?.data?.token
+    )
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        setData(data);
+        onClose();
+      })
+      .catch(() => {});
+  };
+
   useEffect(() => {
     if (gameIn && trigger === 0) {
       setData(gameIn);
@@ -158,6 +173,13 @@ export default function GameModal(props: any) {
                 </Button>
               ) : (
                 ""
+              )}
+              {readOnly ? (
+                ""
+              ) : (
+                <Button color="primary" onPress={onSyncWithBGG}>
+                  Sync With BGG
+                </Button>
               )}
               {readOnly ? (
                 ""
