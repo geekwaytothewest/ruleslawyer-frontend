@@ -25,6 +25,7 @@ const config: Config = {
       'gwlightblue': '#70bdc7',
       'gwred': '#FF0000',
       'gwdarkred': '#7e0909',
+      'bggorange': '#FF5100',
       ...colors,
     }
   },

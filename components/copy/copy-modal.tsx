@@ -225,13 +225,13 @@ export default function CopyModal(props: any) {
     }
   }, [permissions, copy, organizationId]);
 
+  const orgIdForCollections = copy?.organizationId ?? organizationId;
+
   useEffect(() => {
-    if (copy || organizationId) {
+    if (orgIdForCollections) {
       frontendFetch(
         "GET",
-        "/org/" +
-          (copy ? copy.organizationId : organizationId) +
-          "/collections",
+        "/org/" + orgIdForCollections + "/collections",
         null,
         session?.data?.token
       )
@@ -239,9 +239,9 @@ export default function CopyModal(props: any) {
         .then((data: any) => {
           setCollections(data);
         })
-        .catch((err: any) => {});
+        .catch(() => {});
     }
-  }, [organizationId, copy, session?.data?.token]);
+  }, [orgIdForCollections, session?.data?.token]);
 
   if (isLoading || isLoadingPermissions) return <div></div>;
 

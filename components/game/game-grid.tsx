@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import GameCard from "./game-card";
 import {
+  Button,
   CircularProgress,
   Input,
   Select,
@@ -25,6 +26,9 @@ export default function GameGrid(props: any) {
   const [debouncedSearch, setDebouncedSearch]: any = useState("");
   const [isLoading, setLoading]: any = useState(true);
   const [maxResults, setMaxResults] = React.useState<string>("50");
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [total, setTotal] = useState<number>(0);
   const [trigger, setTrigger]: any = useState(0);
   const [readOnly, setReadOnly]: any = useState(true);
   const {
@@ -61,6 +65,13 @@ export default function GameGrid(props: any) {
     return () => clearTimeout(timer);
   }, [searchText]);
 
+  // A new search or page size invalidates the current page offset; go back to
+  // the first page. (setPage(1) is a no-op when already on page 1, so this
+  // doesn't cause an extra fetch in the common case.)
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, maxResults]);
+
   useEffect(() => {
     const token = session?.data?.token;
     if (!token) return;
@@ -71,10 +82,10 @@ export default function GameGrid(props: any) {
         "/collection/" +
           collectionId +
           "/copiesByGames" +
-          "?limit=" +
-          maxResults +
-          "&filter=" +
-          debouncedSearch,
+          "?orgId=" + organizationId +
+          "&limit=" + maxResults +
+          "&page=" + page +
+          "&filter=" + debouncedSearch,
         null,
         token
       )
@@ -82,24 +93,39 @@ export default function GameGrid(props: any) {
         .then((data: any) => {
           setHeader("Collection: " + data.name);
           setData(data.games);
+          setTotal(data.total ?? 0);
+          setTotalPages(data.totalPages ?? 1);
           setLoading(false);
         })
         .catch(() => {});
     } else {
       frontendFetch(
         "GET",
-        "/game/withCopies?limit=" + maxResults + "&filter=" + debouncedSearch,
+        "/game/withCopies" +
+          "?orgId=" + organizationId +
+          "&limit=" + maxResults +
+          "&page=" + page +
+          "&filter=" + debouncedSearch,
         null,
         token
       )
         .then((res: any) => res.json())
         .then((data: any) => {
-          setData(data);
+          setData(data.data);
+          setTotal(data.total ?? 0);
+          setTotalPages(data.totalPages ?? 1);
           setLoading(false);
         })
         .catch(() => {});
     }
-  }, [session?.data?.token, collectionId, maxResults, debouncedSearch, trigger]);
+  }, [
+    session?.data?.token,
+    collectionId,
+    maxResults,
+    debouncedSearch,
+    page,
+    trigger,
+  ]);
 
   useEffect(() => {
     const interval = setInterval(() => setTrigger((t: number) => t + 1), 60000);
@@ -141,9 +167,11 @@ export default function GameGrid(props: any) {
           name="maxResults"
           label="Max Results"
           onSelectionChange={(keys) => {
-            if (keys === "all") return;
             const [first] = keys;
-            if (first !== undefined) setMaxResults(String(first));
+
+            if (first !== undefined) {
+              setMaxResults(String(first));
+            }
           }}
           selectedKeys={new Set([maxResults])}
           className="w-1/3"
@@ -160,11 +188,31 @@ export default function GameGrid(props: any) {
           <SelectItem key={1000}>
             1000 Games
           </SelectItem>
-          <SelectItem key={"All"}>
-            All Games
-          </SelectItem>
         </Select>
       </div>
+
+      {totalPages > 1 ? (
+        <div className="flex items-center justify-center gap-4 my-6">
+          <Button
+            isDisabled={page <= 1}
+            onPress={() => setPage((p) => Math.max(1, p - 1))}
+          >
+            Previous
+          </Button>
+          <span>
+            Page {page} of {totalPages} ({total} games)
+          </span>
+          <Button
+            isDisabled={page >= totalPages}
+            onPress={() => setPage((p) => Math.min(totalPages, p + 1))}
+          >
+            Next
+          </Button>
+        </div>
+      ) : (
+        ""
+      )}
+
       <div className="flex flex-wrap">
         {games.map(
           (g: {
@@ -188,6 +236,28 @@ export default function GameGrid(props: any) {
           }
         )}
       </div>
+
+      {totalPages > 1 ? (
+        <div className="flex items-center justify-center gap-4 my-6">
+          <Button
+            isDisabled={page <= 1}
+            onPress={() => setPage((p) => Math.max(1, p - 1))}
+          >
+            Previous
+          </Button>
+          <span>
+            Page {page} of {totalPages} ({total} games)
+          </span>
+          <Button
+            isDisabled={page >= totalPages}
+            onPress={() => setPage((p) => Math.min(totalPages, p + 1))}
+          >
+            Next
+          </Button>
+        </div>
+      ) : (
+        ""
+      )}
 
       {readOnly ? (
         ""
