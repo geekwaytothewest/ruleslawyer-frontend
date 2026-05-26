@@ -141,15 +141,13 @@ export default function GameModal(props: any) {
                 ""
               )}
 
-              {game.bggId ? (
-                <Input
-                  name="bggId"
-                  type="text"
-                  label="BoardGameGeek ID"
-                  value={bggId}
-                  onValueChange={(value) => setBggId(value)}
-                />
-              ) : null}
+              <Input
+                name="bggId"
+                type="text"
+                label="BoardGameGeek ID"
+                value={bggId ?? ''}
+                onValueChange={(value) => setBggId(value)}
+              />
 
               <CopyBubbles game={game} disclosure={copyDisclosure} />
             </ModalBody>
