@@ -78,6 +78,8 @@ export default function GameGrid(props: any) {
     const token = session?.data?.token;
     if (!token) return;
 
+    setLoading(true);
+
     if (collectionId) {
       frontendFetch(
         "GET",
