@@ -89,7 +89,7 @@ export default function SideBar() {
                     ) && !pathname.includes(`/conventions`) && !pathname.includes(`/games`) && !pathname.includes(`/collections`),
                   },
                   {
-                    "text-gwgreen group-hover:text-gwblue": !pathname?.startsWith(
+                    "text-gwdarkblue group-hover:text-gwdarkgreen": !pathname?.startsWith(
                       `/dashboard/organization`
                     ) || pathname.includes(`/conventions`) || pathname.includes(`/games`) || pathname.includes(`/collections`),
                   }
