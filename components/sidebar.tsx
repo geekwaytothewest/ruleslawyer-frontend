@@ -129,48 +129,6 @@ export default function SideBar({
           </Link>
         )}
         { permissions.organizations.data?.length === 1 &&
-          permissions.conventions.data?.length === 1 &&
-          !permissions.user?.data?.superAdmin && (
-            <Link className="group"
-              href={`/dashboard/convention/${permissions.conventions.data[0].convention.id}`}
-            >
-              <div
-                className={clsx(
-                  "text-center border-b-2 border-gwblue group-hover:bg-gwblue p-2",
-                  {
-                    "bg-transparent": pathname?.startsWith(
-                      "/dashboard/convention"
-                    ),
-                  },
-                  {
-                    "bg-gwgreen border-right-2": !pathname?.startsWith(
-                      "/dashboard/convention"
-                    ),
-                  }
-                )}
-              >
-              <FaPeopleLine
-                  className={clsx(
-                    "text-4xl mx-auto",
-                    !collapsed && "mb-2",
-                    {
-                      "text-gwgreen group-hover:text-gwblue": pathname?.startsWith(
-                        `/dashboard/convention`
-                      ),
-                    },
-                    {
-                      "text-gwdarkblue group-hover:text-gwdarkgreen": !pathname?.startsWith(
-                        `/dashboard/convention`
-                      ),
-                    }
-                  )}
-                />
-
-                {!collapsed && <h1>{permissions.conventions.data[0].convention.name}</h1>}
-              </div>
-            </Link>
-          )}
-        { permissions.organizations.data?.length === 1 &&
           !permissions.user?.data?.superAdmin && (
           <Link className="group"
             href={`/dashboard/organization/${permissions.organizations.data[0].organizationId}/conventions`}
