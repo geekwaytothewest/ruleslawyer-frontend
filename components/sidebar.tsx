@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
@@ -21,6 +21,18 @@ export default function SideBar({
   const pathname = usePathname();
 
   const [collapsed, setCollapsed] = useState(initialCollapsed);
+
+  const navRef = useRef<HTMLDivElement>(null);
+  const hasClicked = useRef(false);
+
+  useEffect(() => {
+    if (isLoading || hasClicked.current) return;
+    const firstLink = navRef.current?.querySelector("a");
+    if (firstLink) {
+      hasClicked.current = true;
+      firstLink.click();
+    }
+  }, [isLoading]);
 
   const toggleCollapsed = () => {
     setCollapsed((prev) => {
@@ -55,7 +67,7 @@ export default function SideBar({
           {collapsed ? <FaAnglesRight /> : <FaAnglesLeft />}
         </button>
       </div>
-      <div>
+      <div ref={navRef}>
         {permissions.organizations.data?.length === 1 &&
           !permissions.user?.data?.superAdmin && (
             <Link className="group"
