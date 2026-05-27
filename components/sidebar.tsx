@@ -65,7 +65,7 @@ export default function SideBar({
                 className={clsx(
                   "text-center border-b-2 border-gwblue group-hover:bg-gwblue p-2",
                   {
-                    "bg-transparent": pathname.startsWith(`/dashboard/organization`) && !pathname.includes(`/conventions`) && !pathname.includes(`/games`) && !pathname.includes(`/collections`),
+                    "bg-transparent": pathname.startsWith(`/dashboard/organization`) && !pathname.includes(`/conventions`) && !pathname.includes(`/games`) && !pathname.includes(`/collection`),
                   },
                   {
                     "bg-gwgreen border-right-2": !pathname.startsWith(`/dashboard/organization`) || pathname.includes(`/conventions`) || pathname.includes(`/games`) || pathname.includes(`/collection`),
