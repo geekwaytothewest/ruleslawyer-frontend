@@ -39,10 +39,10 @@ export default function SideBar() {
                 className={clsx(
                   "text-center border-b-2 border-gwblue group-hover:bg-gwblue p-2",
                   {
-                    "bg-transparent": pathname === `/dashboard/organization`,
+                    "bg-transparent": pathname.startsWith(`/dashboard/organization`) && !pathname.includes(`/conventions`) && !pathname.includes(`/games`) && !pathname.includes(`/collections`),
                   },
                   {
-                    "bg-gwgreen border-right-2": !(pathname === `/dashboard/organization`),
+                    "bg-gwgreen border-right-2": !pathname.startsWith(`/dashboard/organization`) || pathname.includes(`/conventions`) || pathname.includes(`/games`) || pathname.includes(`/collections`),
                   }
                 )}
               >
@@ -50,10 +50,10 @@ export default function SideBar() {
                   className={clsx(
                     "text-4xl mx-auto mb-2",
                     {
-                      "text-gwblue group-hover:text-gwdarkgreen": pathname === `/dashboard/organization`,
+                      "text-gwgreen group-hover:text-gwdarkgreen": pathname.startsWith(`/dashboard/organization`) && !pathname.includes(`/conventions`) && !pathname.includes(`/games`) && !pathname.includes(`/collections`),
                     },
                     {
-                      "text-gwdarkblue group-hover:text-gwdarkgreen": !(pathname === `/dashboard/organization`),
+                      "text-gwdarkblue group-hover:text-gwdarkgreen": !pathname.startsWith(`/dashboard/organization`) || pathname.includes(`/conventions`) || pathname.includes(`/games`) || pathname.includes(`/collections`),
                     }
                   )}
                 />
@@ -71,12 +71,12 @@ export default function SideBar() {
                 {
                   "bg-transparent": pathname?.startsWith(
                     "/dashboard/organization"
-                  ),
+                  ) && !pathname.includes(`/conventions`) && !pathname.includes(`/games`) && !pathname.includes(`/collections`),
                 },
                 {
                   "bg-gwgreen border-right-2": !pathname?.startsWith(
                     "/dashboard/organization"
-                  ),
+                  ) || pathname.includes(`/conventions`) || pathname.includes(`/games`) || pathname.includes(`/collections`),
                 }
               )}
             >
@@ -86,12 +86,12 @@ export default function SideBar() {
                   {
                     "text-gwblue group-hover:text-gwgreen": pathname?.startsWith(
                       `/dashboard/organization`
-                    ),
+                    ) && !pathname.includes(`/conventions`) && !pathname.includes(`/games`) && !pathname.includes(`/collections`),
                   },
                   {
                     "text-gwgreen group-hover:text-gwblue": !pathname?.startsWith(
                       `/dashboard/organization`
-                    ),
+                    ) || pathname.includes(`/conventions`) || pathname.includes(`/games`) || pathname.includes(`/collections`),
                   }
                 )}
               />
