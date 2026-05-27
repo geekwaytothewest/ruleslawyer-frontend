@@ -201,9 +201,6 @@ export default function GameGrid(props: any) {
           <SelectItem key={500}>
             500 Games
           </SelectItem>
-          <SelectItem key={1000}>
-            1000 Games
-          </SelectItem>
         </Select>
       </div>
 

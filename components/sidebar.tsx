@@ -128,7 +128,8 @@ export default function SideBar({
             </div>
           </Link>
         )}
-        {permissions.conventions.data?.length == 1 &&
+        { permissions.organizations.data?.length === 1 &&
+          permissions.conventions.data?.length === 1 &&
           !permissions.user?.data?.superAdmin && (
             <Link className="group"
               href={`/dashboard/convention/${permissions.conventions.data[0].convention.id}`}
@@ -169,7 +170,9 @@ export default function SideBar({
               </div>
             </Link>
           )}
-        {permissions.conventions.data?.length > 1 && (
+        { permissions.organizations.data?.length === 1 &&
+          permissions.conventions.data?.length > 1 &&
+          !permissions.user?.data?.superAdmin && (
           <Link className="group"
             href={`/dashboard/organization/${permissions.organizations.data[0].organizationId}/conventions`}
           >
@@ -209,7 +212,8 @@ export default function SideBar({
             </div>
           </Link>
         )}
-        {(permissions.user?.data?.superAdmin) && (
+        {(permissions.conventions.data?.length > 1 ||
+          permissions.user?.data?.superAdmin) && (
             <Link className="group" href={`/dashboard/conventions`}>
               <div
                 className={clsx(
