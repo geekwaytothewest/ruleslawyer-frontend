@@ -7,7 +7,9 @@ export function SignIn() {
   return (
     <button
       onClick={() => {
-        window.location.href = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/auth/login`;
+        const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+        const returnTo = encodeURIComponent(`${basePath}/dashboard`);
+        window.location.href = `${basePath}/auth/login?returnTo=${returnTo}`;
       }}
       className="hover:text-gwgreen"
     >
