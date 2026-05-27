@@ -4,7 +4,7 @@ import Profile from "@/components/profile";
 
 export default async function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-8 md:p-24">
+    <main className="flex min-h-dvh flex-col items-center justify-center gap-8 p-8 md:p-24">
       <Image
         src={geekgayLogo}
         width={500}
