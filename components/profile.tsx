@@ -1,6 +1,6 @@
 import { auth0 } from "@/lib/auth0";
 import React from "react";
-import { SignOut } from "@/components/auth/signout-server";
+import { SignOut } from "@/components/auth/signout-client";
 import { SignIn } from "@/components/auth/signin";
 import Image from "next/image";
 import Link from "next/link";
