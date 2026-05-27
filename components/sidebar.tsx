@@ -69,7 +69,7 @@ export default function SideBar() {
                     "bg-transparent": pathname.startsWith(`/dashboard/organization`) && !pathname.includes(`/conventions`) && !pathname.includes(`/games`) && !pathname.includes(`/collections`),
                   },
                   {
-                    "bg-gwgreen border-right-2": !pathname.startsWith(`/dashboard/organization`) || pathname.includes(`/conventions`) || pathname.includes(`/games`) || pathname.includes(`/collections`),
+                    "bg-gwgreen border-right-2": !pathname.startsWith(`/dashboard/organization`) || pathname.includes(`/conventions`) || pathname.includes(`/games`) || pathname.includes(`/collection`),
                   }
                 )}
               >
@@ -78,10 +78,10 @@ export default function SideBar() {
                     "text-4xl mx-auto",
                     !collapsed && "mb-2",
                     {
-                      "text-gwgreen group-hover:text-gwdarkgreen": pathname.startsWith(`/dashboard/organization`) && !pathname.includes(`/conventions`) && !pathname.includes(`/games`) && !pathname.includes(`/collections`),
+                      "text-gwgreen group-hover:text-gwdarkgreen": pathname.startsWith(`/dashboard/organization`) && !pathname.includes(`/conventions`) && !pathname.includes(`/games`) && !pathname.includes(`/collection`),
                     },
                     {
-                      "text-gwdarkblue group-hover:text-gwdarkgreen": !pathname.startsWith(`/dashboard/organization`) || pathname.includes(`/conventions`) || pathname.includes(`/games`) || pathname.includes(`/collections`),
+                      "text-gwdarkblue group-hover:text-gwdarkgreen": !pathname.startsWith(`/dashboard/organization`) || pathname.includes(`/conventions`) || pathname.includes(`/games`) || pathname.includes(`/collection`),
                     }
                   )}
                 />
