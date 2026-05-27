@@ -223,6 +223,8 @@ export default function SideBar({
                 c.convention.organizationId
             )
           ).size > 1) ||
+          (permissions.conventions.data?.length > 0 &&
+            permissions.organizations.data.length === 0) ||
           permissions.user?.data?.superAdmin) && (
             <Link className="group" href={`/dashboard/conventions`}>
               <div
