@@ -72,6 +72,16 @@ export default function OrganizationLayout({
             ""
           )}
 
+          {pathname?.includes("users") ? (
+            <BreadcrumbItem
+              href={`/dashboard/organization/${organization.id}/users`}
+            >
+              Users
+            </BreadcrumbItem>
+          ) : (
+            ""
+          )}
+
           {pathname?.includes("convention") ? (
             <BreadcrumbItem
               href={`/dashboard/organization/${organization.id}/conventions`}

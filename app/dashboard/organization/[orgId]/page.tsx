@@ -53,6 +53,14 @@ export default function OrgView(props: { params: Params }) {
           Collections
         </Link>
       </div>
+      <div>
+        <Link
+          href={`/dashboard/organization/${params.orgId}/users`}
+          className="hover:text-gwgreen"
+        >
+          Users
+        </Link>
+      </div>
     </div>
   );
 }
