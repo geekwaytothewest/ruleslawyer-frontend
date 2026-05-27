@@ -7,14 +7,42 @@ import { useAuth } from "@/utilities/swr/useAuth";
 import CollectionCard from "./collection-card";
 import CollectionModal from "./collection-modal";
 import { TbPackageImport } from "react-icons/tb";
+import usePermissions from "@/utilities/swr/usePermissions";
 
 export default function CollectionGrid(props: any) {
   let { collectionsIn, organizationId } = props;
 
   const [collections, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
+  const [readOnly, setReadOnly]: any = useState(true);
+  const {
+    permissions,
+    isLoading: isLoadingPermissions,
+    isError,
+  }: any = usePermissions();
 
   const session: any = useAuth();
+
+  useEffect(() => {
+    if (permissions.user) {
+      if (permissions.user.superAdmin) {
+        setReadOnly(false);
+      } else if (organizationId) {
+        if (
+          permissions.organizations.data?.filter(
+            (d: { organizationId: any; admin: boolean }) =>
+              d.organizationId == organizationId && d.admin === true
+          ).length > 0
+        ) {
+          setReadOnly(false);
+        } else {
+          setReadOnly(true);
+        }
+      } else {
+        setReadOnly(true);
+      }
+    }
+  }, [permissions, organizationId]);
 
   useEffect(() => {
     if (collectionsIn) {
@@ -89,26 +117,36 @@ export default function CollectionGrid(props: any) {
           }
         )}
       </div>
-      <Tooltip
-        content="Import Collection"
-        showArrow={true}
-        color="success"
-        delay={1000}
-      >
-        <span className="text-7xl fixed bottom-28 right-8 hover:text-gwgreen hover:cursor-pointer">
-          <TbPackageImport onClick={onOpenImport} />
-        </span>
-      </Tooltip>
-      <Tooltip
-        content="Create Collection"
-        showArrow={true}
-        color="success"
-        delay={1000}
-      >
-        <span className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
-          <IoMdAddCircle onClick={onOpenCreate} />
-        </span>
-      </Tooltip>
+
+      {readOnly ? (
+        ""
+      ) : (
+        <Tooltip
+          content="Import Collection"
+          showArrow={true}
+          color="success"
+          delay={1000}
+        >
+          <span className="text-7xl fixed bottom-28 right-8 hover:text-gwgreen hover:cursor-pointer">
+            <TbPackageImport onClick={onOpenImport} />
+          </span>
+        </Tooltip>
+      )}
+
+      {readOnly ? (
+        ""
+      ) : (
+        <Tooltip
+          content="Create Collection"
+          showArrow={true}
+          color="success"
+          delay={1000}
+        >
+          <span className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
+            <IoMdAddCircle onClick={onOpenCreate} />
+          </span>
+        </Tooltip>
+      )}
 
       <CollectionModal
         disclosure={createDisclosure}
