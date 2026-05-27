@@ -75,6 +75,10 @@ export default function GameGrid(props: any) {
   }, [debouncedSearch, maxResults]);
 
   useEffect(() => {
+    setLoading(true);
+  }, [maxResults]);
+
+  useEffect(() => {
     const token = session?.data?.token;
     if (!token) return;
 
