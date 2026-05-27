@@ -83,11 +83,19 @@ export default function GameModal(props: any) {
   };
 
   useEffect(() => {
+    // Seed display data from the list row without a network call. A GameModal
+    // is mounted (closed) inside every GameCard, so fetching here would fire
+    // one request per card — defer the network calls until the modal opens.
     if (gameIn && trigger === 0) {
       setData(gameIn);
       setGameName(gameIn.name);
       setBggId(gameIn.bggId);
+      setLoading(false);
+    }
 
+    if (!isOpen) return;
+
+    if (gameIn && trigger === 0) {
       frontendFetch(
         "GET",
         "/game/" + (game !== null ? game.id : gameId) + "/copies",
@@ -118,7 +126,7 @@ export default function GameModal(props: any) {
     }
     // copyDisclosure is not a dependency - remove a warning and prevent errors
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameIn, gameId, session?.data?.token, trigger]);
+  }, [isOpen, gameIn, gameId, session?.data?.token, trigger]);
 
   useEffect(() => {
     if (permissions.user?.data) {
