@@ -171,7 +171,6 @@ export default function SideBar({
             </Link>
           )}
         { permissions.organizations.data?.length === 1 &&
-          permissions.conventions.data?.length > 1 &&
           !permissions.user?.data?.superAdmin && (
           <Link className="group"
             href={`/dashboard/organization/${permissions.organizations.data[0].organizationId}/conventions`}
@@ -208,11 +207,22 @@ export default function SideBar({
                   )}
                 />
 
-              {!collapsed && "Conventions"}
+              {!collapsed && `${new Set(
+                permissions.conventions.data?.map(
+                  (c: { convention: { organizationId: number } }) =>
+                    c.convention.organizationId
+                )
+              ).size > 1 ? `${permissions.organizations.data[0].organization.name} ` : ''} Conventions`}
             </div>
           </Link>
         )}
-        {(permissions.conventions.data?.length > 1 ||
+        {((permissions.conventions.data?.length > 0 &&
+          new Set(
+            permissions.conventions.data?.map(
+              (c: { convention: { organizationId: number } }) =>
+                c.convention.organizationId
+            )
+          ).size > 1) ||
           permissions.user?.data?.superAdmin) && (
             <Link className="group" href={`/dashboard/conventions`}>
               <div
@@ -247,7 +257,7 @@ export default function SideBar({
                   )}
                 />
 
-                {!collapsed && "Conventions"}
+                {!collapsed && "All Conventions"}
               </div>
             </Link>
           )}
