@@ -24,6 +24,7 @@ export default function GameModal(props: any) {
   const [bggId, setBggId]: any = useState("");
   const [readOnly, setReadOnly]: any = useState(true);
   const [trigger, setTrigger]: any = useState(0);
+  const [copyCount, setCopyCount]: any = useState(0);
   const {
     permissions,
     isLoading: isLoadingPermissions,
@@ -86,7 +87,19 @@ export default function GameModal(props: any) {
       setData(gameIn);
       setGameName(gameIn.name);
       setBggId(gameIn.bggId);
-      setLoading(false);
+
+      frontendFetch(
+        "GET",
+        "/game/" + (game !== null ? game.id : gameId) + "/copies",
+        null,
+        session?.data?.token
+      )
+        .then((res: any) => res.json())
+        .then((data: any) => {
+          setCopyCount(data.length);
+          setLoading(false);
+        })
+        .catch(() => {});
     } else {
       frontendFetch(
         "GET",
@@ -167,7 +180,7 @@ export default function GameModal(props: any) {
               <CopyBubbles game={game} disclosure={copyDisclosure} />
             </ModalBody>
             <ModalFooter>
-              {!readOnly && game.copies.length === 0 ? (
+              {!readOnly && copyCount === 0 ? (
                 <Button color="danger" onPress={onDelete}>
                   Delete
                 </Button>

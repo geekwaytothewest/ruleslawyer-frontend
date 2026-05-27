@@ -41,7 +41,7 @@ function BubbleModal({ c, bubbleStyle, onCloseModal }: any) {
 }
 
 export default function CopyBubbles(props: any) {
-  let { game, bubbleStyle, disclosure } = props;
+  let { game, bubbleStyle, disclosure, archived } = props;
 
   const [copies, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
@@ -80,9 +80,13 @@ export default function CopyBubbles(props: any) {
   if (!copies) return <div></div>;
 
   if (bubbleStyle === "statusOnly") {
-    const available = copies.filter(
+    let available = copies.filter(
       (c: any) => c.checkOuts.length === 0 || c.checkOuts[0].checkIn !== null
     ).sort();
+
+    if (archived) {
+      available = 0;
+    }
 
     return (
       <div className="flex flex-wrap w-full">
@@ -94,6 +98,13 @@ export default function CopyBubbles(props: any) {
         {copies.length - available.length > 0 ? (
           <div className="rounded-full bg-gwdarkred p-1 mr-2 mt-2 text-sm text-gwdarkblue">
             {copies.length - available.length} Checked Out
+          </div>
+        ) : (
+          <div></div>
+        )}
+        {available === 0 ? (
+          <div className="rounded-full bg-bggorange p-1 mr-2 mt-2 text-sm text-white">
+            {copies.length} Archived
           </div>
         ) : (
           <div></div>

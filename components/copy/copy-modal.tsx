@@ -265,7 +265,7 @@ export default function CopyModal(props: any) {
                 <Select
                   name="collectionSelect"
                   items={collections}
-                  label="Current collection"
+                  label="Collection"
                   placeholder="Select a collection"
                   defaultSelectedKeys={copy ? [String(copy.collectionId)] : []}
                   isDisabled={readOnly}

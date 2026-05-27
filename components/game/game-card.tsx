@@ -47,8 +47,8 @@ function getCoverArtSrc(coverArt: any): string | null {
   return `data:${mimeType};base64,${btoa(binary)}`;
 }
 
-export default function GameCard(props: any) {
-  let { gameIn, gameId } = props;
+function GameCard(props: any) {
+  let { gameIn, gameId, archived } = props;
 
   const [game, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
@@ -60,7 +60,9 @@ export default function GameCard(props: any) {
   }: any = usePermissions();
 
   useEffect(() => {
-    if (permissions.user) {
+    if(archived) {
+      setReadOnly(true);
+    } else if (permissions.user) {
       if (permissions.user.superAdmin) {
         setReadOnly(false);
       } else if (game) {
@@ -98,6 +100,11 @@ export default function GameCard(props: any) {
     onClose: onModalClose,
   });
   const { isOpen, onOpen, onClose } = disclosure;
+
+  const coverArtSrc = React.useMemo(
+    () => getCoverArtSrc(game?.coverArt),
+    [game?.coverArt]
+  );
 
   useEffect(() => {
     if (gameIn) {
@@ -146,8 +153,8 @@ export default function GameCard(props: any) {
         className="flex items-center border-2 border-gwblue w-80 h-32 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] cursor-pointer"
       >
         <div className="flex-col p-3 w-24">
-          {getCoverArtSrc(game.coverArt) ? (
-            <img src={getCoverArtSrc(game.coverArt)!} alt={game.name} className="w-full h-full object-cover" />
+          {coverArtSrc ? (
+            <img src={coverArtSrc} alt={game.name} className="w-full h-full object-cover" />
           ) : (
             <IoLibrary size={64} />
           )}
@@ -162,6 +169,7 @@ export default function GameCard(props: any) {
               game={game}
               disclosure={disclosure}
               bubbleStyle={"statusOnly"}
+              archived={archived}
             />
           </span>
         </div>
@@ -170,3 +178,5 @@ export default function GameCard(props: any) {
     </div>
   );
 }
+
+export default React.memo(GameCard);

@@ -31,6 +31,8 @@ export default function GameGrid(props: any) {
   const [total, setTotal] = useState<number>(0);
   const [trigger, setTrigger]: any = useState(0);
   const [readOnly, setReadOnly]: any = useState(true);
+  const [collection, setCollection]: any = useState(null);
+
   const {
     permissions,
     isLoading: isLoadingPermissions,
@@ -80,24 +82,38 @@ export default function GameGrid(props: any) {
       frontendFetch(
         "GET",
         "/collection/" +
-          collectionId +
-          "/copiesByGames" +
-          "?orgId=" + organizationId +
-          "&limit=" + maxResults +
-          "&page=" + page +
-          "&filter=" + debouncedSearch,
+          collectionId,
         null,
         token
       )
         .then((res: any) => res.json())
         .then((data: any) => {
-          setHeader("Collection: " + data.name);
-          setData(data.games);
-          setTotal(data.total ?? 0);
-          setTotalPages(data.totalPages ?? 1);
-          setLoading(false);
+          setCollection(data);
         })
-        .catch(() => {});
+        .catch(() => {})
+        .then(() => {
+          frontendFetch(
+            "GET",
+            "/collection/" +
+              collectionId +
+              "/copiesByGames" +
+              "?orgId=" + organizationId +
+              "&limit=" + maxResults +
+              "&page=" + page +
+              "&filter=" + debouncedSearch,
+            null,
+            token
+          )
+            .then((res: any) => res.json())
+            .then((data: any) => {
+              setHeader("Collection: " + data.name);
+              setData(data.games);
+              setTotal(data.total ?? 0);
+              setTotalPages(data.totalPages ?? 1);
+              setLoading(false);
+            })
+            .catch(() => {});
+        })
     } else {
       frontendFetch(
         "GET",
@@ -232,7 +248,7 @@ export default function GameGrid(props: any) {
               | null
               | undefined;
           }) => {
-            return <GameCard key={g.id} gameIn={g} gameId={g.id} />;
+            return <GameCard key={g.id} gameIn={g} gameId={g.id} archived={collection?.archived} />;
           }
         )}
       </div>
