@@ -6,6 +6,10 @@ import { usePathname } from "next/navigation";
 import { SignOut } from "./auth/signout-client";
 import { CircularProgress } from "@heroui/react";
 import usePermissions from "@/utilities/swr/usePermissions";
+import { FaBuildingFlag, FaPeopleLine } from "react-icons/fa6";
+import { IoLibrary } from "react-icons/io5";
+import { GiPawn } from "react-icons/gi";
+
 export default function SideBar() {
   const { permissions, isLoading }: any = usePermissions();
 
@@ -28,34 +32,42 @@ export default function SideBar() {
       <div>
         {permissions.organizations.data?.length === 1 &&
           !permissions.user?.data?.superAdmin && (
-            <Link
+            <Link className="group"
               href={`/dashboard/organization/${permissions.organizations.data[0].organizationId}`}
             >
               <div
                 className={clsx(
-                  "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
+                  "text-center border-b-2 border-gwblue group-hover:bg-gwblue p-2",
                   {
-                    "bg-transparent": pathname?.startsWith(
-                      "/dashboard/organization"
-                    ),
+                    "bg-transparent": pathname === `/dashboard/organization`,
                   },
                   {
-                    "bg-gwgreen border-right-2": !pathname?.startsWith(
-                      "/dashboard/organization"
-                    ),
+                    "bg-gwgreen border-right-2": !(pathname === `/dashboard/organization`),
                   }
                 )}
               >
+                <FaBuildingFlag
+                  className={clsx(
+                    "text-4xl mx-auto mb-2",
+                    {
+                      "text-gwblue group-hover:text-gwdarkgreen": pathname === `/dashboard/organization`,
+                    },
+                    {
+                      "text-gwdarkblue group-hover:text-gwdarkgreen": !(pathname === `/dashboard/organization`),
+                    }
+                  )}
+                />
+
                 {permissions.organizations.data[0].organization.name}
               </div>
             </Link>
           )}
         {(permissions.organizations.data?.length > 1 ||
           permissions.user?.data?.superAdmin) && (
-          <Link href="/dashboard/organizations">
+          <Link className="group" href="/dashboard/organizations">
             <div
               className={clsx(
-                "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
+                "text-center border-b-2 border-gwblue group-hover:bg-gwblue p-2",
                 {
                   "bg-transparent": pathname?.startsWith(
                     "/dashboard/organization"
@@ -68,18 +80,34 @@ export default function SideBar() {
                 }
               )}
             >
+              <FaBuildingFlag
+                className={clsx(
+                  "text-4xl mx-auto mb-2",
+                  {
+                    "text-gwblue group-hover:text-gwgreen": pathname?.startsWith(
+                      `/dashboard/organization`
+                    ),
+                  },
+                  {
+                    "text-gwgreen group-hover:text-gwblue": !pathname?.startsWith(
+                      `/dashboard/organization`
+                    ),
+                  }
+                )}
+              />
+
               Organizations
             </div>
           </Link>
         )}
         {permissions.conventions.data?.length == 1 &&
           !permissions.user?.data?.superAdmin && (
-            <Link
+            <Link className="group"
               href={`/dashboard/convention/${permissions.conventions.data[0].convention.id}`}
             >
               <div
                 className={clsx(
-                  "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
+                  "text-center border-b-2 border-gwblue group-hover:bg-gwblue p-2",
                   {
                     "bg-transparent": pathname?.startsWith(
                       "/dashboard/convention"
@@ -92,6 +120,22 @@ export default function SideBar() {
                   }
                 )}
               >
+              <FaPeopleLine
+                  className={clsx(
+                    "text-4xl mx-auto mb-2",
+                    {
+                      "text-gwgreen group-hover:text-gwblue": pathname?.startsWith(
+                        `/dashboard/convention`
+                      ),
+                    },
+                    {
+                      "text-gwdarkblue group-hover:text-gwdarkgreen": !pathname?.startsWith(
+                        `/dashboard/convention`
+                      ),
+                    }
+                  )}
+                />
+
                 <h1>{permissions.conventions.data[0].convention.name}</h1>
               </div>
             </Link>
@@ -99,12 +143,12 @@ export default function SideBar() {
         {((permissions.conventions.data?.length > 1 &&
           permissions.organizations.data?.length == 1) ||
           permissions.user?.data?.superAdmin) && (
-          <Link
+          <Link className="group"
             href={`/dashboard/organization/${permissions.organizations.data[0].organizationId}/conventions`}
           >
             <div
               className={clsx(
-                "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
+                "text-center border-b-2 border-gwblue group-hover:bg-gwblue p-2",
                 {
                   "bg-transparent": pathname?.startsWith(
                     `/dashboard/organization/${permissions.organizations.data[0].organizationId}/conventions`
@@ -117,16 +161,32 @@ export default function SideBar() {
                 }
               )}
             >
+              <FaPeopleLine
+                  className={clsx(
+                    "text-4xl mx-auto mb-2",
+                    {
+                      "text-gwgreen group-hover:text-gwgreen": pathname?.startsWith(
+                        `/dashboard/organization/${permissions.organizations.data[0].organizationId}/conventions`
+                      ),
+                    },
+                    {
+                      "text-gwdarkblue group-hover:text-gwdarkgreen": !pathname?.startsWith(
+                        `/dashboard/organization/${permissions.organizations.data[0].organizationId}/conventions`
+                      ),
+                    }
+                  )}
+                />
+
               Conventions
             </div>
           </Link>
         )}
         {permissions.conventions.data?.length > 1 &&
           permissions.organizations.data?.length !== 1 && (
-            <Link href={`/dashboard/conventions`}>
+            <Link className="group" href={`/dashboard/conventions`}>
               <div
                 className={clsx(
-                  "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
+                  "text-center border-b-2 border-gwblue group-hover:bg-gwblue p-2",
                   {
                     "bg-transparent": pathname?.startsWith(
                       `/dashboard/convention`
@@ -139,18 +199,34 @@ export default function SideBar() {
                   }
                 )}
               >
+                <FaPeopleLine
+                  className={clsx(
+                    "text-4xl mx-auto mb-2",
+                    {
+                      "text-gwgreen group-hover:text-gwblue": pathname?.startsWith(
+                        `/dashboard/convention`
+                      ),
+                    },
+                    {
+                      "text-gwdarkblue group-hover:text-gwdarkgreen": !pathname?.startsWith(
+                        `/dashboard/convention`
+                      ),
+                    }
+                  )}
+                />
+
                 Conventions
               </div>
             </Link>
           )}
         {permissions.organizations.data?.length === 1 &&
           !permissions.user?.data?.superAdmin && (
-            <Link
+            <Link className="group"
               href={`/dashboard/organization/${permissions.organizations.data[0].organizationId}/games`}
             >
               <div
                 className={clsx(
-                  "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
+                  "text-center border-b-2 border-gwblue group-hover:bg-gwblue p-2",
                   {
                     "bg-transparent border-right-0": pathname?.startsWith(
                       `/dashboard/organization/${permissions.organizations.data[0].organizationId}/games`
@@ -163,18 +239,34 @@ export default function SideBar() {
                   }
                 )}
               >
+                <GiPawn
+                  className={clsx(
+                    "text-4xl mx-auto mb-2",
+                    {
+                      "text-gwgreen group-hover:text-gwblue": pathname?.startsWith(
+                        `/dashboard/organization/${permissions.organizations.data[0].organizationId}/games`
+                      ),
+                    },
+                    {
+                      "text-gwdarkblue group-hover:text-gwdarkgreen": !pathname?.startsWith(
+                        `/dashboard/organization/${permissions.organizations.data[0].organizationId}/games`
+                      ),
+                    }
+                  )}
+                />
+
                 Games
               </div>
             </Link>
           )}
         {permissions.organizations.data?.length === 1 &&
           !permissions.user?.data?.superAdmin && (
-            <Link
+            <Link className="group"
               href={`/dashboard/organization/${permissions.organizations.data[0].organizationId}/collections`}
             >
               <div
                 className={clsx(
-                  "text-center border-b-2 border-gwblue hover:bg-gwblue p-2",
+                  "text-center border-b-2 border-gwblue group-hover:bg-gwblue p-2",
                   {
                     "bg-transparent border-right-0": pathname?.startsWith(
                       `/dashboard/organization/${permissions.organizations.data[0].organizationId}/collection`
@@ -187,6 +279,22 @@ export default function SideBar() {
                   }
                 )}
               >
+                <IoLibrary
+                  className={clsx(
+                    "text-4xl mx-auto mb-2",
+                    {
+                      "text-gwgreen group-hover:text-gwdarkgreen": pathname?.startsWith(
+                        `/dashboard/organization/${permissions.organizations.data[0].organizationId}/collection`
+                      ),
+                    },
+                    {
+                      "text-gwdarkblue group-hover:text-gwdarkgreen": !pathname?.startsWith(
+                        `/dashboard/organization/${permissions.organizations.data[0].organizationId}/collection`
+                      ),
+                    }
+                  )}
+                />
+
                 Collections
               </div>
             </Link>
