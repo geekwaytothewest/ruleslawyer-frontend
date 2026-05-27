@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
@@ -9,24 +9,23 @@ import usePermissions from "@/utilities/swr/usePermissions";
 import { FaBuildingFlag, FaPeopleLine, FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
 import { IoLibrary } from "react-icons/io5";
 import { GiPawn } from "react-icons/gi";
+import { SIDEBAR_STORAGE_KEY } from "@/utilities/constants";
 
-const SIDEBAR_STORAGE_KEY = "sidebar-collapsed";
-
-export default function SideBar() {
+export default function SideBar({
+  initialCollapsed = false,
+}: {
+  initialCollapsed?: boolean;
+}) {
   const { permissions, isLoading }: any = usePermissions();
 
   const pathname = usePathname();
 
-  const [collapsed, setCollapsed] = useState(false);
-
-  useEffect(() => {
-    setCollapsed(localStorage.getItem(SIDEBAR_STORAGE_KEY) === "true");
-  }, []);
+  const [collapsed, setCollapsed] = useState(initialCollapsed);
 
   const toggleCollapsed = () => {
     setCollapsed((prev) => {
       const next = !prev;
-      localStorage.setItem(SIDEBAR_STORAGE_KEY, String(next));
+      document.cookie = `${SIDEBAR_STORAGE_KEY}=${next}; path=/; max-age=31536000; samesite=lax`;
       return next;
     });
   };
@@ -47,15 +46,15 @@ export default function SideBar() {
 
   return (
     <div className={containerClass}>
-      <button
-        type="button"
-        onClick={toggleCollapsed}
-        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        className="flex w-full justify-end p-2 text-gwblue hover:text-gwdarkgreen"
-      >
-        {collapsed ? <FaAnglesRight /> : <FaAnglesLeft />}
-      </button>
+      <div className={clsx("flex bg-gwgreen border-b-2 border-gwblue", collapsed ? "justify-center" : "justify-end")}>
+        <button
+          type="button"
+          onClick={toggleCollapsed}
+          className="p-2 text-gwdarkblue hover:text-gwdarkgreen"
+        >
+          {collapsed ? <FaAnglesRight /> : <FaAnglesLeft />}
+        </button>
+      </div>
       <div>
         {permissions.organizations.data?.length === 1 &&
           !permissions.user?.data?.superAdmin && (
