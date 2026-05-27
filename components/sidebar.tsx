@@ -71,12 +71,12 @@ export default function SideBar() {
                 {
                   "bg-transparent": pathname?.startsWith(
                     "/dashboard/organization"
-                  ) && !pathname.includes(`/conventions`) && !pathname.includes(`/games`) && !pathname.includes(`/collections`),
+                  ),
                 },
                 {
                   "bg-gwgreen border-right-2": !pathname?.startsWith(
                     "/dashboard/organization"
-                  ) || pathname.includes(`/conventions`) || pathname.includes(`/games`) || pathname.includes(`/collections`),
+                  ),
                 }
               )}
             >
@@ -84,14 +84,14 @@ export default function SideBar() {
                 className={clsx(
                   "text-4xl mx-auto mb-2",
                   {
-                    "text-gwblue group-hover:text-gwgreen": pathname?.startsWith(
+                    "text-gwgreen group-hover:text-gwdarkgreen": pathname?.startsWith(
                       `/dashboard/organization`
-                    ) && !pathname.includes(`/conventions`) && !pathname.includes(`/games`) && !pathname.includes(`/collections`),
+                    ),
                   },
                   {
                     "text-gwdarkblue group-hover:text-gwdarkgreen": !pathname?.startsWith(
                       `/dashboard/organization`
-                    ) || pathname.includes(`/conventions`) || pathname.includes(`/games`) || pathname.includes(`/collections`),
+                    ),
                   }
                 )}
               />
@@ -140,9 +140,8 @@ export default function SideBar() {
               </div>
             </Link>
           )}
-        {((permissions.conventions.data?.length > 1 &&
-          permissions.organizations.data?.length == 1) ||
-          permissions.user?.data?.superAdmin) && (
+        {permissions.conventions.data?.length > 1 &&
+          permissions.organizations.data?.length !== 1 && (
           <Link className="group"
             href={`/dashboard/organization/${permissions.organizations.data[0].organizationId}/conventions`}
           >
@@ -181,8 +180,9 @@ export default function SideBar() {
             </div>
           </Link>
         )}
-        {permissions.conventions.data?.length > 1 &&
-          permissions.organizations.data?.length !== 1 && (
+        {((permissions.conventions.data?.length > 1 &&
+          permissions.organizations.data?.length == 1) ||
+          permissions.user?.data?.superAdmin) && (
             <Link className="group" href={`/dashboard/conventions`}>
               <div
                 className={clsx(
@@ -203,7 +203,7 @@ export default function SideBar() {
                   className={clsx(
                     "text-4xl mx-auto mb-2",
                     {
-                      "text-gwgreen group-hover:text-gwblue": pathname?.startsWith(
+                      "text-gwgreen group-hover:text-gwdarkgreen": pathname?.startsWith(
                         `/dashboard/convention`
                       ),
                     },
