@@ -9,7 +9,7 @@ import { GrDetach } from "react-icons/gr";
 import usePermissions from "@/utilities/swr/usePermissions";
 import { FaEdit, FaLock } from "react-icons/fa";
 import CollectionModal from "./collection-modal";
-import { FaTrashCan } from "react-icons/fa6";
+import { FaTrashCan, FaTrophy } from "react-icons/fa6";
 import Link from "next/link";
 
 export default function CollectionCard(props: any) {
@@ -223,28 +223,6 @@ export default function CollectionCard(props: any) {
         ) : (
           ""
         )}
-        {!readOnly &&
-        collection._count.copies === 0 &&
-        collection._count.conventions === 0 ? (
-          <div className="absolute right-10">
-            {" "}
-            <Tooltip
-              content={"Delete " + collection.name}
-              showArrow={true}
-              color="success"
-              delay={1000}
-            >
-              <span>
-                <FaTrashCan
-                  className="hover:text-gwgreen hover:cursor-pointer"
-                  onClick={(e) => deleteCollection(e, collection.id)}
-                />
-              </span>
-            </Tooltip>
-          </div>
-        ) : (
-          ""
-        )}
         {!readOnly && !collection.archived ? (
           <div className="absolute top-5 right-10">
             <Tooltip
@@ -269,7 +247,7 @@ export default function CollectionCard(props: any) {
           ""
         )}
         {collection.archived ? (
-          <div className="absolute top-5 right-10">
+          <div className="absolute top-5 right-10 text-gwdarkred">
             <Tooltip
               content={"Archived collection"}
               showArrow={true}
@@ -277,8 +255,44 @@ export default function CollectionCard(props: any) {
               delay={1000}
             >
               <span>
-                <FaLock
+                <FaLock />
+              </span>
+            </Tooltip>
+          </div>
+        ) : (
+          ""
+        )}
+        {collection.allowWinning ? (
+          <div className="absolute top-10 right-10 text-gwgreen">
+            <Tooltip
+              content={"Allows winning copies"}
+              showArrow={true}
+              color="success"
+              delay={1000}
+            >
+              <span>
+                <FaTrophy />
+              </span>
+            </Tooltip>
+          </div>
+        ) : (
+          ""
+        )}
+        {!readOnly &&
+        collection._count.copies === 0 &&
+        collection._count.conventions === 0 ? (
+          <div className="absolute top-15 right-10">
+            {" "}
+            <Tooltip
+              content={"Delete " + collection.name}
+              showArrow={true}
+              color="success"
+              delay={1000}
+            >
+              <span>
+                <FaTrashCan
                   className="hover:text-gwgreen hover:cursor-pointer"
+                  onClick={(e) => deleteCollection(e, collection.id)}
                 />
               </span>
             </Tooltip>
