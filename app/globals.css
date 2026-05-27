@@ -29,14 +29,19 @@
     }
   }
 
-  body {
-    color: rgb(var(--foreground-rgb));
+  html {
+    min-height: 100vh;
     background: linear-gradient(
         to bottom,
-        transparent,
-        rgb(var(--background-end-rgb))
+        var(--color-gwdarkblue),
+        #000000
       )
-      rgb(var(--background-start-rgb));
+      no-repeat fixed;
+  }
+
+  body {
+    color: rgb(var(--foreground-rgb));
+    background: transparent;
   }
 }
 
