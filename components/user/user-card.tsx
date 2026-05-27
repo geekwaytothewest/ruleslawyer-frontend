@@ -80,18 +80,6 @@ export default function UserCard(props: any) {
   }, [permissions, user]);
 
   const onModalClose = () => {
-    frontendFetch(
-      "GET",
-      "/userConPerm/" + user.id,
-      null,
-      session?.data?.token
-    )
-      .then((res: any) => res.json())
-      .then((data: any) => {
-        setData(data);
-        setLoading(false);
-      })
-      .catch((err: any) => {});
   };
 
   const disclosure = useDisclosure({
@@ -156,18 +144,30 @@ export default function UserCard(props: any) {
 
   return (
     <div>
-        <div className="flex items-center border-2 border-gwblue w-80 h-32 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] cursor-pointer">
+        <div
+          onClick={onOpen}
+          className="relative flex items-center border-2 border-gwblue w-80 h-32 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] cursor-pointer"
+        >
         <div className="flex-col p-3 w-24">
             <FaUser size={64} />
         </div>
         <div className="flex-col pr-3 w-40">
-            <span className="inline-block align-middle h-full">
+            <div className="inline-block align-middle h-full">
                 <p>
                     {user.user.name !== ""
                     ? user.user.name
                     : "[unknown user]"}
                 </p>
-            </span>
+            </div>
+            <div className="align-middle h-full text-sm pt-3 text-slate-400">
+                {[
+                    user.admin ? "Admin" : null,
+                    user.geekGuide ? "Geek Guide" : null,
+                    user.readOnly ? "Read Only" : null,
+                ]
+                    .filter(Boolean)
+                    .join(" | ")}
+            </div>
         </div>
         {!readOnly ? (
             <div className="absolute top-15 right-10">
@@ -195,6 +195,9 @@ export default function UserCard(props: any) {
             userIn={user}
             organizationId={user.organizationId}
             disclosure={disclosure}
+            onSaved={(updated: any) =>
+                setData((prev: any) => ({ ...prev, ...updated }))
+            }
         />
     </div>
   );

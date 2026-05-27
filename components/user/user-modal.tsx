@@ -1,6 +1,7 @@
 "use client";
 import frontendFetch from "@/utilities/frontendFetch";
 import {
+  addToast,
   Button,
   Checkbox,
   Input,
@@ -20,6 +21,7 @@ export default function UserModal(props: any) {
     organizationId,
     disclosure,
     userId,
+    onSaved,
   } = props;
 
   const [user, setData]: any = useState(null);
@@ -44,17 +46,38 @@ export default function UserModal(props: any) {
     "PUT",
     "/userOrgPerm/" + user.id,
     {
-        admin: user.admin,
-        geekGuide: user.geekGuide,
-        readOnly: user.readOnly,
+        admin: userAdmin,
+        geekGuide: userGeekGuide,
+        readOnly: userReadOnly,
     },
     session?.data?.token
     )
-    .then((res: any) => res.json())
-    .then((data: any) => {
+    .then((res: any) => {
+        if (!res.ok) {
+            addToast({
+                title: "Unable to save",
+                description:
+                    res.status === 403
+                        ? "You don't have permission to edit this user."
+                        : "Something went wrong saving your changes.",
+                color: "danger",
+            });
+            return;
+        }
+        onSaved?.({
+            admin: userAdmin,
+            geekGuide: userGeekGuide,
+            readOnly: userReadOnly,
+        });
         onClose();
     })
-    .catch((err: any) => {});
+    .catch((err: any) => {
+        addToast({
+            title: "Unable to save",
+            description: "Could not reach the server. Please try again.",
+            color: "danger",
+        });
+    });
   };
 
   useEffect(() => {
@@ -80,6 +103,14 @@ export default function UserModal(props: any) {
       setLoading(false);
     }
   }, [userId, userIn, session?.data?.token]);
+
+  useEffect(() => {
+    if (user && isOpen) {
+      setUserAdmin(user.admin ?? false);
+      setUserGeekGuide(user.geekGuide ?? false);
+      setUserReadOnly(user.readOnly ?? false);
+    }
+  }, [user, isOpen]);
 
   useEffect(() => {
     if (permissions.user) {
@@ -127,7 +158,7 @@ export default function UserModal(props: any) {
           >
             <div>
               <ModalHeader>
-                User Editor - {user ? user.name : "New User"}
+                User Editor - {user?.user?.name ?? "New User"}
               </ModalHeader>
               <ModalBody>
                 <Checkbox
