@@ -50,7 +50,7 @@ export default function SideBar({
         <button
           type="button"
           onClick={toggleCollapsed}
-          className="p-2 text-gwdarkblue hover:text-gwdarkgreen"
+          className="p-2 text-gwdarkblue hover:text-gwdarkgreen hover:cursor-pointer"
         >
           {collapsed ? <FaAnglesRight /> : <FaAnglesLeft />}
         </button>
