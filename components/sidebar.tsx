@@ -1,6 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import { SignOut } from "./auth/signout-client";
@@ -10,6 +11,7 @@ import { FaBuildingFlag, FaPeopleLine, FaAnglesLeft, FaAnglesRight } from "react
 import { IoLibrary } from "react-icons/io5";
 import { GiPawn } from "react-icons/gi";
 import { SIDEBAR_STORAGE_KEY } from "@/utilities/constants";
+import { useUser } from "@auth0/nextjs-auth0";
 
 export default function SideBar({
   initialCollapsed = false,
@@ -18,9 +20,23 @@ export default function SideBar({
 }) {
   const { permissions, isLoading }: any = usePermissions();
 
+  const { user } = useUser();
+
   const pathname = usePathname();
 
   const [collapsed, setCollapsed] = useState(initialCollapsed);
+
+  const navRef = useRef<HTMLDivElement>(null);
+  const hasClicked = useRef(false);
+
+  useEffect(() => {
+    if (isLoading || hasClicked.current || pathname !== "/dashboard") return;
+    const firstLink = navRef.current?.querySelector("a");
+    if (firstLink) {
+      hasClicked.current = true;
+      firstLink.click();
+    }
+  }, [isLoading]);
 
   const toggleCollapsed = () => {
     setCollapsed((prev) => {
@@ -55,7 +71,7 @@ export default function SideBar({
           {collapsed ? <FaAnglesRight /> : <FaAnglesLeft />}
         </button>
       </div>
-      <div>
+      <div ref={navRef}>
         {permissions.organizations.data?.length === 1 &&
           !permissions.user?.data?.superAdmin && (
             <Link className="group"
@@ -305,6 +321,18 @@ export default function SideBar({
           )}
       </div>
       <div className="text-center pt-10 bg-gwdarkgreen h-48 rounded-br-lg ">
+        {user?.picture && (
+          <Image
+            className="mx-auto"
+            src={user?.picture ?? ''}
+            width={50}
+            height={50}
+            alt="Profile Picture"
+          />
+        )}
+
+        {user?.name ?? ""}
+
         <SignOut collapsed={collapsed} />
       </div>
     </div>
