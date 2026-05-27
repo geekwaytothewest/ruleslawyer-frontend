@@ -129,6 +129,24 @@ export default function CollectionModal(props: any) {
     }
   };
 
+  const onArchive = () => {
+    if (collection) {
+      if (confirm("Are you sure you want to archive this collection?")) {
+        frontendFetch(
+        "PUT",
+        "/collection/" + collection.id + "/archive",
+        null,
+        session?.data?.token
+      )
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        onClose();
+      })
+      .catch((err: any) => {});
+      }
+    }
+  };
+
   useEffect(() => {
     if (collectionIn) {
       setData(collectionIn);
@@ -249,7 +267,14 @@ export default function CollectionModal(props: any) {
                 )}
               </ModalBody>
               <ModalFooter>
-                {readOnly ? (
+                {readOnly? (
+                  ""
+                ) : (
+                  <Button color="danger" onPress={onArchive}>
+                    Archive
+                  </Button>
+                )}
+                {readOnly && !collection.archived ? (
                   ""
                 ) : (
                   <Button color="success" type="submit">

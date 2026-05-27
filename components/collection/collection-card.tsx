@@ -7,7 +7,7 @@ import { BiSolidMessageAltError } from "react-icons/bi";
 import { IoLibrary } from "react-icons/io5";
 import { GrDetach } from "react-icons/gr";
 import usePermissions from "@/utilities/swr/usePermissions";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaLock } from "react-icons/fa";
 import CollectionModal from "./collection-modal";
 import { FaTrashCan } from "react-icons/fa6";
 import Link from "next/link";
@@ -245,7 +245,7 @@ export default function CollectionCard(props: any) {
         ) : (
           ""
         )}
-        {!readOnly ? (
+        {!readOnly && !collection.archived ? (
           <div className="absolute top-5 right-10">
             <Tooltip
               content={"Edit " + collection.name}
@@ -261,6 +261,24 @@ export default function CollectionCard(props: any) {
                     e.stopPropagation();
                     onOpen();
                   }}
+                />
+              </span>
+            </Tooltip>
+          </div>
+        ) : (
+          ""
+        )}
+        {collection.archived ? (
+          <div className="absolute top-5 right-10">
+            <Tooltip
+              content={"Archived collection"}
+              showArrow={true}
+              color="success"
+              delay={1000}
+            >
+              <span>
+                <FaLock
+                  className="hover:text-gwgreen hover:cursor-pointer"
                 />
               </span>
             </Tooltip>
