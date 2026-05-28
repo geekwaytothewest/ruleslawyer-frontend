@@ -20,8 +20,6 @@ env:
   ECR_REPOSITORY: ruleslawyer-frontend
   ECS_SERVICE: ruleslawyer-frontend
   ECS_CLUSTER: geekway-${{inputs.environment}}
-  ECS_TASK_DEFINITION: .aws/taskdefinition-${{inputs.environment}}.json
-  CONTAINER_NAME: ruleslawyer-frontend
   ROLE_TO_ASSUME: ${{ inputs.environment == 'prod' && secrets.PROD_ROLE_ARN || secrets.NONPROD_ROLE_ARN }}
   # NEXT_PUBLIC_* values are inlined into the bundle at build time, so they must be
   # supplied as a build arg here (not just at runtime in the task definition).
@@ -53,32 +51,28 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build, tag, and push image to Amazon ECR
-        id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          # Build a docker container and
-          # push it to ECR so that it can
-          # be deployed to ECS.
+          # NEXT_PUBLIC_* is inlined at build time, so it stays a build arg here.
+          # Tag with both the commit SHA (immutable record) and latest
+          # (the tag the CDK-owned task definition references).
           docker build \
             --build-arg NEXT_PUBLIC_API_URL="$NEXT_PUBLIC_API_URL" \
-            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ env.ECS_TASK_DEFINITION }}
-          container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.build-image.outputs.image }}
-
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE }}
-          cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
+      - name: Trigger ECS deployment
+        run: |
+          # The task definition is owned by geekway-infra (CDK). Forcing a new
+          # deployment restarts the service so it re-pulls the latest image.
+          aws ecs update-service \
+            --cluster "$ECS_CLUSTER" \
+            --service "$ECS_SERVICE" \
+            --force-new-deployment
+          aws ecs wait services-stable \
+            --cluster "$ECS_CLUSTER" \
+            --services "$ECS_SERVICE"
