@@ -146,8 +146,8 @@ export default function ConventionModal(props: any) {
   }, [conventionId, conventionIn, session?.data?.token]);
 
   useEffect(() => {
-    if (permissions.user) {
-      if (permissions.user.superAdmin) {
+    if (permissions.user?.data) {
+      if (permissions.user.data.superAdmin) {
         setReadOnly(false);
       } else if (convention) {
         if (
@@ -159,9 +159,9 @@ export default function ConventionModal(props: any) {
           setReadOnly(false);
         } else {
           if (
-            permissions.con?.data?.filter(
+            permissions.conventions?.data?.filter(
               (d: { conventionId: any; admin: boolean }) =>
-                convention.collection.conventions.filter(
+                convention.collection.conventions.some(
                   (c: { conventionId: any }) => d.conventionId == c.conventionId
                 ) && d.admin === true
             ).length > 0
@@ -188,7 +188,7 @@ export default function ConventionModal(props: any) {
     } else {
       setReadOnly(true);
     }
-  }, [permissions, convention, organizationId]);
+  }, [permissions.user?.data, permissions.organizations?.data, permissions.conventions?.data, convention, organizationId]);
 
   useEffect(() => {
     if (organizationId) {

@@ -113,8 +113,8 @@ export default function UserModal(props: any) {
   }, [user, isOpen]);
 
   useEffect(() => {
-    if (permissions.user) {
-      if (permissions.user.superAdmin) {
+    if (permissions.user?.data) {
+      if (permissions.user.data.superAdmin) {
         setReadOnly(false);
       } else if (user) {
         if (
@@ -142,7 +142,7 @@ export default function UserModal(props: any) {
     } else {
       setReadOnly(true);
     }
-  }, [permissions, user, organizationId]);
+  }, [permissions.user?.data, permissions.organizations?.data, user, organizationId]);
 
   if (isLoading || isLoadingPermissions) return <div></div>;
 

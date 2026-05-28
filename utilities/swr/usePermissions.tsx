@@ -5,11 +5,11 @@ import useSWR from "swr";
 export default function usePermissions() {
   const session: any = useAuth();
 
-  const user = useSWR(
-    session?.data?.user?.email
+  const combined = useSWR(
+    session?.data?.user?.email && session?.data?.token
       ? [
           "GET",
-          "/user/" + session?.data?.user?.email,
+          "/permissions/" + session?.data?.user?.email,
           session?.data?.token,
         ]
       : null,
@@ -17,35 +17,19 @@ export default function usePermissions() {
       frontendFetch(method, url, null, session).then((res) => res.json())
   );
 
-  const orgs = useSWR(
-    user?.data?.id
-      ? ["GET", "/userOrgPerm/" + user.data?.id, session?.data?.token]
-      : null,
-    ([method, url, session]) =>
-      frontendFetch(method, url, null, session).then((res) => res.json())
-  );
-
-  const cons = useSWR(
-    user?.data?.id
-      ? ["GET", "/userConPerm/" + user.data?.id, session?.data?.token]
-      : null,
-    ([method, url, session]) =>
-      frontendFetch(method, url, null, session).then((res) => res.json())
-  );
-
   const permissions = {
-    user: user,
-    organizations: orgs,
-    conventions: cons,
+    user: { data: combined.data?.user },
+    organizations: { data: combined.data?.organizations },
+    conventions: { data: combined.data?.conventions },
   };
 
   return {
     permissions: permissions,
-    isLoading: user.isLoading || orgs.isLoading || cons.isLoading,
+    isLoading: combined.isLoading,
     isError: {
-      userError: user.error,
-      organizationsError: orgs.error,
-      conventionsError: cons.error,
+      userError: combined.error,
+      organizationsError: combined.error,
+      conventionsError: combined.error,
     },
   };
 }

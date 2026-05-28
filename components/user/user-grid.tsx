@@ -23,8 +23,8 @@ export default function UserGrid(props: any) {
   const session: any = useAuth();
 
   useEffect(() => {
-    if (permissions.user) {
-      if (permissions.user.superAdmin) {
+    if (permissions.user?.data) {
+      if (permissions.user.data.superAdmin) {
         setReadOnly(false);
       } else if (organizationId) {
         if (
@@ -41,7 +41,7 @@ export default function UserGrid(props: any) {
         setReadOnly(true);
       }
     }
-  }, [permissions, organizationId]);
+  }, [permissions.user?.data, permissions.organizations?.data, organizationId]);
 
   useEffect(() => {
     if (usersIn) {
