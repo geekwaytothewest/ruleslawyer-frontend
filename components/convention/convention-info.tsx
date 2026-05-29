@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import CollectionCard from "../collection/collection-card";
 import {
   Button,
+  Link,
   Modal,
   ModalBody,
   ModalContent,
@@ -18,7 +19,7 @@ import {
 import { GrAttachment } from "react-icons/gr";
 import usePermissions from "@/utilities/swr/usePermissions";
 import ConventionModal from "./convention-modal";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaUsersCog } from "react-icons/fa";
 import { IoMdAddCircle } from "react-icons/io";
 import CollectionModal from "../collection/collection-modal";
 import { TbPackageImport } from "react-icons/tb";
@@ -324,6 +325,17 @@ export default function ConventionInfo(props: any) {
           }
         )}
       </div>
+
+      <Tooltip
+        content={"User Permissions"}
+        showArrow={true}
+        color="success"
+        delay={1000}
+      >
+        <span className="text-3xl absolute bottom-16 right-8 hover:cursor-pointer">
+          <Link className="text-3xl text-white hover:text-gwgreen" href={`/dashboard/organization/${String(convention.organizationId)}/convention/${String(convention.id)}/users`}><FaUsersCog /></Link>
+        </span>
+      </Tooltip>
 
       {readOnly ? (
         ""

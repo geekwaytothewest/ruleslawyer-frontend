@@ -9,5 +9,5 @@ type Params = Promise<{ orgId: string }>;
 export default async function OrgUserView(props: { params: Params }) {
   const params = await props.params;
 
-  return <UserGrid organizationId={params.orgId} />;
+  return <UserGrid organizationId={params.orgId} userType="organization" />;
 }
