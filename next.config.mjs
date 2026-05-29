@@ -8,6 +8,9 @@ const nextConfig = {
         NEXT_PUBLIC_BASE_PATH: '/ruleslawyer',
         NEXT_PUBLIC_PROFILE_ROUTE: '/ruleslawyer/auth/profile',
         NEXT_PUBLIC_ACCESS_TOKEN_ROUTE: '/ruleslawyer/auth/access-token',
+        LEGACY_ADMIN_URL: process.env.LEGACY_ADMIN_URL,
+        LEGACY_LIBRARIAN_URL: process.env.LEGACY_LIBRARIAN_URL,
+        LEGACY_PLAY_PRIZE_ENTRY_URL: process.env.LEGACY_PLAY_PRIZE_ENTRY_URL,
     },
     images: {
         remotePatterns: [
