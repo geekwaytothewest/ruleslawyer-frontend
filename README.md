@@ -11,6 +11,19 @@ The web frontend for the **Geekway to the West Library Management System** — a
 - [SWR](https://swr.vercel.app/) for client-side data fetching
 
 The app is mounted under the `/ruleslawyer` base path (see `next.config.mjs`).
+# ruleslawyer-frontend
+
+The web frontend for the **Geekway to the West Library Management System** — a library management and Play and Win event tool built for and by [Geekway to the West](https://geekway.com). It provides a dashboard for managing organizations, conventions, collections, games, copies, and users, backed by the [ruleslawyer-backend](https://github.com/geekwaytothewest/ruleslawyer-backend) API.
+
+## Tech stack
+
+- [Next.js 15](https://nextjs.org/) (App Router, standalone output) with React 19
+- [HeroUI](https://www.heroui.com/) component library
+- [Tailwind CSS v4](https://tailwindcss.com/)
+- [Auth0](https://auth0.com/) (`@auth0/nextjs-auth0`) for authentication
+- [SWR](https://swr.vercel.app/) for client-side data fetching
+
+The app is mounted under the `/ruleslawyer` base path (see `next.config.mjs`).
 
 ## Getting started
 
