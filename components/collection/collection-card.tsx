@@ -47,8 +47,8 @@ export default function CollectionCard(props: any) {
   }, [collectionIn, session?.data?.token]);
 
   useEffect(() => {
-    if (permissions.user) {
-      if (permissions.user.superAdmin) {
+    if (permissions.user?.data) {
+      if (permissions.user.data.superAdmin) {
         setReadOnly(false);
       } else if (collection) {
         if (
@@ -62,7 +62,7 @@ export default function CollectionCard(props: any) {
           if (
             permissions.conventions.data?.filter(
               (d: { conventionId: any; admin: boolean }) =>
-                collection.conventions?.filter(
+                collection.conventions?.some(
                   (c: { conventionId: any }) => d.conventionId == c.conventionId
                 ) && d.admin === true
             ).length > 0
@@ -80,7 +80,7 @@ export default function CollectionCard(props: any) {
     } else {
       setReadOnly(true);
     }
-  }, [permissions, collection]);
+  }, [permissions.user?.data, permissions.organizations?.data, permissions.conventions?.data, collection]);
 
   const onModalClose = () => {
     frontendFetch(

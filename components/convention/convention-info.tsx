@@ -56,8 +56,8 @@ export default function ConventionInfo(props: any) {
   }, [id, session?.data?.token]);
 
   useEffect(() => {
-    if (permissions.user) {
-      if (permissions.user.superAdmin) {
+    if (permissions.user?.data) {
+      if (permissions.user.data.superAdmin) {
         setReadOnly(false);
       } else if (convention) {
         if (
@@ -89,7 +89,7 @@ export default function ConventionInfo(props: any) {
     } else {
       setReadOnly(true);
     }
-  }, [permissions, convention]);
+  }, [permissions.user?.data, permissions.organizations?.data, permissions.conventions?.data, convention]);
 
   useEffect(() => {
     if (convention && !readOnly) {

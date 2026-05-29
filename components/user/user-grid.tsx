@@ -4,15 +4,14 @@ import React, { useEffect, useState } from "react";
 import { IoMdAddCircle } from "react-icons/io";
 import frontendFetch from "@/utilities/frontendFetch";
 import { useAuth } from "@/utilities/swr/useAuth";
-import CollectionCard from "./collection-card";
-import CollectionModal from "./collection-modal";
-import { TbPackageImport } from "react-icons/tb";
 import usePermissions from "@/utilities/swr/usePermissions";
+import UserCard from "./user-card";
+import UserModal from "./user-modal";
 
-export default function CollectionGrid(props: any) {
-  let { collectionsIn, organizationId } = props;
+export default function UserGrid(props: any) {
+  let { usersIn, organizationId } = props;
 
-  const [collections, setData]: any = useState(null);
+  const [users, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
   const [readOnly, setReadOnly]: any = useState(true);
   const {
@@ -45,13 +44,13 @@ export default function CollectionGrid(props: any) {
   }, [permissions.user?.data, permissions.organizations?.data, organizationId]);
 
   useEffect(() => {
-    if (collectionsIn) {
-      setData(collectionsIn);
+    if (usersIn) {
+      setData(usersIn);
       setLoading(false);
     } else {
       frontendFetch(
         "GET",
-        "/org/" + organizationId + "/collections",
+        "/userOrgPerm/organization/" + organizationId,
         null,
         session?.data?.token
       )
@@ -62,12 +61,12 @@ export default function CollectionGrid(props: any) {
         })
         .catch((err: any) => {});
     }
-  }, [collectionsIn, organizationId, session?.data?.token]);
+  }, [usersIn, organizationId, session?.data?.token]);
 
   const onModalClose = () => {
     frontendFetch(
       "GET",
-      "/org/" + organizationId + "/collections",
+      "/userOrgPerm/organization/" + organizationId,
       null,
       session?.data?.token
     )
@@ -104,12 +103,12 @@ export default function CollectionGrid(props: any) {
   return (
     <div>
       <div className="flex flex-wrap">
-        {collections?.map(
-          (c: { id: React.Key | null | undefined; name: string }) => {
+        {users?.map(
+          (u: { id: React.Key | null | undefined; name: string }) => {
             return (
-              <CollectionCard
-                key={c.id}
-                collectionIn={c}
+              <UserCard
+                key={u.id}
+                userIn={u}
                 onDeleted={onModalClose}
               />
             );
@@ -121,22 +120,7 @@ export default function CollectionGrid(props: any) {
         ""
       ) : (
         <Tooltip
-          content="Import Collection"
-          showArrow={true}
-          color="success"
-          delay={1000}
-        >
-          <span className="text-7xl fixed bottom-28 right-8 hover:text-gwgreen hover:cursor-pointer">
-            <TbPackageImport onClick={onOpenImport} />
-          </span>
-        </Tooltip>
-      )}
-
-      {readOnly ? (
-        ""
-      ) : (
-        <Tooltip
-          content="Create Collection"
+          content="Add User"
           showArrow={true}
           color="success"
           delay={1000}
@@ -147,16 +131,10 @@ export default function CollectionGrid(props: any) {
         </Tooltip>
       )}
 
-      <CollectionModal
+      <UserModal
         disclosure={createDisclosure}
         organizationId={organizationId}
-      ></CollectionModal>
-
-      <CollectionModal
-        disclosure={importDisclosure}
-        organizationId={organizationId}
-        importFile={true}
-      ></CollectionModal>
+      ></UserModal>
     </div>
   );
 }

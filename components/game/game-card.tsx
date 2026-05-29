@@ -62,8 +62,8 @@ function GameCard(props: any) {
   useEffect(() => {
     if(archived) {
       setReadOnly(true);
-    } else if (permissions.user) {
-      if (permissions.user.superAdmin) {
+    } else if (permissions.user?.data) {
+      if (permissions.user.data.superAdmin) {
         setReadOnly(false);
       } else if (game) {
         if (
@@ -82,7 +82,7 @@ function GameCard(props: any) {
     } else {
       setReadOnly(true);
     }
-  }, [permissions, game]);
+  }, [permissions.user?.data, permissions.organizations?.data, game]);
 
   const session: any = useAuth();
 

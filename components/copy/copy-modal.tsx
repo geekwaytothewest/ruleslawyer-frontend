@@ -191,8 +191,8 @@ export default function CopyModal(props: any) {
   }, [copyIn, copy, copyId, session?.data?.token]);
 
   useEffect(() => {
-    if (permissions.user) {
-      if (permissions.user.superAdmin) {
+    if (permissions.user?.data) {
+      if (permissions.user.data.superAdmin) {
         setReadOnly(false);
       } else if (copy) {
         if (
@@ -206,7 +206,7 @@ export default function CopyModal(props: any) {
           if (
             permissions.conventions.data?.filter(
               (d: { conventionId: any; admin: boolean }) =>
-                copy.collection.conventions.filter(
+                copy.collection.conventions.some(
                   (c: { conventionId: any }) =>
                     d.conventionId === c.conventionId
                 ) && d.admin == true
@@ -223,7 +223,7 @@ export default function CopyModal(props: any) {
     } else {
       setReadOnly(true);
     }
-  }, [permissions, copy, organizationId]);
+  }, [permissions.user?.data, permissions.organizations?.data, permissions.conventions?.data, copy, organizationId]);
 
   const orgIdForCollections = copy?.organizationId ?? organizationId;
 
