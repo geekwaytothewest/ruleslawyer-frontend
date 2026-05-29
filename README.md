@@ -2,6 +2,8 @@
 
 The web frontend for the **Geekway to the West Library Management System** — a library management and Play and Win event tool built for and by [Geekway to the West](https://geekway.com). It provides a dashboard for managing organizations, conventions, collections, games, copies, and users, backed by the [ruleslawyer-backend](https://github.com/geekwaytothewest/ruleslawyer-backend) API.
 
+This front end is a **work in progress**.
+
 ## Tech stack
 
 - [Next.js 15](https://nextjs.org/) (App Router, standalone output) with React 19
