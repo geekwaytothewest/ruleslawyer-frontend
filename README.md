@@ -38,14 +38,24 @@ Open [http://localhost:3000/ruleslawyer](http://localhost:3000/ruleslawyer) to v
 
 ## Environment variables
 
-Configured in `.env` (template: `env.template`). Key variables:
+For local development, copy `env.template` to `.env` and fill in the values. In production these are set on the ECS task definition (`.aws/taskdefinition-{env}.json`) — non-secret values inline, with `AUTH0_SECRET` and `AUTH0_CLIENT_SECRET` pulled from AWS Secrets Manager.
 
-- `AUTH0_ISSUER_URL`, `AUTH0_AUDIENCE` — Auth0 tenant configuration
-- `BOARDGAMEGEEK_API_TOKEN` — token for BoardGameGeek lookups
-- `NEXT_PUBLIC_API_URL` — base URL of the ruleslawyer-backend API (e.g. `http://localhost:8080/api`)
+Auth0 (`@auth0/nextjs-auth0`) — the SDK reads these from the environment automatically, except `AUTH0_AUDIENCE`, which `lib/auth0.ts` passes explicitly:
+
+- `AUTH0_DOMAIN` — Auth0 tenant domain (e.g. `geekway.auth0.com`)
+- `AUTH0_CLIENT_ID` — Auth0 application client ID
+- `AUTH0_CLIENT_SECRET` — Auth0 application client secret (secret)
+- `AUTH0_SECRET` — session cookie encryption key (secret)
+- `AUTH0_AUDIENCE` — API audience requested for access tokens
+- `APP_BASE_URL` — public base URL of the app (e.g. `https://library.geekway.com/ruleslawyer`)
+
+Backend API:
+
+- `API_URL` — server-side base URL of the ruleslawyer-backend API
+- `NEXT_PUBLIC_API_URL` — client-side base URL of the API (e.g. `http://localhost:8080/api`)
 - `NEXT_PUBLIC_BASE_PATH` — app base path (`/ruleslawyer`)
 
-`NEXT_PUBLIC_*` variables are inlined into the client bundle **at build time**, so the deploy workflow passes the per-environment value in as a Docker build arg.
+`NEXT_PUBLIC_*` variables are inlined into the client bundle **at build time**, so the deploy workflow passes the per-environment value in as a Docker build arg. The remaining variables are read at runtime from the task definition.
 
 ## Project structure
 
