@@ -10,7 +10,7 @@ import { FaTrashCan, FaUser } from "react-icons/fa6";
 import UserModal from "./user-modal";
 
 export default function UserCard(props: any) {
-  let { userIn, onDeleted } = props;
+  let { userIn, onDeleted, userType } = props;
 
   const [user, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
@@ -159,15 +159,33 @@ export default function UserCard(props: any) {
                     : "[unknown user]"}
                 </p>
             </div>
-            <div className="align-middle h-full text-sm pt-3 text-slate-400">
-                {[
-                    user.admin ? "Admin" : null,
-                    user.geekGuide ? "Geek Guide" : null,
-                    user.readOnly ? "Read Only" : null,
-                ]
-                    .filter(Boolean)
-                    .join(" | ")}
-            </div>
+            {userType === "organization" ? (
+              <div className="align-middle h-full text-sm pt-3 text-slate-400">
+                  {[
+                      user.admin ? "Admin" : null,
+                      user.geekGuide ? "Geek Guide" : null,
+                      user.readOnly ? "Read Only" : null,
+                  ]
+                      .filter(Boolean)
+                      .join(" | ")}
+              </div>
+            ) : (
+              <div></div>
+            )}
+            {userType === "convention" ? (
+              <div className="align-middle h-full text-sm pt-3 text-slate-400">
+                  {[
+                      user.admin ? "Admin" : null,
+                      user.attendee ? "Attendee" : null,
+                      user.geekGuide ? "Geek Guide" : null,
+                      user.readOnly ? "Read Only" : null,
+                  ]
+                      .filter(Boolean)
+                      .join(" | ")}
+              </div>
+            ) : (
+              <div></div>
+            )}
         </div>
         {!readOnly ? (
             <div className="absolute top-15 right-10">
@@ -198,6 +216,7 @@ export default function UserCard(props: any) {
             onSaved={(updated: any) =>
                 setData((prev: any) => ({ ...prev, ...updated }))
             }
+            userType={userType}
         />
     </div>
   );

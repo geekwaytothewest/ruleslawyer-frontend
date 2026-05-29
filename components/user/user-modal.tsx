@@ -22,12 +22,14 @@ export default function UserModal(props: any) {
     disclosure,
     userId,
     onSaved,
+    userType,
   } = props;
 
   const [user, setData]: any = useState(null);
   const [userAdmin, setUserAdmin]: any = useState(false);
   const [userGeekGuide, setUserGeekGuide]: any = useState(false);
   const [userReadOnly, setUserReadOnly]: any = useState(false);
+  const [userAttendee, setUserAttendee]: any = useState(false);
   const [isLoading, setLoading]: any = useState(true);
   const [readOnly, setReadOnly]: any = useState(true);
 
@@ -42,42 +44,81 @@ export default function UserModal(props: any) {
   const { isOpen, onOpen, onClose } = disclosure;
 
   const onSave = () => {
-    frontendFetch(
-    "PUT",
-    "/userOrgPerm/" + user.id,
-    {
-        admin: userAdmin,
-        geekGuide: userGeekGuide,
-        readOnly: userReadOnly,
-    },
-    session?.data?.token
-    )
-    .then((res: any) => {
-        if (!res.ok) {
-            addToast({
-                title: "Unable to save",
-                description:
-                    res.status === 403
-                        ? "You don't have permission to edit this user."
-                        : "Something went wrong saving your changes.",
-                color: "danger",
-            });
-            return;
-        }
-        onSaved?.({
+    if (userType === "organization") {
+      frontendFetch(
+        "PUT",
+        "/userOrgPerm/" + user.id,
+        {
             admin: userAdmin,
             geekGuide: userGeekGuide,
             readOnly: userReadOnly,
+        },
+        session?.data?.token
+      )
+      .then((res: any) => {
+          if (!res.ok) {
+              addToast({
+                  title: "Unable to save",
+                  description:
+                      res.status === 403
+                          ? "You don't have permission to edit this user."
+                          : "Something went wrong saving your changes.",
+                  color: "danger",
+              });
+              return;
+          }
+          onSaved?.({
+              admin: userAdmin,
+              geekGuide: userGeekGuide,
+              readOnly: userReadOnly,
+          });
+          onClose();
+        })
+        .catch((err: any) => {
+            addToast({
+                title: "Unable to save",
+                description: "Could not reach the server. Please try again.",
+                color: "danger",
+            });
         });
-        onClose();
-    })
-    .catch((err: any) => {
-        addToast({
-            title: "Unable to save",
-            description: "Could not reach the server. Please try again.",
-            color: "danger",
+    } else if (userType === "convention") {
+      frontendFetch(
+        "PUT",
+        "/userConPerm/" + user.id,
+        {
+            admin: userAdmin,
+            geekGuide: userGeekGuide,
+            attendee: userAttendee,
+        },
+        session?.data?.token
+      )
+      .then((res: any) => {
+          if (!res.ok) {
+              addToast({
+                  title: "Unable to save",
+                  description:
+                      res.status === 403
+                          ? "You don't have permission to edit this user."
+                          : "Something went wrong saving your changes.",
+                  color: "danger",
+              });
+              return;
+          }
+          onSaved?.({
+              admin: userAdmin,
+              geekGuide: userGeekGuide,
+              attendee: userAttendee,
+          });
+          onClose();
+        })
+        .catch((err: any) => {
+            addToast({
+                title: "Unable to save",
+                description: "Could not reach the server. Please try again.",
+                color: "danger",
+            });
         });
-    });
+    }
   };
 
   useEffect(() => {
@@ -109,6 +150,7 @@ export default function UserModal(props: any) {
       setUserAdmin(user.admin ?? false);
       setUserGeekGuide(user.geekGuide ?? false);
       setUserReadOnly(user.readOnly ?? false);
+      setUserAttendee(user.attendee ?? false);
     }
   }, [user, isOpen]);
 
@@ -161,27 +203,65 @@ export default function UserModal(props: any) {
                 User Editor - {user?.user?.name ?? "New User"}
               </ModalHeader>
               <ModalBody>
-                <Checkbox
-                  isSelected={userAdmin}
-                  onValueChange={setUserAdmin}
-                  isDisabled={readOnly}
-                >
-                  Admin
-                </Checkbox>
-                <Checkbox
-                  isSelected={userGeekGuide}
-                  onValueChange={setUserGeekGuide}
-                  isDisabled={readOnly}
-                >
-                  Geek Guide
-                </Checkbox>
-                <Checkbox
-                  isSelected={userReadOnly}
-                  onValueChange={setUserReadOnly}
-                  isDisabled={readOnly}
-                >
-                  Read Only
-                </Checkbox>
+                {userType === "organization" ? (
+                  <div>
+                    <Checkbox
+                      isSelected={userAdmin}
+                      onValueChange={setUserAdmin}
+                      isDisabled={readOnly}
+                    >
+                      Admin
+                    </Checkbox>
+                    <br/><br/>
+                    <Checkbox
+                      isSelected={userGeekGuide}
+                      onValueChange={setUserGeekGuide}
+                      isDisabled={readOnly}
+                    >
+                      Geek Guide
+                    </Checkbox>
+                    <br/><br/>
+                    <Checkbox
+                      isSelected={userReadOnly}
+                      onValueChange={setUserReadOnly}
+                      isDisabled={readOnly}
+                    >
+                      Read Only
+                    </Checkbox>
+                  </div>
+                ) : (
+                  <div></div>
+                )}
+
+                {userType === "convention" ? (
+                  <div>
+                    <Checkbox
+                      isSelected={userAdmin}
+                      onValueChange={setUserAdmin}
+                      isDisabled={readOnly}
+                    >
+                      Admin
+                    </Checkbox>
+                    <br/><br/>
+                    <Checkbox
+                      isSelected={userGeekGuide}
+                      onValueChange={setUserGeekGuide}
+                      isDisabled={readOnly}
+                    >
+                      Geek Guide
+                    </Checkbox>
+                    <br/><br/>
+                    <Checkbox
+                      isSelected={userAttendee}
+                      onValueChange={setUserAttendee}
+                      isDisabled={readOnly}
+                    >
+                      Attendee
+                    </Checkbox>
+                  </div>
+                ) : (
+                  <div></div>
+                )}
               </ModalBody>
               <ModalFooter>
                 {readOnly ? (

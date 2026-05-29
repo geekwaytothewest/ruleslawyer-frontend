@@ -9,7 +9,7 @@ import UserCard from "./user-card";
 import UserModal from "./user-modal";
 
 export default function UserGrid(props: any) {
-  let { usersIn, organizationId } = props;
+  let { usersIn, organizationId, conventionId, userType } = props;
 
   const [users, setData]: any = useState(null);
   const [isLoading, setLoading]: any = useState(true);
@@ -47,10 +47,23 @@ export default function UserGrid(props: any) {
     if (usersIn) {
       setData(usersIn);
       setLoading(false);
-    } else {
+    } else if (organizationId) {
       frontendFetch(
         "GET",
         "/userOrgPerm/organization/" + organizationId,
+        null,
+        session?.data?.token
+      )
+        .then((res: any) => res.json())
+        .then((data: any) => {
+          setData(data);
+          setLoading(false);
+        })
+        .catch((err: any) => {});
+    } else if (conventionId) {
+      frontendFetch(
+        "GET",
+        "/userConPerm/convention/" + conventionId,
         null,
         session?.data?.token
       )
@@ -110,6 +123,7 @@ export default function UserGrid(props: any) {
                 key={u.id}
                 userIn={u}
                 onDeleted={onModalClose}
+                userType={userType}
               />
             );
           }
