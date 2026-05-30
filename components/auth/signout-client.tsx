@@ -6,9 +6,9 @@ import { VscSignOut } from "react-icons/vsc";
 
 export function SignOut({ collapsed = false }: { collapsed?: boolean }) {
   const button = (
-    <button onClick={() => { window.location.href = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/auth/logout`; }} className="hover:text-gwgreen hover:cursor-pointer">
+    <button onClick={() => { window.location.href = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/auth/logout`; }} aria-label="Sign Out" className="hover:text-gwgreen hover:cursor-pointer">
       <span className="text-lg">
-        <VscSignOut className="inline-block" />{!collapsed && " Sign Out"}
+        <VscSignOut aria-hidden="true" className="inline-block" />{!collapsed && " Sign Out"}
       </span>
     </button>
   );

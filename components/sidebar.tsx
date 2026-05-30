@@ -66,15 +66,18 @@ export default function SideBar({
         <button
           type="button"
           onClick={toggleCollapsed}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-expanded={!collapsed}
           className="p-2 text-gwdarkblue hover:text-gwdarkgreen hover:cursor-pointer"
         >
-          {collapsed ? <FaAnglesRight /> : <FaAnglesLeft />}
+          {collapsed ? <FaAnglesRight aria-hidden="true" /> : <FaAnglesLeft aria-hidden="true" />}
         </button>
       </div>
       <div ref={navRef}>
         {permissions.organizations.data?.length === 1 &&
           !permissions.user?.data?.superAdmin && (
             <Link className="group"
+              aria-label={permissions.organizations.data[0].organization.name}
               href={`/dashboard/organization/${permissions.organizations.data[0].organizationId}`}
             >
               <div
@@ -107,7 +110,7 @@ export default function SideBar({
           )}
         {(permissions.organizations.data?.length > 1 ||
           permissions.user?.data?.superAdmin) && (
-          <Link className="group" href="/dashboard/organizations">
+          <Link className="group" aria-label="Organizations" href="/dashboard/organizations">
             <div
               className={clsx(
                 "text-center border-b-2 border-gwblue group-hover:bg-gwblue p-2",
@@ -147,6 +150,7 @@ export default function SideBar({
         { permissions.organizations.data?.length === 1 &&
           !permissions.user?.data?.superAdmin && (
           <Link className="group"
+            aria-label="Conventions"
             href={`/dashboard/organization/${permissions.organizations.data[0].organizationId}/conventions`}
           >
             <div
@@ -200,7 +204,7 @@ export default function SideBar({
           (permissions.conventions.data?.length > 0 &&
             permissions.organizations.data.length === 0) ||
           permissions.user?.data?.superAdmin) && (
-            <Link className="group" href={`/dashboard/conventions`}>
+            <Link className="group" aria-label="All Conventions" href={`/dashboard/conventions`}>
               <div
                 className={clsx(
                   "text-center border-b-2 border-gwblue group-hover:bg-gwblue p-2",
@@ -240,6 +244,7 @@ export default function SideBar({
         {permissions.organizations.data?.length === 1 &&
           !permissions.user?.data?.superAdmin && (
             <Link className="group"
+              aria-label="Games"
               href={`/dashboard/organization/${permissions.organizations.data[0].organizationId}/games`}
             >
               <div
@@ -281,6 +286,7 @@ export default function SideBar({
         {permissions.organizations.data?.length === 1 &&
           !permissions.user?.data?.superAdmin && (
             <Link className="group"
+              aria-label="Collections"
               href={`/dashboard/organization/${permissions.organizations.data[0].organizationId}/collections`}
             >
               <div

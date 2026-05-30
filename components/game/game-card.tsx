@@ -143,6 +143,9 @@ function GameCard(props: any) {
   return (
     <div>
       <div
+        role="button"
+        tabIndex={0}
+        aria-label={(readOnly ? "View " : "Edit ") + (game.name !== "" ? game.name : "game")}
         onClick={
           readOnly
             ? () => {
@@ -150,6 +153,16 @@ function GameCard(props: any) {
               }
             : onOpen
         }
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            if (readOnly) {
+              alert("Not Yet Implmeneted.");
+            } else {
+              onOpen();
+            }
+          }
+        }}
         className="flex items-center border-2 border-gwblue w-80 h-32 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] cursor-pointer"
       >
         <div className="flex-col p-3 w-24">

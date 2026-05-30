@@ -126,9 +126,14 @@ export default function CollectionGrid(props: any) {
           color="success"
           delay={1000}
         >
-          <span className="text-7xl fixed bottom-28 right-8 hover:text-gwgreen hover:cursor-pointer">
-            <TbPackageImport onClick={onOpenImport} />
-          </span>
+          <button
+            type="button"
+            aria-label="Import Collection"
+            onClick={onOpenImport}
+            className="text-7xl fixed bottom-28 right-8 hover:text-gwgreen hover:cursor-pointer"
+          >
+            <TbPackageImport aria-hidden="true" />
+          </button>
         </Tooltip>
       )}
 
@@ -141,9 +146,14 @@ export default function CollectionGrid(props: any) {
           color="success"
           delay={1000}
         >
-          <span className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
-            <IoMdAddCircle onClick={onOpenCreate} />
-          </span>
+          <button
+            type="button"
+            aria-label="Create Collection"
+            onClick={onOpenCreate}
+            className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer"
+          >
+            <IoMdAddCircle aria-hidden="true" />
+          </button>
         </Tooltip>
       )}
 

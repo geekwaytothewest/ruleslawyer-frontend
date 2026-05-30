@@ -179,9 +179,14 @@ export default function ConventionList(props: any) {
           color="success"
           delay={1000}
         >
-          <span className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
-            <IoMdAddCircle onClick={onOpenCreate} />
-          </span>
+          <button
+            type="button"
+            aria-label="Create Convention"
+            onClick={onOpenCreate}
+            className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer"
+          >
+            <IoMdAddCircle aria-hidden="true" />
+          </button>
         </Tooltip>
       )}
 

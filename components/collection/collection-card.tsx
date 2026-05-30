@@ -104,7 +104,7 @@ export default function CollectionCard(props: any) {
   const { isOpen: isOpen, onOpen: onOpen, onClose: onClose } = disclosure;
 
   const detachCollection = (
-    event: React.MouseEvent<SVGElement, MouseEvent>,
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     collectionId: number
   ) => {
     event.preventDefault();
@@ -125,7 +125,7 @@ export default function CollectionCard(props: any) {
   };
 
   const deleteCollection = (
-    event: React.MouseEvent<SVGElement, MouseEvent>,
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     collectionId: number
   ) => {
     event.preventDefault();
@@ -212,12 +212,14 @@ export default function CollectionCard(props: any) {
               color="success"
               delay={1000}
             >
-              <span>
-                <GrDetach
-                  className="hover:text-gwlightblue"
-                  onClick={(e) => detachCollection(e, collection.id)}
-                />
-              </span>
+              <button
+                type="button"
+                aria-label={"Detach " + collection.name}
+                className="hover:text-gwlightblue hover:cursor-pointer"
+                onClick={(e) => detachCollection(e, collection.id)}
+              >
+                <GrDetach aria-hidden="true" />
+              </button>
             </Tooltip>
           </div>
         ) : (
@@ -231,16 +233,18 @@ export default function CollectionCard(props: any) {
               color="success"
               delay={1000}
             >
-              <span>
-                <FaEdit
-                  className="hover:text-gwgreen hover:cursor-pointer"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    onOpen();
-                  }}
-                />
-              </span>
+              <button
+                type="button"
+                aria-label={"Edit " + collection.name}
+                className="hover:text-gwgreen hover:cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onOpen();
+                }}
+              >
+                <FaEdit aria-hidden="true" />
+              </button>
             </Tooltip>
           </div>
         ) : (
@@ -255,7 +259,7 @@ export default function CollectionCard(props: any) {
               delay={1000}
             >
               <span>
-                <FaLock />
+                <FaLock role="img" aria-label="Archived collection" />
               </span>
             </Tooltip>
           </div>
@@ -271,7 +275,7 @@ export default function CollectionCard(props: any) {
               delay={1000}
             >
               <span>
-                <FaTrophy />
+                <FaTrophy role="img" aria-label="Allows winning copies" />
               </span>
             </Tooltip>
           </div>
@@ -289,12 +293,14 @@ export default function CollectionCard(props: any) {
               color="success"
               delay={1000}
             >
-              <span>
-                <FaTrashCan
-                  className="hover:text-gwgreen hover:cursor-pointer"
-                  onClick={(e) => deleteCollection(e, collection.id)}
-                />
-              </span>
+              <button
+                type="button"
+                aria-label={"Delete " + collection.name}
+                className="hover:text-gwgreen hover:cursor-pointer"
+                onClick={(e) => deleteCollection(e, collection.id)}
+              >
+                <FaTrashCan aria-hidden="true" />
+              </button>
             </Tooltip>
           </div>
         ) : (

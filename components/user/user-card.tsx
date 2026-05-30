@@ -90,7 +90,7 @@ export default function UserCard(props: any) {
 
 
   const deleteUser = (
-    event: React.MouseEvent<SVGElement, MouseEvent>,
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     event.preventDefault();
     event.stopPropagation();
@@ -159,7 +159,16 @@ export default function UserCard(props: any) {
   return (
     <div>
         <div
+          role="button"
+          tabIndex={0}
+          aria-label={"Edit " + (user.user.name !== "" ? user.user.name : "user")}
           onClick={onOpen}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onOpen();
+            }
+          }}
           className="relative flex items-center border-2 border-gwblue w-80 h-32 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] cursor-pointer"
         >
         <div className="flex-col p-3 w-24">
@@ -210,12 +219,14 @@ export default function UserCard(props: any) {
                 color="success"
                 delay={1000}
             >
-                <span>
-                <FaTrashCan
+                <button
+                    type="button"
+                    aria-label={"Delete " + (user.user.name !== "" ? user.user.name : "user")}
                     className="hover:text-gwgreen hover:cursor-pointer"
                     onClick={(e) => deleteUser(e)}
-                />
-                </span>
+                >
+                <FaTrashCan aria-hidden="true" />
+                </button>
             </Tooltip>
             </div>
         ) : (
