@@ -173,6 +173,7 @@ export default function CopyModal(props: CopyModalProps) {
       setCopyBarcodeLabel(copyIn.barcodeLabel);
       setCopyBarcode(copyIn.barcode);
       setCopyCollectionId(copyIn.collectionId);
+      setCopyComments(copyIn.comments);
       setGameId(copyIn.gameId);
 
       gameList.setFilterText(copyIn.game.name);
@@ -187,6 +188,7 @@ export default function CopyModal(props: CopyModalProps) {
           setCopyBarcodeLabel(data.barcodeLabel);
           setCopyBarcode(data.barcode);
           setCopyCollectionId(data.collectionId);
+          setCopyComments(data.comments);
           setGameId(data.gameId);
 
           gameList.setFilterText(data.game.name);
