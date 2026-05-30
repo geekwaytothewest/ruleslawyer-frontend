@@ -20,13 +20,10 @@ import { GrAttachment } from "react-icons/gr";
 import usePermissions from "@/utilities/swr/usePermissions";
 import ConventionModal from "./convention-modal";
 import { FaEdit, FaTrophy, FaUsersCog } from "react-icons/fa";
-import { FaEdit, FaTrophy, FaUsersCog } from "react-icons/fa";
 import { IoMdAddCircle } from "react-icons/io";
 import CollectionModal from "../collection/collection-modal";
 import { TbPackageImport } from "react-icons/tb";
 import { DateFormatter } from "@internationalized/date";
-import { MdAdminPanelSettings, MdOutlineShoppingCartCheckout } from "react-icons/md";
-
 import { MdAdminPanelSettings, MdOutlineShoppingCartCheckout } from "react-icons/md";
 import {
   CollectionWithCount,
@@ -202,7 +199,6 @@ export default function ConventionInfo(props: ConventionInfoProps) {
 
   return (
     <div className="relative flex flex-col sm:flex-row">
-      <div className="flex-1 flex flex-col sm:flex-row">
       <div className="flex-1">
           <div className="text-gwgreen" hidden={hideTitle && hideSubtitle}>
             <h1 hidden={hideTitle}>{convention.name}</h1>
