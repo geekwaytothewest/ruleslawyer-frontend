@@ -261,7 +261,7 @@ export default function ConventionInfo(props: ConventionInfoProps) {
             }}
           >
             <span className="text-3xl inline-flex items-center hover:cursor-pointer">
-              <Link target="_blank" aria-label="Legacy Board Game Admin Frontend (opens in new tab)" className="text-white hover:text-gwgreen" href={`${process.env.LEGACY_ADMIN_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/admin`}><MdAdminPanelSettings aria-hidden="true" className="h-8 w-auto" /></Link>
+              <Link target="_blank" aria-label="Legacy Board Game Admin Frontend (opens in new tab)" className="text-white hover:text-gwgreen" href={`${process.env.NEXT_PUBLIC_LEGACY_ADMIN_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/admin`}><MdAdminPanelSettings aria-hidden="true" className="h-8 w-auto" /></Link>
             </span>
           </Tooltip>
 
@@ -275,7 +275,7 @@ export default function ConventionInfo(props: ConventionInfoProps) {
             }}
           >
             <span className="text-3xl inline-flex items-center hover:cursor-pointer">
-              <Link target="_blank" aria-label="Legacy Librarian Frontend (opens in new tab)" className="text-white hover:text-gwgreen" href={`${process.env.LEGACY_LIBRARIAN_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/librarian`}><MdOutlineShoppingCartCheckout aria-hidden="true" className="h-8 w-auto" /></Link>
+              <Link target="_blank" aria-label="Legacy Librarian Frontend (opens in new tab)" className="text-white hover:text-gwgreen" href={`${process.env.NEXT_PUBLIC_LEGACY_LIBRARIAN_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/librarian`}><MdOutlineShoppingCartCheckout aria-hidden="true" className="h-8 w-auto" /></Link>
             </span>
           </Tooltip>
 
@@ -289,7 +289,7 @@ export default function ConventionInfo(props: ConventionInfoProps) {
             }}
           >
             <span className="text-3xl inline-flex items-center hover:cursor-pointer">
-              <Link target="_blank" aria-label="Legacy Play Prize Entry Frontend (opens in new tab)" className="text-white hover:text-gwgreen" href={`${process.env.LEGACY_PLAY_PRIZE_ENTRY_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/playandwin`}><FaTrophy aria-hidden="true" className="h-8 w-auto" /></Link>
+              <Link target="_blank" aria-label="Legacy Play Prize Entry Frontend (opens in new tab)" className="text-white hover:text-gwgreen" href={`${process.env.NEXT_PUBLIC_LEGACY_PLAY_PRIZE_ENTRY_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/playandwin`}><FaTrophy aria-hidden="true" className="h-8 w-auto" /></Link>
             </span>
           </Tooltip>
         </div>
