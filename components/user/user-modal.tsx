@@ -23,9 +23,11 @@ export default function UserModal(props: any) {
     userId,
     onSaved,
     userType,
+    conventionId
   } = props;
 
   const [user, setData]: any = useState(null);
+  const [userEmail, setUserEmail]: any = useState();
   const [userAdmin, setUserAdmin]: any = useState(false);
   const [userGeekGuide, setUserGeekGuide]: any = useState(false);
   const [userReadOnly, setUserReadOnly]: any = useState(false);
@@ -45,79 +47,159 @@ export default function UserModal(props: any) {
 
   const onSave = () => {
     if (userType === "organization") {
-      frontendFetch(
-        "PUT",
-        "/userOrgPerm/" + user.id,
-        {
-            admin: userAdmin,
-            geekGuide: userGeekGuide,
-            readOnly: userReadOnly,
-        },
-        session?.data?.token
-      )
-      .then((res: any) => {
-          if (!res.ok) {
-              addToast({
-                  title: "Unable to save",
-                  description:
-                      res.status === 403
-                          ? "You don't have permission to edit this user."
-                          : "Something went wrong saving your changes.",
-                  color: "danger",
-              });
-              return;
-          }
-          onSaved?.({
+      if (userIn) {
+        frontendFetch(
+          "PUT",
+          "/userOrgPerm/" + user.id,
+          {
               admin: userAdmin,
               geekGuide: userGeekGuide,
               readOnly: userReadOnly,
-          });
-          onClose();
-        })
-        .catch((err: any) => {
-            addToast({
-                title: "Unable to save",
-                description: "Could not reach the server. Please try again.",
-                color: "danger",
+          },
+          session?.data?.token
+        )
+        .then((res: any) => {
+            if (!res.ok) {
+                addToast({
+                    title: "Unable to save",
+                    description:
+                        res.status === 403
+                            ? "You don't have permission to edit this user."
+                            : "Something went wrong saving your changes.",
+                    color: "danger",
+                });
+                return;
+            }
+            onSaved?.({
+                admin: userAdmin,
+                geekGuide: userGeekGuide,
+                readOnly: userReadOnly,
             });
-        });
-    } else if (userType === "convention") {
-      frontendFetch(
-        "PUT",
-        "/userConPerm/" + user.id,
-        {
-            admin: userAdmin,
-            geekGuide: userGeekGuide,
-            attendee: userAttendee,
-        },
-        session?.data?.token
-      )
-      .then((res: any) => {
-          if (!res.ok) {
+            onClose();
+          })
+          .catch((err: any) => {
               addToast({
                   title: "Unable to save",
-                  description:
-                      res.status === 403
-                          ? "You don't have permission to edit this user."
-                          : "Something went wrong saving your changes.",
+                  description: "Could not reach the server. Please try again.",
                   color: "danger",
               });
-              return;
-          }
-          onSaved?.({
+          });
+      } else {
+        frontendFetch(
+          "POST",
+          "/userOrgPerm/organization/" + organizationId + "/addUser",
+          {
+              email: userEmail,
+              admin: userAdmin,
+              geekGuide: userGeekGuide,
+              readOnly: userReadOnly,
+          },
+          session?.data?.token
+        )
+        .then((res: any) => {
+            if (!res.ok) {
+                addToast({
+                    title: "Unable to save",
+                    description:
+                        res.status === 403
+                            ? "You don't have permission to edit this user."
+                            : "Something went wrong saving your changes.",
+                    color: "danger",
+                });
+                return;
+            }
+            onSaved?.({
+                admin: userAdmin,
+                geekGuide: userGeekGuide,
+                readOnly: userReadOnly,
+            });
+            onClose();
+          })
+          .catch((err: any) => {
+              addToast({
+                  title: "Unable to save",
+                  description: "Could not reach the server. Please try again.",
+                  color: "danger",
+              });
+          });
+      }
+    } else if (userType === "convention") {
+      if (userIn) {
+        frontendFetch(
+          "PUT",
+          "/userConPerm/" + user.id,
+          {
               admin: userAdmin,
               geekGuide: userGeekGuide,
               attendee: userAttendee,
-          });
-          onClose();
-        })
-        .catch((err: any) => {
-            addToast({
-                title: "Unable to save",
-                description: "Could not reach the server. Please try again.",
-                color: "danger",
+          },
+          session?.data?.token
+        )
+        .then((res: any) => {
+            if (!res.ok) {
+                addToast({
+                    title: "Unable to save",
+                    description:
+                        res.status === 403
+                            ? "You don't have permission to edit this user."
+                            : "Something went wrong saving your changes.",
+                    color: "danger",
+                });
+                return;
+            }
+            onSaved?.({
+                admin: userAdmin,
+                geekGuide: userGeekGuide,
+                attendee: userAttendee,
             });
-        });
+            onClose();
+          })
+          .catch((err: any) => {
+              addToast({
+                  title: "Unable to save",
+                  description: "Could not reach the server. Please try again.",
+                  color: "danger",
+              });
+          });
+      } else {
+        frontendFetch(
+          "POST",
+          "/userConPerm/convention/" + conventionId + "/addUser",
+          {
+              email: userEmail,
+              admin: userAdmin,
+              geekGuide: userGeekGuide,
+              attendee: userAttendee,
+          },
+          session?.data?.token
+        )
+        .then((res: any) => {
+            if (!res.ok) {
+                addToast({
+                    title: "Unable to save",
+                    description:
+                        res.status === 403
+                            ? "You don't have permission to edit this user."
+                            : "Something went wrong saving your changes.",
+                    color: "danger",
+                });
+                return;
+            }
+            onSaved?.({
+                admin: userAdmin,
+                geekGuide: userGeekGuide,
+                attendee: userAttendee,
+            });
+            onClose();
+          })
+          .catch((err: any) => {
+              addToast({
+                  title: "Unable to save",
+                  description: "Could not reach the server. Please try again.",
+                  color: "danger",
+              });
+          });
+      }
     }
   };
 
@@ -203,6 +285,14 @@ export default function UserModal(props: any) {
                 User Editor - {user?.user?.name ?? "New User"}
               </ModalHeader>
               <ModalBody>
+                {!user?.user?.name ? (
+                  <Input
+                    label="Email"
+                    onValueChange={setUserEmail}
+                  />
+                ) : (
+                  <div></div>
+                )}
                 {userType === "organization" ? (
                   <div>
                     <Checkbox

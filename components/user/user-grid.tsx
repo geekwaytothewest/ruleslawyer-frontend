@@ -74,21 +74,36 @@ export default function UserGrid(props: any) {
         })
         .catch((err: any) => {});
     }
-  }, [usersIn, organizationId, session?.data?.token]);
+  }, [usersIn, organizationId, conventionId, session?.data?.token]);
 
   const onModalClose = () => {
-    frontendFetch(
-      "GET",
-      "/userOrgPerm/organization/" + organizationId,
-      null,
-      session?.data?.token
-    )
-      .then((res: any) => res.json())
-      .then((data: any) => {
-        setData(data);
-        setLoading(false);
-      })
-      .catch((err: any) => {});
+    if (userType === 'organization') {
+      frontendFetch(
+        "GET",
+        "/userOrgPerm/organization/" + organizationId,
+        null,
+        session?.data?.token
+      )
+        .then((res: any) => res.json())
+        .then((data: any) => {
+          setData(data);
+          setLoading(false);
+        })
+        .catch((err: any) => {});
+    } else if (userType === 'convention') {
+      frontendFetch(
+        "GET",
+        "/userConPerm/convention/" + conventionId,
+        null,
+        session?.data?.token
+      )
+        .then((res: any) => res.json())
+        .then((data: any) => {
+          setData(data);
+          setLoading(false);
+        })
+        .catch((err: any) => {});
+    }
   };
 
   const createDisclosure = useDisclosure({
@@ -148,6 +163,8 @@ export default function UserGrid(props: any) {
       <UserModal
         disclosure={createDisclosure}
         organizationId={organizationId}
+        conventionId={conventionId}
+        userType={userType}
       ></UserModal>
     </div>
   );
