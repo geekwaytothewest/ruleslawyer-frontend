@@ -161,9 +161,7 @@ export default function ConventionModal(props: any) {
           if (
             permissions.conventions?.data?.filter(
               (d: { conventionId: any; admin: boolean }) =>
-                convention.collection.conventions.some(
-                  (c: { conventionId: any }) => d.conventionId == c.conventionId
-                ) && d.admin === true
+                d.conventionId == convention.id && d.admin === true
             ).length > 0
           ) {
             setReadOnly(false);
