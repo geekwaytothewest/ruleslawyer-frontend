@@ -47,8 +47,8 @@ describe("useAuth", () => {
     const { result } = renderHook(() => useAuth());
 
     expect(result.current.status).toBe("authenticated");
-    // Key is the token endpoint, optionally prefixed by NEXT_PUBLIC_BASE_PATH.
-    expect(useSWRMock.mock.calls[0][0]).toMatch(/\/api\/auth\/token$/);
+    // Key is the SDK access-token endpoint, optionally prefixed by NEXT_PUBLIC_BASE_PATH.
+    expect(useSWRMock.mock.calls[0][0]).toMatch(/\/auth\/access-token$/);
     expect(result.current.data).toEqual({ token: "tok", user });
   });
 });
