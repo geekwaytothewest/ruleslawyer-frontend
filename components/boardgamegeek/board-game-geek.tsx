@@ -48,7 +48,11 @@ export default function BoardGameGeek(props: BoardGameGeekProps) {
   const players = formatRange(game.minPlayers, game.maxPlayers);
   const time = formatRange(game.minTime, game.maxTime);
 
-  const ratingClass = 'text-bgg-' + String(Math.floor(Number(game.bggRating)));
+  // BGG colours its rating badges in integer tiers. Reference the theme CSS
+  // variable directly: Tailwind only generates utility classes it can find as
+  // complete literal strings, so a dynamically-built `text-bgg-${n}` class is
+  // never emitted. Clamp to the 1–10 range we actually define.
+  const ratingTier = Math.min(10, Math.max(1, Math.floor(Number(game.bggRating))));
 
   return (
     <div className="flex flex-wrap items-center w-full text-sm mt-2">
@@ -72,7 +76,10 @@ export default function BoardGameGeek(props: BoardGameGeekProps) {
       ) : null}
       {game.bggRating != null ? (
         <div className="relative flex items-center justify-center size-8">
-          <BsFillHexagonFill className={`size-full ${ratingClass}`} />
+          <BsFillHexagonFill
+            className="size-full"
+            style={{ color: `var(--color-bgg-${ratingTier})` }}
+          />
           <span className="absolute text-center text-xs font-bold text-white">
             {Number(game.bggRating).toFixed(1)}
           </span>
