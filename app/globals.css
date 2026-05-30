@@ -12,16 +12,16 @@
   --color-gwred: #FF0000;
   --color-gwdarkred: #7e0909;
   --color-bggorange: #FF5100;
-  --color-bbg-10:rgb(36, 149, 99);
-  --color-bgg-9:rgb(36, 149, 99);
-  --color-bgg-8:rgb(47, 196, 130);
-  --color-bgg-7:rgb(29, 138, 205);
-  --color-bgg-6:rgb(83, 105, 162);
-  --color-bgg-5:rgb(83, 105, 162);
-  --color-bgg-4:rgb(223, 71, 81);
-  --color-bgg-3:rgb(223, 71, 81);
-  --color-bgg-2:rgb(219, 48, 59);
-  --color-bgg-1:rgb(219, 48, 59);
+  --color-bbg-10: #249563;
+  --color-bgg-9: #249563;
+  --color-bgg-8: #2FC482;
+  --color-bgg-7: #1D8ACD;
+  --color-bgg-6: #5369A2;
+  --color-bgg-5: #5369A2;
+  --color-bgg-4: #DF4751;
+  --color-bgg-3: #DF4751;
+  --color-bgg-2: #DB303B;
+  --color-bgg-1: #DB303B;
 }
 
 @layer utilities {
