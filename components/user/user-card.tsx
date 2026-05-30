@@ -91,22 +91,36 @@ export default function UserCard(props: any) {
 
   const deleteUser = (
     event: React.MouseEvent<SVGElement, MouseEvent>,
-    userId: number
   ) => {
     event.preventDefault();
     event.stopPropagation();
 
-    if (confirm("Are you sure you want to delete this user?")) {
-      frontendFetch(
-        "DELETE",
-        "/userConPerm/" + userId,
-        {},
-        session?.data?.token
-      )
-        .then((res: any) => {
-          onDeleted();
-        })
-        .catch((err: any) => {});
+    if (userType === 'organization') {
+      if (confirm("Are you sure you want to delete this user?")) {
+        frontendFetch(
+          "DELETE",
+          "/userOrgPerm/" + user.id,
+          {},
+          session?.data?.token
+        )
+          .then((res: any) => {
+            onDeleted();
+          })
+          .catch((err: any) => {});
+      }
+    } else if (userType === 'convention') {
+      if (confirm("Are you sure you want to delete this user?")) {
+        frontendFetch(
+          "DELETE",
+          "/userConPerm/" + user.id,
+          {},
+          session?.data?.token
+        )
+          .then((res: any) => {
+            onDeleted();
+          })
+          .catch((err: any) => {});
+      }
     }
   };
 
