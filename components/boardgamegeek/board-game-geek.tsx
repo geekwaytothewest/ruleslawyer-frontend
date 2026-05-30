@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { FaExternalLinkAlt, FaUserFriends } from "react-icons/fa";
 import { FaClock, FaWeightHanging } from "react-icons/fa6";
 import { Game } from "@/types/models";
+import { BsFillHexagonFill } from "react-icons/bs";
 
 function formatRange(
   min: number | null,
@@ -47,6 +48,8 @@ export default function BoardGameGeek(props: BoardGameGeekProps) {
   const players = formatRange(game.minPlayers, game.maxPlayers);
   const time = formatRange(game.minTime, game.maxTime);
 
+  const ratingClass = 'text-bgg-' + String(Math.floor(Number(game.bggRating)));
+
   return (
     <div className="flex flex-wrap items-center w-full text-sm mt-2">
       {players ? (
@@ -67,6 +70,14 @@ export default function BoardGameGeek(props: BoardGameGeekProps) {
           {Number(game.weight).toFixed(2)}
         </span>
       ) : null}
+      {game.bggRating != null ? (
+        <div className="relative flex items-center justify-center size-8">
+          <BsFillHexagonFill className={`size-full ${ratingClass}`} />
+          <span className="absolute text-center text-xs font-bold text-white">
+            {Number(game.bggRating).toFixed(1)}
+          </span>
+        </div>
+      ) : null}
       <a
         href={`https://boardgamegeek.com/boardgame/${game.bggId}`}
         target="_blank"
@@ -75,7 +86,7 @@ export default function BoardGameGeek(props: BoardGameGeekProps) {
         aria-label="View on BoardGameGeek (opens in new tab)"
         className="inline-flex items-center mb-1 text-bggorange hover:text-gwblue"
       >
-        BGG
+        BoardGameGeek
         <FaExternalLinkAlt className="ml-1" aria-hidden="true" />
       </a>
     </div>

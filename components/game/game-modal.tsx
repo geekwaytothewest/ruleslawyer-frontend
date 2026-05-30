@@ -60,7 +60,7 @@ export default function GameModal(props: GameModalProps) {
     frontendFetch(
       "PUT",
       "/game/" + game?.id,
-      { name: gameName },
+      { name: gameName, bggId: Number(bggId) },
       session?.data?.token
     )
       .then((res) => res.json())
