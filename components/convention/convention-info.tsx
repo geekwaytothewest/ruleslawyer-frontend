@@ -19,11 +19,13 @@ import {
 import { GrAttachment } from "react-icons/gr";
 import usePermissions from "@/utilities/swr/usePermissions";
 import ConventionModal from "./convention-modal";
-import { FaEdit, FaUsersCog } from "react-icons/fa";
+import { FaEdit, FaTrophy, FaUsersCog } from "react-icons/fa";
 import { IoMdAddCircle } from "react-icons/io";
 import CollectionModal from "../collection/collection-modal";
 import { TbPackageImport } from "react-icons/tb";
 import { DateFormatter } from "@internationalized/date";
+import { MdAdminPanelSettings, MdOutlineShoppingCartCheckout } from "react-icons/md";
+
 export default function ConventionInfo(props: any) {
   let { id, hideTitle, hideSubtitle } = props;
 
@@ -182,175 +184,234 @@ export default function ConventionInfo(props: any) {
   if (isLoading || isLoadingPermissions) return <div>Loading...</div>;
 
   return (
-    <div className="relative">
-      <div className="text-gwgreen" hidden={hideTitle && hideSubtitle}>
-        <h1 hidden={hideTitle}>{convention.name}</h1>
-        <h2 className="mb-8" hidden={hideSubtitle}>
-          {convention.theme}
-        </h2>
-      </div>
+    <div className="relative flex flex-col sm:flex-row">
+      <div className="flex-1">
+        <div className="text-gwgreen" hidden={hideTitle && hideSubtitle}>
+          <h1 hidden={hideTitle}>{convention.name}</h1>
+          <h2 className="mb-8" hidden={hideSubtitle}>
+            {convention.theme}
+          </h2>
+        </div>
 
-      <p>
-        <b className="text-gwgreen">Start Date: </b>
-        {formatter.format(new Date(convention.startDate))}
-      </p>
-      <p className="mb-8">
-        <b className="text-gwgreen">End Date: </b>
-        {formatter.format(new Date(convention.endDate))}
-      </p>
+        <div className="flex gap-2 mb-8 items-center">
+          <div>
+            <div className="flex gap-2 items-center">
+              {readOnly ? (
+                ""
+              ) : (
+                <Tooltip
+                  content={"Edit " + convention.name}
+                  showArrow={true}
+                  color="success"
+                  delay={1000}
+                  classNames={{
+                    content: "max-w-[125px] text-center"
+                  }}
+                >
+                  <span className="text-3xl inline-flex items-center hover:cursor-pointer">
+                    <FaEdit onClick={onOpenEdit} className="h-8 w-auto text-white hover:text-gwgreen" />
+                  </span>
+                </Tooltip>
+              )}
 
-      <h3 className="flex">
-        <span className="text-gwgreen">
-          <b>Collections:</b>
-        </span>{" "}
+              <Tooltip
+                content={"User Permissions"}
+                showArrow={true}
+                color="success"
+                delay={1000}
+                classNames={{
+                  content: "max-w-[125px] text-center"
+                }}
+              >
+                <span className="text-3xl inline-flex items-center hover:cursor-pointer">
+                  <Link className="text-white hover:text-gwgreen" href={`/dashboard/organization/${String(convention.organizationId)}/convention/${String(convention.id)}/users`}><FaUsersCog className="h-8 w-auto" /></Link>
+                </span>
+              </Tooltip>
+            </div>
+          </div>
+
+          <div className="border-r border-gwblue mr-2 ml-2 self-stretch"></div>
+
+          <Tooltip
+            content={"Legacy Board Game Admin Frontend"}
+            showArrow={true}
+            color="success"
+            delay={1000}
+            classNames={{
+              content: "max-w-[125px] text-center"
+            }}
+          >
+            <span className="text-3xl inline-flex items-center hover:cursor-pointer">
+              <Link target="_blank" className="text-white hover:text-gwgreen" href={`${process.env.LEGACY_ADMIN_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/admin`}><MdAdminPanelSettings className="h-8 w-auto" /></Link>
+            </span>
+          </Tooltip>
+
+          <Tooltip
+            content={"Legacy Librarian Frontend"}
+            showArrow={true}
+            color="success"
+            delay={1000}
+            classNames={{
+              content: "max-w-[125px] text-center"
+            }}
+          >
+            <span className="text-3xl inline-flex items-center hover:cursor-pointer">
+              <Link target="_blank" className="text-white hover:text-gwgreen" href={`${process.env.LEGACY_LIBRARIAN_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/librarian`}><MdOutlineShoppingCartCheckout className="h-8 w-auto" /></Link>
+            </span>
+          </Tooltip>
+
+          <Tooltip
+            content={"Legacy Play Prize Entry Frontend"}
+            showArrow={true}
+            color="success"
+            delay={1000}
+            classNames={{
+              content: "max-w-[125px] text-center"
+            }}
+          >
+            <span className="text-3xl inline-flex items-center hover:cursor-pointer">
+              <Link target="_blank" className="text-white hover:text-gwgreen" href={`${process.env.LEGACY_PLAY_PRIZE_ENTRY_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/playandwin`}><FaTrophy className="h-8 w-auto" /></Link>
+            </span>
+          </Tooltip>
+        </div>
+
+        <p>
+          <b className="text-gwgreen">Start Date: </b>
+          {formatter.format(new Date(convention.startDate))}
+        </p>
+        <p className="mb-8">
+          <b className="text-gwgreen">End Date: </b>
+          {formatter.format(new Date(convention.endDate))}
+        </p>
+
+        <h3 className="flex">
+          <span className="text-gwgreen">
+            <b>Collections:</b>
+          </span>{" "}
+          {readOnly ? (
+            ""
+          ) : (
+            <div className="flex">
+              <Tooltip
+                content="Create Collection"
+                showArrow={true}
+                color="success"
+                delay={1000}
+              >
+                <span>
+                  <IoMdAddCircle
+                    className="ml-2 hover:cursor-pointer hover:text-gwgreen"
+                    onClick={onOpenCreate}
+                  />
+                </span>
+              </Tooltip>
+              <Tooltip
+                content="Import Collection"
+                showArrow={true}
+                color="success"
+                delay={1000}
+              >
+                <span>
+                  {" "}
+                  <TbPackageImport
+                    className="ml-2 hover:cursor-pointer hover:text-gwgreen"
+                    onClick={onOpenImport}
+                  />
+                </span>
+              </Tooltip>
+              <Tooltip
+                content="Attach Collection"
+                showArrow={true}
+                color="success"
+                delay={1000}
+              >
+                <span>
+                  <GrAttachment
+                    className="ml-2 hover:cursor-pointer hover:text-gwgreen"
+                    onClick={onOpen}
+                  />
+                </span>
+              </Tooltip>
+            </div>
+          )}
+        </h3>
         {readOnly ? (
           ""
         ) : (
-          <div className="flex">
-            <Tooltip
-              content="Create Collection"
-              showArrow={true}
-              color="success"
-              delay={1000}
-            >
-              <span>
-                <IoMdAddCircle
-                  className="ml-2 hover:cursor-pointer hover:text-gwgreen"
-                  onClick={onOpenCreate}
-                />
-              </span>
-            </Tooltip>
-            <Tooltip
-              content="Import Collection"
-              showArrow={true}
-              color="success"
-              delay={1000}
-            >
-              <span>
-                {" "}
-                <TbPackageImport
-                  className="ml-2 hover:cursor-pointer hover:text-gwgreen"
-                  onClick={onOpenImport}
-                />
-              </span>
-            </Tooltip>
-            <Tooltip
-              content="Attach Collection"
-              showArrow={true}
-              color="success"
-              delay={1000}
-            >
-              <span>
-                <GrAttachment
-                  className="ml-2 hover:cursor-pointer hover:text-gwgreen"
-                  onClick={onOpen}
-                />
-              </span>
-            </Tooltip>
-          </div>
-        )}
-      </h3>
-      {readOnly ? (
-        ""
-      ) : (
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalContent>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                onSave();
-              }}
-            >
-              <ModalHeader>Attach Collection</ModalHeader>
-              <ModalBody>
-                <Select
-                  name="collectionSelect"
-                  items={filteredCollections}
-                  label="Collection to Attach"
-                  placeholder="Select a collection"
-                  isRequired
-                  onChange={(event) => {
-                    setCollectionIdToAttach(Number(event.target.value));
-                  }}
-                >
-                  {(collection: any) => (
-                    <SelectItem key={collection.id}>
-                      {collection.name}
-                    </SelectItem>
-                  )}
-                </Select>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="success" type="submit">
-                  Attach
-                </Button>
-                <Button color="primary" onPress={onClose}>
-                  Cancel
-                </Button>
-              </ModalFooter>
-            </form>
-          </ModalContent>
-        </Modal>
-      )}
-      <div className="flex flex-wrap">
-        {convention.collections.map(
-          (c: {
-            collection: {
-              _count: any;
-              id: React.Key | null | undefined;
-              name:
-                | string
-                | number
-                | bigint
-                | boolean
-                | React.ReactElement<
-                    any,
-                    string | React.JSXElementConstructor<any>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalContent>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  onSave();
+                }}
+              >
+                <ModalHeader>Attach Collection</ModalHeader>
+                <ModalBody>
+                  <Select
+                    name="collectionSelect"
+                    items={filteredCollections}
+                    label="Collection to Attach"
+                    placeholder="Select a collection"
+                    isRequired
+                    onChange={(event) => {
+                      setCollectionIdToAttach(Number(event.target.value));
+                    }}
                   >
-                | Iterable<React.ReactNode>
-                | React.ReactPortal
-                | null
-                | undefined;
-            };
-          }) => {
-            return (
-              <div key={c.collection.id}>
-                <CollectionCard
-                  collectionIn={c.collection}
-                  conventionId={convention.id}
-                  onDeleted={onClose}
-                />
-              </div>
-            );
-          }
+                    {(collection: any) => (
+                      <SelectItem key={collection.id}>
+                        {collection.name}
+                      </SelectItem>
+                    )}
+                  </Select>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="success" type="submit">
+                    Attach
+                  </Button>
+                  <Button color="primary" onPress={onClose}>
+                    Cancel
+                  </Button>
+                </ModalFooter>
+              </form>
+            </ModalContent>
+          </Modal>
         )}
+        <div className="flex flex-wrap mr-8">
+          {convention.collections.map(
+            (c: {
+              collection: {
+                _count: any;
+                id: React.Key | null | undefined;
+                name:
+                  | string
+                  | number
+                  | bigint
+                  | boolean
+                  | React.ReactElement<
+                      any,
+                      string | React.JSXElementConstructor<any>
+                    >
+                  | Iterable<React.ReactNode>
+                  | React.ReactPortal
+                  | null
+                  | undefined;
+              };
+            }) => {
+              return (
+                <div key={c.collection.id}>
+                  <CollectionCard
+                    collectionIn={c.collection}
+                    conventionId={convention.id}
+                    onDeleted={onClose}
+                  />
+                </div>
+              );
+            }
+          )}
+        </div>
       </div>
 
-      <Tooltip
-        content={"User Permissions"}
-        showArrow={true}
-        color="success"
-        delay={1000}
-      >
-        <span className="text-3xl absolute bottom-16 right-8 hover:cursor-pointer">
-          <Link className="text-3xl text-white hover:text-gwgreen" href={`/dashboard/organization/${String(convention.organizationId)}/convention/${String(convention.id)}/users`}><FaUsersCog /></Link>
-        </span>
-      </Tooltip>
-
-      {readOnly ? (
-        ""
-      ) : (
-        <Tooltip
-          content={"Edit " + convention.name}
-          showArrow={true}
-          color="success"
-          delay={1000}
-        >
-          <span className="text-3xl absolute bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
-            <FaEdit onClick={onOpenEdit} />
-          </span>
-        </Tooltip>
-      )}
       <ConventionModal
         conventionIn={convention}
         conventionId={id}
