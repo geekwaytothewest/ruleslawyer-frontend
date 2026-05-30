@@ -4,6 +4,10 @@ import { useAuth } from "@/utilities/swr/useAuth";
 import { Organization } from "@/types/models";
 import Link from "next/link";
 import React, { useEffect, useState, use } from "react";
+import { FaPeopleLine } from "react-icons/fa6";
+import { FaUsersCog } from "react-icons/fa";
+import { GiPawn } from "react-icons/gi";
+import { IoLibrary } from "react-icons/io5";
 
 type Params = Promise<{ orgId: string }>;
 
@@ -29,12 +33,13 @@ export default function OrgView(props: { params: Params }) {
   if (!organization) return <p>No organization data</p>;
 
   return (
-    <div>
+    <div className="flex row gap-9 items-center text-center">
       <div>
         <Link
           href={`/dashboard/organization/${params.orgId}/conventions`}
           className="hover:text-gwgreen"
         >
+          <FaPeopleLine className="text-8xl" />
           Conventions
         </Link>
       </div>
@@ -43,6 +48,7 @@ export default function OrgView(props: { params: Params }) {
           href={`/dashboard/organization/${params.orgId}/games`}
           className="hover:text-gwgreen"
         >
+          <GiPawn className="text-8xl" />
           Games
         </Link>
       </div>
@@ -51,6 +57,7 @@ export default function OrgView(props: { params: Params }) {
           href={`/dashboard/organization/${params.orgId}/collections`}
           className="hover:text-gwgreen"
         >
+          <IoLibrary className="text-8xl" />
           Collections
         </Link>
       </div>
@@ -59,6 +66,7 @@ export default function OrgView(props: { params: Params }) {
           href={`/dashboard/organization/${params.orgId}/users`}
           className="hover:text-gwgreen"
         >
+          <FaUsersCog className="text-8xl" />
           Users
         </Link>
       </div>
