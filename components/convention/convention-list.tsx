@@ -146,7 +146,7 @@ export default function ConventionList(props: ConventionListProps) {
         selectedKeys={selectedKeys}
         onSelectionChange={setSelectedKeys}
       >
-        {(conventions ?? []).map(
+        {(conventions ?? []).filter((c) => c != null).map(
           (c) => {
             return (
               <AccordionItem

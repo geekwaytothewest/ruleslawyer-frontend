@@ -4,7 +4,7 @@ import { OrganizationPermissionWithOrg, User } from "@/types/models";
 import Link from "next/link";
 import React from "react";
 
-export default async function Dashboard() {
+export default async function Organizations() {
   const session = await auth0.getSession();
   let orgs: OrganizationPermissionWithOrg[] = [];
   let user: User | undefined;
