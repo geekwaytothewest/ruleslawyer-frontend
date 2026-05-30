@@ -1,11 +1,12 @@
 import frontendFetch from "@/utilities/frontendFetch";
 import { useAuth } from "@/utilities/swr/useAuth";
+import { PermissionsResponse } from "@/types/models";
 import useSWR from "swr";
 
 export default function usePermissions() {
-  const session: any = useAuth();
+  const session = useAuth();
 
-  const combined = useSWR(
+  const combined = useSWR<PermissionsResponse>(
     session?.data?.user?.email && session?.data?.token
       ? [
           "GET",
@@ -13,14 +14,14 @@ export default function usePermissions() {
           session?.data?.token,
         ]
       : null,
-    ([method, url, session]) =>
-      frontendFetch(method, url, null, session).then((res) => res.json())
+    ([method, url, token]: [string, string, string]) =>
+      frontendFetch(method, url, null, token).then((res) => res.json())
   );
 
   const permissions = {
     user: { data: combined.data?.user },
-    organizations: { data: combined.data?.organizations },
-    conventions: { data: combined.data?.conventions },
+    organizations: { data: combined.data?.organizations ?? [] },
+    conventions: { data: combined.data?.conventions ?? [] },
   };
 
   return {

@@ -19,32 +19,42 @@ import {
   now,
   getLocalTimeZone,
   parseAbsoluteToLocal,
+  ZonedDateTime,
 } from "@internationalized/date";
+import { useDisclosure } from "@heroui/react";
+import { Convention, ConventionType } from "@/types/models";
 
-export default function ConventionModal(props: any) {
-  let { conventionIn, conventionId, organizationId, disclosure } = props;
+interface ConventionModalProps {
+  conventionIn?: Convention;
+  conventionId?: number;
+  organizationId?: number;
+  disclosure: ReturnType<typeof useDisclosure>;
+}
 
-  const [convention, setData]: any = useState(null);
-  const [isLoading, setLoading]: any = useState(true);
-  const [conventionTypes, setConventionTypes]: any = useState(null);
-  const [isLoadingConventionTypes, setLoadingConventionTypes]: any =
+export default function ConventionModal(props: ConventionModalProps) {
+  const { conventionIn, conventionId, organizationId, disclosure } = props;
+
+  const [convention, setData] = useState<Convention | null>(null);
+  const [isLoading, setLoading] = useState(true);
+  const [conventionTypes, setConventionTypes] = useState<
+    ConventionType[] | null
+  >(null);
+  const [isLoadingConventionTypes, setLoadingConventionTypes] =
     useState(true);
-  const [conventionTypeId, setConventionTypeId]: any = useState(undefined);
-  const [conventionName, setConventionName]: any = useState("");
-  const [conventionTheme, setConventionTheme]: any = useState("");
-  const [tteConventionId, setTTEConventionId]: any = useState("");
-  const [startDate, setStartDate]: any = useState(now(getLocalTimeZone()).set({second: 0, millisecond: 0}));
-  const [startTime, setStartTime]: any = useState(now(getLocalTimeZone()).set({second: 0, millisecond: 0}));
-  const [endDate, setEndDate]: any = useState(null);
-  const [endTime, setEndTime]: any = useState(null);
-  const [readOnly, setReadOnly]: any = useState(true);
-  const {
-    permissions,
-    isLoading: isLoadingPermissions,
-    isError,
-  }: any = usePermissions();
+  const [conventionTypeId, setConventionTypeId] = useState<number | undefined>(
+    undefined
+  );
+  const [conventionName, setConventionName] = useState("");
+  const [conventionTheme, setConventionTheme] = useState("");
+  const [tteConventionId, setTTEConventionId] = useState<string | null>("");
+  const [startDate, setStartDate] = useState<ZonedDateTime | null>(now(getLocalTimeZone()).set({second: 0, millisecond: 0}));
+  const [startTime, setStartTime] = useState<ZonedDateTime | null>(now(getLocalTimeZone()).set({second: 0, millisecond: 0}));
+  const [endDate, setEndDate] = useState<ZonedDateTime | null>(null);
+  const [endTime, setEndTime] = useState<ZonedDateTime | null>(null);
+  const [readOnly, setReadOnly] = useState(true);
+  const { permissions, isLoading: isLoadingPermissions } = usePermissions();
 
-  const session: any = useAuth();
+  const session = useAuth();
 
   const { isOpen, onOpen, onClose } = disclosure;
 
@@ -57,8 +67,8 @@ export default function ConventionModal(props: any) {
           name: conventionName,
           theme: conventionTheme,
           tteConventionId: tteConventionId,
-          startDate: startDate.toAbsoluteString(),
-          endDate: endDate.toAbsoluteString(),
+          startDate: startDate?.toAbsoluteString(),
+          endDate: endDate?.toAbsoluteString(),
           type: {
             connect: {
               id: conventionTypeId,
@@ -67,11 +77,11 @@ export default function ConventionModal(props: any) {
         },
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           onClose();
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     } else {
       frontendFetch(
         "POST",
@@ -80,8 +90,8 @@ export default function ConventionModal(props: any) {
           name: conventionName,
           theme: conventionTheme,
           tteConventionId: tteConventionId,
-          startDate: startDate.toAbsoluteString(),
-          endDate: endDate.toAbsoluteString(),
+          startDate: startDate?.toAbsoluteString(),
+          endDate: endDate?.toAbsoluteString(),
           type: {
             connect: {
               id: conventionTypeId,
@@ -90,11 +100,11 @@ export default function ConventionModal(props: any) {
         },
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           onClose();
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     }
   };
 
@@ -118,8 +128,8 @@ export default function ConventionModal(props: any) {
       setLoading(false);
     } else if (conventionId) {
       frontendFetch("GET", "/con/" + conventionId, null, session?.data?.token)
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setData(data);
 
           setConventionName(data.name);
@@ -127,8 +137,8 @@ export default function ConventionModal(props: any) {
           setTTEConventionId(data.tteConventionId);
           setConventionTypeId(data.typeId);
 
-          const parsedStart = parseAbsoluteToLocal(conventionIn.startDate).set({second: 0, millisecond: 0});
-          const parsedEnd = parseAbsoluteToLocal(conventionIn.endDate).set({second: 0, millisecond: 0});
+          const parsedStart = parseAbsoluteToLocal(data.startDate).set({second: 0, millisecond: 0});
+          const parsedEnd = parseAbsoluteToLocal(data.endDate).set({second: 0, millisecond: 0});
 
           setStartDate(parsedStart);
           setStartTime(parsedStart);
@@ -137,7 +147,7 @@ export default function ConventionModal(props: any) {
 
           setLoading(false);
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     } else {
       setStartDate(now(getLocalTimeZone()));
       setEndDate(now(getLocalTimeZone()));
@@ -152,7 +162,7 @@ export default function ConventionModal(props: any) {
       } else if (convention) {
         if (
           permissions.organizations.data?.filter(
-            (d: { organizationId: any; admin: boolean }) =>
+            (d) =>
               d.organizationId == convention.organizationId && d.admin === true
           ).length > 0
         ) {
@@ -160,7 +170,7 @@ export default function ConventionModal(props: any) {
         } else {
           if (
             permissions.conventions?.data?.filter(
-              (d: { conventionId: any; admin: boolean }) =>
+              (d) =>
                 d.conventionId == convention.id && d.admin === true
             ).length > 0
           ) {
@@ -172,7 +182,7 @@ export default function ConventionModal(props: any) {
       } else if (organizationId) {
         if (
           permissions.organizations.data?.filter(
-            (d: { organizationId: any; admin: boolean }) =>
+            (d) =>
               d.organizationId == organizationId && d.admin === true
           ).length > 0
         ) {
@@ -196,12 +206,12 @@ export default function ConventionModal(props: any) {
         null,
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setConventionTypes(data);
           setLoadingConventionTypes(false);
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     }
   }, [organizationId, session?.data?.token]);
 
@@ -225,7 +235,7 @@ export default function ConventionModal(props: any) {
               <ModalBody>
                 <Select
                   name="conventionTypeSelect"
-                  items={conventionTypes}
+                  items={conventionTypes ?? []}
                   label="Convention Type"
                   placeholder="Select a convention type"
                   defaultSelectedKeys={conventionTypeId != null ? [String(conventionTypeId)] : []}
@@ -234,7 +244,7 @@ export default function ConventionModal(props: any) {
                     setConventionTypeId(Number(event.target.value));
                   }}
                 >
-                  {(conventionType: any) => (
+                  {(conventionType) => (
                     <SelectItem
                       key={conventionType.id}
                     >

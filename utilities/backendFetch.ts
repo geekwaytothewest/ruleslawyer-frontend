@@ -1,6 +1,10 @@
 import { auth0 } from "@/lib/auth0";
 
-export default async function backendFetch(method: string, url: string, body?: any) {
+export default async function backendFetch(
+  method: string,
+  url: string,
+  body?: unknown
+) {
   const { token } = await auth0.getAccessToken();
 
   return fetch(process.env.API_URL + url, {

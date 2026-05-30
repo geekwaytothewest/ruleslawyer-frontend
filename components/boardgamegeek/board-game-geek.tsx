@@ -4,8 +4,12 @@ import { useAuth } from "@/utilities/swr/useAuth";
 import { useEffect, useState } from "react";
 import { FaExternalLinkAlt, FaUserFriends } from "react-icons/fa";
 import { FaClock, FaWeightHanging } from "react-icons/fa6";
+import { Game } from "@/types/models";
 
-function formatRange(min: any, max: any): string | null {
+function formatRange(
+  min: number | null,
+  max: number | null
+): string | null {
   if (min == null && max == null) {
     return null;
   }
@@ -17,19 +21,23 @@ function formatRange(min: any, max: any): string | null {
   return `${min ?? max}`;
 }
 
-export default function BoardGameGeek(props: any) {
-  let { game: gameIn } = props;
+interface BoardGameGeekProps {
+  game?: Game | null;
+}
 
-  const [game, setData]: any = useState(gameIn ?? null);
-  const session: any = useAuth();
+export default function BoardGameGeek(props: BoardGameGeekProps) {
+  const { game: gameIn } = props;
+
+  const [game, setData] = useState<Game | null>(gameIn ?? null);
+  const session = useAuth();
 
   useEffect(() => {
     if (gameIn?.bggId !== undefined) {
       setData(gameIn);
     } else if (gameIn?.id) {
       frontendFetch("GET", "/game/" + gameIn.id, null, session?.data?.token)
-        .then((res: any) => res.json())
-        .then((data: any) => setData(data))
+        .then((res) => res.json())
+        .then((data) => setData(data))
         .catch(() => {});
     }
   }, [gameIn, session?.data?.token]);

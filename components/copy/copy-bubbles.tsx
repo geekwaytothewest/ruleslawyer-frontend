@@ -5,8 +5,15 @@ import { useCallback, useEffect, useState } from "react";
 import CopyModal from "./copy-modal";
 import { useDisclosure } from "@heroui/react";
 import { BsBox2Heart } from "react-icons/bs";
+import { GameCopy, GameWithCopies } from "@/types/models";
 
-function BubbleModal({ c, bubbleStyle, onCloseModal }: any) {
+interface BubbleModalProps {
+  c: GameCopy;
+  bubbleStyle?: string;
+  onCloseModal: () => void;
+}
+
+function BubbleModal({ c, bubbleStyle, onCloseModal }: BubbleModalProps) {
   const disclosure = useDisclosure({ onClose: onCloseModal });
   const { onOpen } = disclosure;
 
@@ -49,19 +56,26 @@ function BubbleModal({ c, bubbleStyle, onCloseModal }: any) {
   );
 }
 
-export default function CopyBubbles(props: any) {
-  let { game, bubbleStyle, disclosure, archived } = props;
+interface CopyBubblesProps {
+  game: GameWithCopies;
+  bubbleStyle?: string;
+  disclosure: ReturnType<typeof useDisclosure>;
+  archived?: boolean;
+}
 
-  const [copies, setData]: any = useState(null);
-  const [isLoading, setLoading]: any = useState(true);
+export default function CopyBubbles(props: CopyBubblesProps) {
+  const { game, bubbleStyle, disclosure, archived } = props;
+
+  const [copies, setData] = useState<GameCopy[] | null>(null);
+  const [isLoading, setLoading] = useState(true);
 
   const { onClose } = disclosure;
-  const session: any = useAuth();
+  const session = useAuth();
 
   const onCloseModal = useCallback(() => {
     frontendFetch("GET", "/game/" + game.id, null, session?.data?.token)
-      .then((res: any) => res.json())
-      .then((data: any) => {
+      .then((res) => res.json())
+      .then((data) => {
         setData(data.copies);
         onClose();
         setLoading(false);
@@ -76,8 +90,8 @@ export default function CopyBubbles(props: any) {
       setLoading(false);
     } else {
       frontendFetch("GET", "/game/" + game.id, null, session?.data?.token)
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setData(data.copies);
           setLoading(false);
         })
@@ -89,29 +103,29 @@ export default function CopyBubbles(props: any) {
   if (!copies) return <div></div>;
 
   if (bubbleStyle === "statusOnly") {
-    let available = copies.filter(
-      (c: any) => c.checkOuts.length === 0 || c.checkOuts[0].checkIn !== null
-    ).sort();
-
-    if (archived) {
-      available = 0;
-    }
+    const availableCopies = copies.filter(
+      (c) => c.checkOuts.length === 0 || c.checkOuts[0].checkIn !== null
+    );
+    // Archived collections report every copy under "Archived" and suppress the
+    // available / checked-out tallies.
+    const availableCount = archived ? 0 : availableCopies.length;
+    const checkedOutCount = archived ? 0 : copies.length - availableCount;
 
     return (
       <div className="flex flex-wrap w-full">
-        {available.length > 0 ? (
-          <div className="rounded-full bg-gwgreen p-1 mr-2 mt-2 text-sm text-gwdarkblue">{available.length} Available</div>
+        {availableCount > 0 ? (
+          <div className="rounded-full bg-gwgreen p-1 mr-2 mt-2 text-sm text-gwdarkblue">{availableCount} Available</div>
         ) : (
           <div></div>
         )}
-        {copies.length - available.length > 0 ? (
+        {checkedOutCount > 0 ? (
           <div className="rounded-full bg-gwdarkred p-1 mr-2 mt-2 text-sm text-gwdarkblue">
-            {copies.length - available.length} Checked Out
+            {checkedOutCount} Checked Out
           </div>
         ) : (
           <div></div>
         )}
-        {available === 0 ? (
+        {archived ? (
           <div className="rounded-full bg-bggorange p-1 mr-2 mt-2 text-sm text-white">
             {copies.length} Archived
           </div>
@@ -124,7 +138,7 @@ export default function CopyBubbles(props: any) {
 
   return (
     <div className="flex flex-wrap w-full">
-      {copies?.map((c: any) => (
+      {copies?.map((c) => (
         <BubbleModal key={c.id} c={c} bubbleStyle={bubbleStyle} onCloseModal={onCloseModal} />
       ))}
     </div>

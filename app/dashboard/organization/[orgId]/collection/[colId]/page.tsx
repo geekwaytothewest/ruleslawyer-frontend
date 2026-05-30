@@ -9,7 +9,10 @@ export default function OrgCollectionView(props: { params: Params }) {
 
   return (
     <div>
-      <GameGrid collectionId={params.colId} organizationId={params.orgId} />
+      <GameGrid
+        collectionId={Number(params.colId)}
+        organizationId={Number(params.orgId)}
+      />
     </div>
   );
 }

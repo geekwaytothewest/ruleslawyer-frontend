@@ -14,9 +14,28 @@ import {
 import { useAuth } from "@/utilities/swr/useAuth";
 import React, { useEffect, useState } from "react";
 import usePermissions from "@/utilities/swr/usePermissions";
+import { useDisclosure } from "@heroui/react";
+import { UserPermissionRow } from "@/types/models";
 
-export default function UserModal(props: any) {
-  let {
+interface UserPermissionUpdate {
+  admin: boolean;
+  geekGuide: boolean;
+  readOnly?: boolean;
+  attendee?: boolean;
+}
+
+interface UserModalProps {
+  userIn?: UserPermissionRow;
+  organizationId?: number;
+  disclosure: ReturnType<typeof useDisclosure>;
+  userId?: number;
+  onSaved?: (updated: UserPermissionUpdate) => void;
+  userType: "organization" | "convention";
+  conventionId?: number;
+}
+
+export default function UserModal(props: UserModalProps) {
+  const {
     userIn,
     organizationId,
     disclosure,
@@ -26,22 +45,18 @@ export default function UserModal(props: any) {
     conventionId
   } = props;
 
-  const [user, setData]: any = useState(null);
-  const [userEmail, setUserEmail]: any = useState();
-  const [userAdmin, setUserAdmin]: any = useState(false);
-  const [userGeekGuide, setUserGeekGuide]: any = useState(false);
-  const [userReadOnly, setUserReadOnly]: any = useState(false);
-  const [userAttendee, setUserAttendee]: any = useState(false);
-  const [isLoading, setLoading]: any = useState(true);
-  const [readOnly, setReadOnly]: any = useState(true);
+  const [user, setData] = useState<UserPermissionRow | null>(null);
+  const [userEmail, setUserEmail] = useState<string | undefined>(undefined);
+  const [userAdmin, setUserAdmin] = useState(false);
+  const [userGeekGuide, setUserGeekGuide] = useState(false);
+  const [userReadOnly, setUserReadOnly] = useState(false);
+  const [userAttendee, setUserAttendee] = useState(false);
+  const [isLoading, setLoading] = useState(true);
+  const [readOnly, setReadOnly] = useState(true);
 
-  const {
-    permissions,
-    isLoading: isLoadingPermissions,
-    isError,
-  }: any = usePermissions();
+  const { permissions, isLoading: isLoadingPermissions } = usePermissions();
 
-  const session: any = useAuth();
+  const session = useAuth();
 
   const { isOpen, onOpen, onClose } = disclosure;
 
@@ -50,7 +65,7 @@ export default function UserModal(props: any) {
       if (userIn) {
         frontendFetch(
           "PUT",
-          "/userOrgPerm/" + user.id,
+          "/userOrgPerm/" + user?.id,
           {
               admin: userAdmin,
               geekGuide: userGeekGuide,
@@ -58,7 +73,7 @@ export default function UserModal(props: any) {
           },
           session?.data?.token
         )
-        .then((res: any) => {
+        .then((res) => {
             if (!res.ok) {
                 addToast({
                     title: "Unable to save",
@@ -77,7 +92,7 @@ export default function UserModal(props: any) {
             });
             onClose();
           })
-          .catch((err: any) => {
+          .catch((err) => {
               addToast({
                   title: "Unable to save",
                   description: "Could not reach the server. Please try again.",
@@ -96,7 +111,7 @@ export default function UserModal(props: any) {
           },
           session?.data?.token
         )
-        .then((res: any) => {
+        .then((res) => {
             if (!res.ok) {
                 addToast({
                     title: "Unable to save",
@@ -115,7 +130,7 @@ export default function UserModal(props: any) {
             });
             onClose();
           })
-          .catch((err: any) => {
+          .catch((err) => {
               addToast({
                   title: "Unable to save",
                   description: "Could not reach the server. Please try again.",
@@ -127,7 +142,7 @@ export default function UserModal(props: any) {
       if (userIn) {
         frontendFetch(
           "PUT",
-          "/userConPerm/" + user.id,
+          "/userConPerm/" + user?.id,
           {
               admin: userAdmin,
               geekGuide: userGeekGuide,
@@ -135,7 +150,7 @@ export default function UserModal(props: any) {
           },
           session?.data?.token
         )
-        .then((res: any) => {
+        .then((res) => {
             if (!res.ok) {
                 addToast({
                     title: "Unable to save",
@@ -154,7 +169,7 @@ export default function UserModal(props: any) {
             });
             onClose();
           })
-          .catch((err: any) => {
+          .catch((err) => {
               addToast({
                   title: "Unable to save",
                   description: "Could not reach the server. Please try again.",
@@ -173,7 +188,7 @@ export default function UserModal(props: any) {
           },
           session?.data?.token
         )
-        .then((res: any) => {
+        .then((res) => {
             if (!res.ok) {
                 addToast({
                     title: "Unable to save",
@@ -192,7 +207,7 @@ export default function UserModal(props: any) {
             });
             onClose();
           })
-          .catch((err: any) => {
+          .catch((err) => {
               addToast({
                   title: "Unable to save",
                   description: "Could not reach the server. Please try again.",
@@ -215,13 +230,13 @@ export default function UserModal(props: any) {
         null,
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setData(data);
 
           setLoading(false);
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     } else {
       setLoading(false);
     }
@@ -243,7 +258,7 @@ export default function UserModal(props: any) {
       } else if (user) {
         if (
           permissions.organizations.data?.filter(
-            (d: { organizationId: any; admin: boolean }) =>
+            (d) =>
               d.organizationId == user.organizationId && d.admin === true
           ).length > 0
         ) {
@@ -252,7 +267,7 @@ export default function UserModal(props: any) {
       } else if (organizationId) {
         if (
           permissions.organizations.data?.filter(
-            (d: { organizationId: any; admin: boolean }) =>
+            (d) =>
               d.organizationId == organizationId && d.admin === true
           ).length > 0
         ) {
