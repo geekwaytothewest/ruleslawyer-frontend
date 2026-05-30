@@ -213,7 +213,7 @@ export default function UserCard(props: any) {
                 <span>
                 <FaTrashCan
                     className="hover:text-gwgreen hover:cursor-pointer"
-                    onClick={(e) => deleteUser(e, user.id)}
+                    onClick={(e) => deleteUser(e)}
                 />
                 </span>
             </Tooltip>
