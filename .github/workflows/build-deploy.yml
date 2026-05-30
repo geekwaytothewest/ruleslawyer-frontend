@@ -23,13 +23,9 @@ env:
   ROLE_TO_ASSUME: ${{ inputs.environment == 'prod' && secrets.PROD_ROLE_ARN || secrets.NONPROD_ROLE_ARN }}
   # NEXT_PUBLIC_* values are inlined into the bundle at build time, so they must be
   # supplied as a build arg here (not just at runtime in the task definition).
+  # (Legacy frontend URLs are NOT here: they're read server-side at runtime and
+  # injected as container env by CDK, so they need no build arg.)
   NEXT_PUBLIC_API_URL: ${{ inputs.environment == 'prod' && 'https://library.geekway.com/api' || 'https://nonprod.library.geekway.com/api' }}
-  # Legacy frontend URLs are also inlined at build time. Set these as repo (or
-  # environment) variables in GitHub so the real per-env hosts are used instead
-  # of the localhost defaults from .env.docker.
-  NEXT_PUBLIC_LEGACY_ADMIN_URL: ${{ inputs.environment == 'prod' && vars.LEGACY_ADMIN_URL_PROD || vars.LEGACY_ADMIN_URL_NONPROD }}
-  NEXT_PUBLIC_LEGACY_LIBRARIAN_URL: ${{ inputs.environment == 'prod' && vars.LEGACY_LIBRARIAN_URL_PROD || vars.LEGACY_LIBRARIAN_URL_NONPROD }}
-  NEXT_PUBLIC_LEGACY_PLAY_PRIZE_ENTRY_URL: ${{ inputs.environment == 'prod' && vars.LEGACY_PLAY_PRIZE_ENTRY_URL_PROD || vars.LEGACY_PLAY_PRIZE_ENTRY_URL_NONPROD }}
 
 permissions:
   contents: read
@@ -81,9 +77,6 @@ jobs:
           # (the tag the CDK-owned task definition references).
           docker build \
             --build-arg NEXT_PUBLIC_API_URL="$NEXT_PUBLIC_API_URL" \
-            --build-arg NEXT_PUBLIC_LEGACY_ADMIN_URL="$NEXT_PUBLIC_LEGACY_ADMIN_URL" \
-            --build-arg NEXT_PUBLIC_LEGACY_LIBRARIAN_URL="$NEXT_PUBLIC_LEGACY_LIBRARIAN_URL" \
-            --build-arg NEXT_PUBLIC_LEGACY_PLAY_PRIZE_ENTRY_URL="$NEXT_PUBLIC_LEGACY_PLAY_PRIZE_ENTRY_URL" \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
