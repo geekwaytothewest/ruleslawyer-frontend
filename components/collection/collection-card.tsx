@@ -11,38 +11,42 @@ import { FaEdit, FaLock } from "react-icons/fa";
 import CollectionModal from "./collection-modal";
 import { FaTrashCan, FaTrophy } from "react-icons/fa6";
 import Link from "next/link";
+import { CollectionWithCount } from "@/types/models";
 
-export default function CollectionCard(props: any) {
-  let { collectionIn, conventionId, onDeleted } = props;
+interface CollectionCardProps {
+  collectionIn: CollectionWithCount;
+  conventionId?: number;
+  onDeleted: () => void;
+}
 
-  const [collection, setData]: any = useState(null);
-  const [isLoading, setLoading]: any = useState(true);
-  const [readOnly, setReadOnly]: any = useState(true);
-  const {
-    permissions,
-    isLoading: isLoadingPermissions,
-    isError,
-  }: any = usePermissions();
+export default function CollectionCard(props: CollectionCardProps) {
+  const { collectionIn, conventionId, onDeleted } = props;
 
-  const session: any = useAuth();
+  const [collection, setData] = useState<CollectionWithCount | null>(null);
+  const [isLoading, setLoading] = useState(true);
+  const [readOnly, setReadOnly] = useState(true);
+  const { permissions, isLoading: isLoadingPermissions } = usePermissions();
+
+  const session = useAuth();
 
   useEffect(() => {
     if (collectionIn) {
       setData(collectionIn);
       setLoading(false);
     } else {
+      // Dead branch: collectionIn is always provided by callers. Kept as-is.
       frontendFetch(
         "GET",
-        "/collection/" + collectionIn.id,
+        "/collection/" + (collectionIn as CollectionWithCount).id,
         null,
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setData(data);
           setLoading(false);
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     }
   }, [collectionIn, session?.data?.token]);
 
@@ -53,7 +57,7 @@ export default function CollectionCard(props: any) {
       } else if (collection) {
         if (
           permissions.organizations.data?.filter(
-            (d: { organizationId: any; admin: boolean }) =>
+            (d) =>
               d.organizationId == collection.organizationId && d.admin === true
           ).length > 0
         ) {
@@ -61,9 +65,9 @@ export default function CollectionCard(props: any) {
         } else {
           if (
             permissions.conventions.data?.filter(
-              (d: { conventionId: any; admin: boolean }) =>
-                collection.conventions?.some(
-                  (c: { conventionId: any }) => d.conventionId == c.conventionId
+              (d) =>
+                collection?.conventions?.some(
+                  (c) => d.conventionId == c.conventionId
                 ) && d.admin === true
             ).length > 0
           ) {
@@ -85,16 +89,16 @@ export default function CollectionCard(props: any) {
   const onModalClose = () => {
     frontendFetch(
       "GET",
-      "/collection/" + collection.id,
+      "/collection/" + collection?.id,
       null,
       session?.data?.token
     )
-      .then((res: any) => res.json())
-      .then((data: any) => {
+      .then((res) => res.json())
+      .then((data) => {
         setData(data);
         setLoading(false);
       })
-      .catch((err: any) => {});
+      .catch((err) => {});
   };
 
   const disclosure = useDisclosure({
@@ -104,7 +108,7 @@ export default function CollectionCard(props: any) {
   const { isOpen: isOpen, onOpen: onOpen, onClose: onClose } = disclosure;
 
   const detachCollection = (
-    event: React.MouseEvent<SVGElement, MouseEvent>,
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     collectionId: number
   ) => {
     event.preventDefault();
@@ -117,15 +121,15 @@ export default function CollectionCard(props: any) {
         {},
         session?.data?.token
       )
-        .then((res: any) => {
+        .then((res) => {
           onDeleted();
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     }
   };
 
   const deleteCollection = (
-    event: React.MouseEvent<SVGElement, MouseEvent>,
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     collectionId: number
   ) => {
     event.preventDefault();
@@ -138,10 +142,10 @@ export default function CollectionCard(props: any) {
         {},
         session?.data?.token
       )
-        .then((res: any) => {
+        .then((res) => {
           onDeleted();
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     }
   };
 
@@ -212,12 +216,14 @@ export default function CollectionCard(props: any) {
               color="success"
               delay={1000}
             >
-              <span>
-                <GrDetach
-                  className="hover:text-gwlightblue"
-                  onClick={(e) => detachCollection(e, collection.id)}
-                />
-              </span>
+              <button
+                type="button"
+                aria-label={"Detach " + collection.name}
+                className="hover:text-gwlightblue hover:cursor-pointer"
+                onClick={(e) => detachCollection(e, collection.id)}
+              >
+                <GrDetach aria-hidden="true" />
+              </button>
             </Tooltip>
           </div>
         ) : (
@@ -231,16 +237,18 @@ export default function CollectionCard(props: any) {
               color="success"
               delay={1000}
             >
-              <span>
-                <FaEdit
-                  className="hover:text-gwgreen hover:cursor-pointer"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    onOpen();
-                  }}
-                />
-              </span>
+              <button
+                type="button"
+                aria-label={"Edit " + collection.name}
+                className="hover:text-gwgreen hover:cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onOpen();
+                }}
+              >
+                <FaEdit aria-hidden="true" />
+              </button>
             </Tooltip>
           </div>
         ) : (
@@ -255,7 +263,7 @@ export default function CollectionCard(props: any) {
               delay={1000}
             >
               <span>
-                <FaLock />
+                <FaLock role="img" aria-label="Archived collection" />
               </span>
             </Tooltip>
           </div>
@@ -271,7 +279,7 @@ export default function CollectionCard(props: any) {
               delay={1000}
             >
               <span>
-                <FaTrophy />
+                <FaTrophy role="img" aria-label="Allows winning copies" />
               </span>
             </Tooltip>
           </div>
@@ -289,12 +297,14 @@ export default function CollectionCard(props: any) {
               color="success"
               delay={1000}
             >
-              <span>
-                <FaTrashCan
-                  className="hover:text-gwgreen hover:cursor-pointer"
-                  onClick={(e) => deleteCollection(e, collection.id)}
-                />
-              </span>
+              <button
+                type="button"
+                aria-label={"Delete " + collection.name}
+                className="hover:text-gwgreen hover:cursor-pointer"
+                onClick={(e) => deleteCollection(e, collection.id)}
+              >
+                <FaTrashCan aria-hidden="true" />
+              </button>
             </Tooltip>
           </div>
         ) : (

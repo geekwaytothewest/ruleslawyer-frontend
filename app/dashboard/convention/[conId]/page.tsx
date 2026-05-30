@@ -1,25 +1,26 @@
 "use client";
 import frontendFetch from "@/utilities/frontendFetch";
 import { useAuth } from "@/utilities/swr/useAuth";
+import { Convention } from "@/types/models";
 import React, { useEffect, useState, use } from "react";
 
 type Params = Promise<{ conId: string }>;
 
 export default function ConView(props: { params: Params }) {
-  const [convention, setData]: any = useState(null);
-  const [isLoading, setLoading]: any = useState(true);
+  const [convention, setData] = useState<Convention | null>(null);
+  const [isLoading, setLoading] = useState(true);
   const params = use(props.params);
 
-  const session: any = useAuth();
+  const session = useAuth();
 
   useEffect(() => {
     frontendFetch("GET", "/con/" + params.conId, null, session?.data?.token)
-      .then((res: any) => res.json())
-      .then((data: any) => {
+      .then((res) => res.json())
+      .then((data) => {
         setData(data);
         setLoading(false);
       })
-      .catch((err: any) => {});
+      .catch((err) => {});
   }, [params.conId, session?.data?.token]);
 
   if (isLoading) return <p>Loading...</p>;

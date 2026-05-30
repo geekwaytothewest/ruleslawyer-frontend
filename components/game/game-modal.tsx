@@ -14,23 +14,27 @@ import { useAuth } from "@/utilities/swr/useAuth";
 import { useEffect, useState } from "react";
 import CopyBubbles from "../copy/copy-bubbles";
 import usePermissions from "@/utilities/swr/usePermissions";
+import { GameWithCopies } from "@/types/models";
 
-export default function GameModal(props: any) {
-  let { gameIn, gameId, disclosure } = props;
+interface GameModalProps {
+  gameIn?: GameWithCopies;
+  gameId?: number;
+  disclosure: ReturnType<typeof useDisclosure>;
+}
 
-  const [game, setData]: any = useState(null);
-  const [isLoading, setLoading]: any = useState(true);
-  const [gameName, setGameName]: any = useState("");
-  const [bggId, setBggId]: any = useState("");
-  const [readOnly, setReadOnly]: any = useState(true);
-  const [trigger, setTrigger]: any = useState(0);
-  const [copyCount, setCopyCount]: any = useState(0);
-  const {
-    permissions,
-    isLoading: isLoadingPermissions,
-  }: any = usePermissions();
+export default function GameModal(props: GameModalProps) {
+  const { gameIn, gameId, disclosure } = props;
 
-  const session: any = useAuth();
+  const [game, setData] = useState<GameWithCopies | null>(null);
+  const [isLoading, setLoading] = useState(true);
+  const [gameName, setGameName] = useState("");
+  const [bggId, setBggId] = useState<string | number | null>("");
+  const [readOnly, setReadOnly] = useState(true);
+  const [trigger, setTrigger] = useState(0);
+  const [copyCount, setCopyCount] = useState(0);
+  const { permissions, isLoading: isLoadingPermissions } = usePermissions();
+
+  const session = useAuth();
 
   const { isOpen, onClose } = disclosure;
 
@@ -44,7 +48,7 @@ export default function GameModal(props: any) {
 
   const onDelete = () => {
     if (confirm("Are you sure you want to delete this collection?")) {
-      frontendFetch("DELETE", "/game/" + game.id, null, session?.data?.token)
+      frontendFetch("DELETE", "/game/" + game?.id, null, session?.data?.token)
         .then(() => {
           onClose();
         })
@@ -55,12 +59,12 @@ export default function GameModal(props: any) {
   const onSave = () => {
     frontendFetch(
       "PUT",
-      "/game/" + game.id,
+      "/game/" + game?.id,
       { name: gameName },
       session?.data?.token
     )
-      .then((res: any) => res.json())
-      .then((data: any) => {
+      .then((res) => res.json())
+      .then((data) => {
         setData(data);
         onClose();
       })
@@ -70,12 +74,12 @@ export default function GameModal(props: any) {
   const onSyncWithBGG = () => {
     frontendFetch(
       "PUT",
-      "/game/" + game.id + "/syncWithBGG",
+      "/game/" + game?.id + "/syncWithBGG",
       null,
       session?.data?.token
     )
-      .then((res: any) => res.json())
-      .then((data: any) => {
+      .then((res) => res.json())
+      .then((data) => {
         setData(data);
         onClose();
       })
@@ -102,8 +106,8 @@ export default function GameModal(props: any) {
         null,
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setCopyCount(data.length);
           setLoading(false);
         })
@@ -115,8 +119,8 @@ export default function GameModal(props: any) {
         null,
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setData(data);
           setGameName(data.name);
           setBggId(data.bggId);
@@ -134,7 +138,7 @@ export default function GameModal(props: any) {
         setReadOnly(false);
       } else if (
         permissions.organizations?.data?.filter(
-          (d: { organizationId: any; admin: boolean }) =>
+          (d) =>
             d.organizationId == game?.organizationId && d.admin === true
         ).length > 0
       ) {
@@ -181,7 +185,7 @@ export default function GameModal(props: any) {
                 name="bggId"
                 type="text"
                 label="BoardGameGeek ID"
-                value={bggId ?? ''}
+                value={bggId == null ? "" : String(bggId)}
                 onValueChange={(value) => setBggId(value)}
               />
 

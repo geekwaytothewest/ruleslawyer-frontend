@@ -4,18 +4,19 @@ import { useAuth } from "@/utilities/swr/useAuth";
 import frontendFetch from "@/utilities/frontendFetch";
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/react";
 import { useParams, usePathname } from "next/navigation";
+import { Collection, Convention, Organization } from "@/types/models";
 
 export default function OrganizationLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [organization, setData]: any = useState(null);
-  const [collection, setCollection]: any = useState(null);
-  const [convention, setConvention]: any = useState(null);
-  const [isLoading, setLoading]: any = useState(true);
+  const [organization, setData] = useState<Organization | null>(null);
+  const [collection, setCollection] = useState<Collection | null>(null);
+  const [convention, setConvention] = useState<Convention | null>(null);
+  const [isLoading, setLoading] = useState(true);
 
-  const session: any = useAuth();
+  const session = useAuth();
   const pathname = usePathname();
   const params = useParams();
 
@@ -27,8 +28,8 @@ export default function OrganizationLayout({
   useEffect(() => {
     if (!orgId || !token) return;
     frontendFetch("GET", "/org/" + orgId, null, token)
-      .then((res: any) => res.json())
-      .then((data: any) => {
+      .then((res) => res.json())
+      .then((data) => {
         setData(data);
         setLoading(false);
       })
@@ -38,8 +39,8 @@ export default function OrganizationLayout({
   useEffect(() => {
     if (!colId || !token) return;
     frontendFetch("GET", "/collection/" + colId, null, token)
-      .then((res: any) => res.json())
-      .then((data: any) => {
+      .then((res) => res.json())
+      .then((data) => {
         setCollection(data);
         setLoading(false);
       })
@@ -49,8 +50,8 @@ export default function OrganizationLayout({
   useEffect(() => {
     if (!conId || !token) return;
     frontendFetch("GET", "/con/" + conId, null, token)
-      .then((res: any) => res.json())
-      .then((data: any) => {
+      .then((res) => res.json())
+      .then((data) => {
         setConvention(data);
         setLoading(false);
       })

@@ -13,9 +13,20 @@ import {
 import { useAuth } from "@/utilities/swr/useAuth";
 import React, { useEffect, useState } from "react";
 import usePermissions from "@/utilities/swr/usePermissions";
+import { useDisclosure } from "@heroui/react";
+import { Collection } from "@/types/models";
 
-export default function CollectionModal(props: any) {
-  let {
+interface CollectionModalProps {
+  collectionIn?: Collection;
+  collectionId?: number;
+  organizationId?: number;
+  disclosure: ReturnType<typeof useDisclosure>;
+  conventionId?: number;
+  importFile?: boolean;
+}
+
+export default function CollectionModal(props: CollectionModalProps) {
+  const {
     collectionIn,
     collectionId,
     organizationId,
@@ -24,25 +35,23 @@ export default function CollectionModal(props: any) {
     importFile,
   } = props;
 
-  const [collection, setData]: any = useState(null);
-  const [isLoading, setLoading]: any = useState(true);
-  const [collectionName, setCollectionName]: any = useState("");
-  const [allowWinning, setAllowWinning]: any = useState(false);
-  const [importCSV, setImportCSV]: any = useState(null);
-  const [readOnly, setReadOnly]: any = useState(true);
+  const [collection, setData] = useState<Collection | null>(null);
+  const [isLoading, setLoading] = useState(true);
+  const [collectionName, setCollectionName] = useState("");
+  const [allowWinning, setAllowWinning] = useState(false);
+  const [importCSV, setImportCSV] = useState<File | null>(null);
+  const [readOnly, setReadOnly] = useState(true);
 
-  const {
-    permissions,
-    isLoading: isLoadingPermissions,
-    isError,
-  }: any = usePermissions();
+  const { permissions, isLoading: isLoadingPermissions } = usePermissions();
 
-  const session: any = useAuth();
+  const session = useAuth();
 
   const { isOpen, onOpen, onClose } = disclosure;
 
-  const handleImportCSV = async (event: any) => {
-    setImportCSV(event.target.files[0]);
+  const handleImportCSV = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setImportCSV(event.target.files?.[0] ?? null);
   };
 
   const onSave = () => {
@@ -56,17 +65,17 @@ export default function CollectionModal(props: any) {
         },
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           onClose();
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     } else if (importFile) {
       const formData = new FormData();
 
       formData.append("name", collectionName);
-      formData.append("allowWinning", allowWinning);
-      formData.append("importCSV", importCSV, "import.csv");
+      formData.append("allowWinning", String(allowWinning));
+      formData.append("importCSV", importCSV as File, "import.csv");
 
       frontendFetch(
         "POST",
@@ -76,8 +85,8 @@ export default function CollectionModal(props: any) {
         undefined,
         true
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           if (conventionId) {
             frontendFetch(
               "POST",
@@ -88,11 +97,11 @@ export default function CollectionModal(props: any) {
               null,
               session?.data?.token
             )
-              .then((res: any) => res.json())
-              .then((data: any) => {
+              .then((res) => res.json())
+              .then((data) => {
                 onClose();
               })
-              .catch((err: any) => {});
+              .catch((err) => {});
           } else {
             onClose();
           }
@@ -107,8 +116,8 @@ export default function CollectionModal(props: any) {
         },
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           if (conventionId) {
             frontendFetch(
               "POST",
@@ -116,16 +125,16 @@ export default function CollectionModal(props: any) {
               null,
               session?.data?.token
             )
-              .then((res: any) => res.json())
-              .then((data: any) => {
+              .then((res) => res.json())
+              .then((data) => {
                 onClose();
               })
-              .catch((err: any) => {});
+              .catch((err) => {});
           } else {
             onClose();
           }
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     }
   };
 
@@ -138,11 +147,11 @@ export default function CollectionModal(props: any) {
         null,
         session?.data?.token
       )
-      .then((res: any) => res.json())
-      .then((data: any) => {
+      .then((res) => res.json())
+      .then((data) => {
         onClose();
       })
-      .catch((err: any) => {});
+      .catch((err) => {});
       }
     }
   };
@@ -162,16 +171,16 @@ export default function CollectionModal(props: any) {
         null,
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setData(data);
 
-          setCollectionName(collectionIn.name);
-          setAllowWinning(collectionIn.allowWinning);
+          setCollectionName(data.name);
+          setAllowWinning(data.allowWinning);
 
           setLoading(false);
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     } else {
       setLoading(false);
     }
@@ -184,7 +193,7 @@ export default function CollectionModal(props: any) {
       } else if (collection) {
         if (
           permissions.organizations.data?.filter(
-            (d: { organizationId: any; admin: boolean }) =>
+            (d) =>
               d.organizationId == collection.organizationId && d.admin === true
           ).length > 0
         ) {
@@ -195,7 +204,7 @@ export default function CollectionModal(props: any) {
       } else if (organizationId) {
         if (
           permissions.organizations.data?.filter(
-            (d: { organizationId: any; admin: boolean }) =>
+            (d) =>
               d.organizationId == organizationId && d.admin === true
           ).length > 0
         ) {
@@ -263,7 +272,7 @@ export default function CollectionModal(props: any) {
                     Archive
                   </Button>
                 )}
-                {readOnly && !collection.archived ? (
+                {readOnly && !collection?.archived ? (
                   ""
                 ) : (
                   <Button color="success" type="submit">

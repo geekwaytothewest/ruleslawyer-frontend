@@ -7,20 +7,24 @@ import { useAuth } from "@/utilities/swr/useAuth";
 import usePermissions from "@/utilities/swr/usePermissions";
 import UserCard from "./user-card";
 import UserModal from "./user-modal";
+import { UserPermissionRow } from "@/types/models";
 
-export default function UserGrid(props: any) {
-  let { usersIn, organizationId, conventionId, userType } = props;
+interface UserGridProps {
+  usersIn?: UserPermissionRow[];
+  organizationId?: number;
+  conventionId?: number;
+  userType: "organization" | "convention";
+}
 
-  const [users, setData]: any = useState(null);
-  const [isLoading, setLoading]: any = useState(true);
-  const [readOnly, setReadOnly]: any = useState(true);
-  const {
-    permissions,
-    isLoading: isLoadingPermissions,
-    isError,
-  }: any = usePermissions();
+export default function UserGrid(props: UserGridProps) {
+  const { usersIn, organizationId, conventionId, userType } = props;
 
-  const session: any = useAuth();
+  const [users, setData] = useState<UserPermissionRow[] | null>(null);
+  const [isLoading, setLoading] = useState(true);
+  const [readOnly, setReadOnly] = useState(true);
+  const { permissions } = usePermissions();
+
+  const session = useAuth();
 
   useEffect(() => {
     if (permissions.user?.data) {
@@ -29,7 +33,7 @@ export default function UserGrid(props: any) {
       } else if (organizationId) {
         if (
           permissions.organizations.data?.filter(
-            (d: { organizationId: any; admin: boolean }) =>
+            (d) =>
               d.organizationId == organizationId && d.admin === true
           ).length > 0
         ) {
@@ -54,12 +58,12 @@ export default function UserGrid(props: any) {
         null,
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setData(data);
           setLoading(false);
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     } else if (conventionId) {
       frontendFetch(
         "GET",
@@ -67,12 +71,12 @@ export default function UserGrid(props: any) {
         null,
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setData(data);
           setLoading(false);
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     }
   }, [usersIn, organizationId, conventionId, session?.data?.token]);
 
@@ -84,12 +88,12 @@ export default function UserGrid(props: any) {
         null,
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setData(data);
           setLoading(false);
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     } else if (userType === 'convention') {
       frontendFetch(
         "GET",
@@ -97,12 +101,12 @@ export default function UserGrid(props: any) {
         null,
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setData(data);
           setLoading(false);
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     }
   };
 
@@ -132,7 +136,7 @@ export default function UserGrid(props: any) {
     <div>
       <div className="flex flex-wrap">
         {users?.map(
-          (u: { id: React.Key | null | undefined; name: string }) => {
+          (u) => {
             return (
               <UserCard
                 key={u.id}
@@ -154,9 +158,14 @@ export default function UserGrid(props: any) {
           color="success"
           delay={1000}
         >
-          <span className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
-            <IoMdAddCircle onClick={onOpenCreate} />
-          </span>
+          <button
+            type="button"
+            aria-label="Add User"
+            onClick={onOpenCreate}
+            className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer"
+          >
+            <IoMdAddCircle aria-hidden="true" />
+          </button>
         </Tooltip>
       )}
 

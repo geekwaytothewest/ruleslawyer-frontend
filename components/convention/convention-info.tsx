@@ -20,28 +20,45 @@ import { GrAttachment } from "react-icons/gr";
 import usePermissions from "@/utilities/swr/usePermissions";
 import ConventionModal from "./convention-modal";
 import { FaEdit, FaTrophy, FaUsersCog } from "react-icons/fa";
+import { FaEdit, FaTrophy, FaUsersCog } from "react-icons/fa";
 import { IoMdAddCircle } from "react-icons/io";
 import CollectionModal from "../collection/collection-modal";
 import { TbPackageImport } from "react-icons/tb";
 import { DateFormatter } from "@internationalized/date";
 import { MdAdminPanelSettings, MdOutlineShoppingCartCheckout } from "react-icons/md";
 
-export default function ConventionInfo(props: any) {
-  let { id, hideTitle, hideSubtitle } = props;
+import { MdAdminPanelSettings, MdOutlineShoppingCartCheckout } from "react-icons/md";
+import {
+  CollectionWithCount,
+  ConventionWithCollections,
+} from "@/types/models";
 
-  const [convention, setData]: any = useState(null);
-  const [isLoading, setLoading]: any = useState(true);
-  const [collectionIdToAttach, setCollectionIdToAttach]: any = useState(null);
-  const [collections, setCollections]: any = useState(null);
-  const [filteredCollections, setFilteredCollections]: any = useState(null);
-  const [readOnly, setReadOnly]: any = useState(true);
-  const {
-    permissions,
-    isLoading: isLoadingPermissions,
-    isError,
-  }: any = usePermissions();
+interface ConventionInfoProps {
+  id: number;
+  hideTitle?: boolean;
+  hideSubtitle?: boolean;
+}
 
-  const session: any = useAuth();
+export default function ConventionInfo(props: ConventionInfoProps) {
+  const { id, hideTitle, hideSubtitle } = props;
+
+  const [convention, setData] = useState<ConventionWithCollections | null>(
+    null
+  );
+  const [isLoading, setLoading] = useState(true);
+  const [collectionIdToAttach, setCollectionIdToAttach] = useState<
+    number | null
+  >(null);
+  const [collections, setCollections] = useState<CollectionWithCount[] | null>(
+    null
+  );
+  const [filteredCollections, setFilteredCollections] = useState<
+    CollectionWithCount[] | null
+  >(null);
+  const [readOnly, setReadOnly] = useState(true);
+  const { permissions, isLoading: isLoadingPermissions } = usePermissions();
+
+  const session = useAuth();
   const formatter = new DateFormatter("en-US", {
     dateStyle: "full",
     timeStyle: "full",
@@ -50,12 +67,12 @@ export default function ConventionInfo(props: any) {
 
   useEffect(() => {
     frontendFetch("GET", "/con/" + id, null, session?.data?.token)
-      .then((res: any) => res.json())
-      .then((data: any) => {
+      .then((res) => res.json())
+      .then((data) => {
         setData(data);
         setLoading(false);
       })
-      .catch((err: any) => {});
+      .catch((err) => {});
   }, [id, session?.data?.token]);
 
   useEffect(() => {
@@ -65,17 +82,16 @@ export default function ConventionInfo(props: any) {
       } else if (convention) {
         if (
           permissions.organizations.data?.filter(
-            (d: { organizationId: any; admin: boolean }) =>
+            (d) =>
               d.organizationId == convention.organizationId && d.admin === true
           ).length > 0
         ) {
           setReadOnly(false);
         } else {
           if (
-            permissions.conventions.data?.filter(
-              (d: { conventionId: any; admin: boolean }) =>
-                d.conventionId == convention.conventionId && d.admin === true
-            ).length > 0
+            (permissions.conventions.data?.filter(
+              (d) => d.conventionId == convention.id && d.admin === true
+            ).length ?? 0) > 0
           ) {
             setReadOnly(false);
           } else {
@@ -102,11 +118,11 @@ export default function ConventionInfo(props: any) {
         null,
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setCollections(data);
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     }
   }, [convention, session?.data?.token, readOnly]);
 
@@ -114,9 +130,9 @@ export default function ConventionInfo(props: any) {
     if (collections) {
       setFilteredCollections(
         collections?.filter(
-          (c: { id: any }) =>
-            convention.collections.find(
-              (c2: { collectionId: any; id: any }) => c2.collectionId == c.id
+          (c) =>
+            convention?.collections.find(
+              (c2) => c2.collectionId == c.id
             ) === undefined
         )
       );
@@ -125,11 +141,11 @@ export default function ConventionInfo(props: any) {
 
   const onModalClose = () => {
     frontendFetch("GET", "/con/" + id, null, session?.data?.token)
-      .then((res: any) => res.json())
-      .then((data: any) => {
+      .then((res) => res.json())
+      .then((data) => {
         setData(data);
       })
-      .catch((err: any) => {});
+      .catch((err) => {});
   };
 
   const onSave = () => {
@@ -139,11 +155,11 @@ export default function ConventionInfo(props: any) {
       {},
       session?.data?.token
     )
-      .then((res: any) => res.json())
-      .then((data: any) => {
+      .then((res) => res.json())
+      .then((data) => {
         onClose();
       })
-      .catch((err: any) => {});
+      .catch((err) => {});
   };
 
   const disclosure = useDisclosure({
@@ -182,25 +198,114 @@ export default function ConventionInfo(props: any) {
   } = editDisclosure;
 
   if (isLoading || isLoadingPermissions) return <div>Loading...</div>;
+  if (!convention) return <div>Loading...</div>;
 
   return (
     <div className="relative flex flex-col sm:flex-row">
+      <div className="flex-1 flex flex-col sm:flex-row">
       <div className="flex-1">
-        <div className="text-gwgreen" hidden={hideTitle && hideSubtitle}>
-          <h1 hidden={hideTitle}>{convention.name}</h1>
-          <h2 className="mb-8" hidden={hideSubtitle}>
-            {convention.theme}
-          </h2>
+          <div className="text-gwgreen" hidden={hideTitle && hideSubtitle}>
+            <h1 hidden={hideTitle}>{convention.name}</h1>
+            <h2 className="mb-8" hidden={hideSubtitle}>
+              {convention.theme}
+            </h2>
+          </div>
+
+        <div className="flex gap-2 mb-8 items-center">
+          <div>
+            <div className="flex gap-2 items-center">
+              {readOnly ? (
+                ""
+              ) : (
+                <Tooltip
+                  content={"Edit " + convention.name}
+                  showArrow={true}
+                  color="success"
+                  delay={1000}
+                  classNames={{
+                    content: "max-w-[125px] text-center"
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={onOpenEdit}
+                    aria-label={"Edit " + convention.name}
+                    className="text-3xl inline-flex items-center hover:cursor-pointer"
+                  >
+                    <FaEdit aria-hidden="true" className="h-8 w-auto text-white hover:text-gwgreen" />
+                  </button>
+                </Tooltip>
+              )}
+
+              <Tooltip
+                content={"User Permissions"}
+                showArrow={true}
+                color="success"
+                delay={1000}
+                classNames={{
+                  content: "max-w-[125px] text-center"
+                }}
+              >
+                <span className="text-3xl inline-flex items-center hover:cursor-pointer">
+                  <Link aria-label="User Permissions" className="text-white hover:text-gwgreen" href={`/dashboard/organization/${String(convention.organizationId)}/convention/${String(convention.id)}/users`}><FaUsersCog aria-hidden="true" className="h-8 w-auto" /></Link>
+                </span>
+              </Tooltip>
+            </div>
+          </div>
+
+          <div className="border-r border-gwblue mr-2 ml-2 self-stretch"></div>
+
+          <Tooltip
+            content={"Legacy Board Game Admin Frontend"}
+            showArrow={true}
+            color="success"
+            delay={1000}
+            classNames={{
+              content: "max-w-[125px] text-center"
+            }}
+          >
+            <span className="text-3xl inline-flex items-center hover:cursor-pointer">
+              <Link target="_blank" aria-label="Legacy Board Game Admin Frontend (opens in new tab)" className="text-white hover:text-gwgreen" href={`${process.env.LEGACY_ADMIN_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/admin`}><MdAdminPanelSettings aria-hidden="true" className="h-8 w-auto" /></Link>
+            </span>
+          </Tooltip>
+
+          <Tooltip
+            content={"Legacy Librarian Frontend"}
+            showArrow={true}
+            color="success"
+            delay={1000}
+            classNames={{
+              content: "max-w-[125px] text-center"
+            }}
+          >
+            <span className="text-3xl inline-flex items-center hover:cursor-pointer">
+              <Link target="_blank" aria-label="Legacy Librarian Frontend (opens in new tab)" className="text-white hover:text-gwgreen" href={`${process.env.LEGACY_LIBRARIAN_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/librarian`}><MdOutlineShoppingCartCheckout aria-hidden="true" className="h-8 w-auto" /></Link>
+            </span>
+          </Tooltip>
+
+          <Tooltip
+            content={"Legacy Play Prize Entry Frontend"}
+            showArrow={true}
+            color="success"
+            delay={1000}
+            classNames={{
+              content: "max-w-[125px] text-center"
+            }}
+          >
+            <span className="text-3xl inline-flex items-center hover:cursor-pointer">
+              <Link target="_blank" aria-label="Legacy Play Prize Entry Frontend (opens in new tab)" className="text-white hover:text-gwgreen" href={`${process.env.LEGACY_PLAY_PRIZE_ENTRY_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/playandwin`}><FaTrophy aria-hidden="true" className="h-8 w-auto" /></Link>
+            </span>
+          </Tooltip>
         </div>
 
-        <p>
-          <b className="text-gwgreen">Start Date: </b>
-          {formatter.format(new Date(convention.startDate))}
-        </p>
-        <p className="mb-8">
-          <b className="text-gwgreen">End Date: </b>
-          {formatter.format(new Date(convention.endDate))}
-        </p>
+          <p>
+            <b className="text-gwgreen">Start Date: </b>
+            {formatter.format(new Date(convention.startDate))}
+          </p>
+          <p className="mb-8">
+            <b className="text-gwgreen">End Date: </b>
+            {formatter.format(new Date(convention.endDate))}
+          </p>
 
         <h3 className="flex">
           <span className="text-gwgreen">
@@ -216,12 +321,14 @@ export default function ConventionInfo(props: any) {
                 color="success"
                 delay={1000}
               >
-                <span>
-                  <IoMdAddCircle
-                    className="ml-2 hover:cursor-pointer hover:text-gwgreen"
-                    onClick={onOpenCreate}
-                  />
-                </span>
+                <button
+                  type="button"
+                  aria-label="Create Collection"
+                  onClick={onOpenCreate}
+                  className="ml-2 hover:cursor-pointer hover:text-gwgreen"
+                >
+                  <IoMdAddCircle aria-hidden="true" />
+                </button>
               </Tooltip>
               <Tooltip
                 content="Import Collection"
@@ -229,13 +336,14 @@ export default function ConventionInfo(props: any) {
                 color="success"
                 delay={1000}
               >
-                <span>
-                  {" "}
-                  <TbPackageImport
-                    className="ml-2 hover:cursor-pointer hover:text-gwgreen"
-                    onClick={onOpenImport}
-                  />
-                </span>
+                <button
+                  type="button"
+                  aria-label="Import Collection"
+                  onClick={onOpenImport}
+                  className="ml-2 hover:cursor-pointer hover:text-gwgreen"
+                >
+                  <TbPackageImport aria-hidden="true" />
+                </button>
               </Tooltip>
               <Tooltip
                 content="Attach Collection"
@@ -243,12 +351,14 @@ export default function ConventionInfo(props: any) {
                 color="success"
                 delay={1000}
               >
-                <span>
-                  <GrAttachment
-                    className="ml-2 hover:cursor-pointer hover:text-gwgreen"
-                    onClick={onOpen}
-                  />
-                </span>
+                <button
+                  type="button"
+                  aria-label="Attach Collection"
+                  onClick={onOpen}
+                  className="ml-2 hover:cursor-pointer hover:text-gwgreen"
+                >
+                  <GrAttachment aria-hidden="true" />
+                </button>
               </Tooltip>
             </div>
           )}
@@ -268,7 +378,7 @@ export default function ConventionInfo(props: any) {
                 <ModalBody>
                   <Select
                     name="collectionSelect"
-                    items={filteredCollections}
+                    items={filteredCollections ?? []}
                     label="Collection to Attach"
                     placeholder="Select a collection"
                     isRequired
@@ -276,7 +386,7 @@ export default function ConventionInfo(props: any) {
                       setCollectionIdToAttach(Number(event.target.value));
                     }}
                   >
-                    {(collection: any) => (
+                    {(collection) => (
                       <SelectItem key={collection.id}>
                         {collection.name}
                       </SelectItem>
@@ -297,25 +407,7 @@ export default function ConventionInfo(props: any) {
         )}
         <div className="flex flex-wrap mr-8">
           {convention.collections.map(
-            (c: {
-              collection: {
-                _count: any;
-                id: React.Key | null | undefined;
-                name:
-                  | string
-                  | number
-                  | bigint
-                  | boolean
-                  | React.ReactElement<
-                      any,
-                      string | React.JSXElementConstructor<any>
-                    >
-                  | Iterable<React.ReactNode>
-                  | React.ReactPortal
-                  | null
-                  | undefined;
-              };
-            }) => {
+            (c) => {
               return (
                 <div key={c.collection.id}>
                   <CollectionCard
@@ -328,82 +420,6 @@ export default function ConventionInfo(props: any) {
             }
           )}
         </div>
-      </div>
-
-      <div className="flex flex-col items-end gap-2 justify-end mb-8">
-        <Tooltip
-          content={"Legacy Board Game Admin Frontend"}
-          showArrow={true}
-          color="success"
-          delay={1000}
-          classNames={{
-            content: "max-w-[125px] text-center"
-          }}
-        >
-          <span className="text-3xl hover:cursor-pointer">
-            <Link target="_blank" className="text-3xl text-white hover:text-gwgreen relative inline-flex items-center" href={`${process.env.LEGACY_ADMIN_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/admin`}><MdAdminPanelSettings /></Link>
-          </span>
-        </Tooltip>
-
-        <Tooltip
-          content={"Legacy Librarian Frontend"}
-          showArrow={true}
-          color="success"
-          delay={1000}
-          classNames={{
-            content: "max-w-[125px] text-center"
-          }}
-        >
-          <span className="text-3xl hover:cursor-pointer">
-            <Link target="_blank" className="text-3xl text-white hover:text-gwgreen relative inline-flex items-center" href={`${process.env.LEGACY_LIBRARIAN_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/librarian`}><MdOutlineShoppingCartCheckout /></Link>
-          </span>
-        </Tooltip>
-
-        <Tooltip
-          content={"Legacy Play Prize Entry Frontend"}
-          showArrow={true}
-          color="success"
-          delay={1000}
-          classNames={{
-            content: "max-w-[125px] text-center"
-          }}
-        >
-          <span className="text-3xl hover:cursor-pointer">
-            <Link target="_blank" className="text-3xl text-white hover:text-gwgreen relative inline-flex items-center" href={`${process.env.LEGACY_PLAY_PRIZE_ENTRY_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/playandwin`}><FaTrophy /></Link>
-          </span>
-        </Tooltip>
-
-        <Tooltip
-          content={"User Permissions"}
-          showArrow={true}
-          color="success"
-          delay={1000}
-          classNames={{
-            content: "max-w-[125px] text-center"
-          }}
-        >
-          <span className="text-3xl hover:cursor-pointer">
-            <Link className="text-3xl text-white hover:text-gwgreen relative inline-flex items-center" href={`/dashboard/organization/${String(convention.organizationId)}/convention/${String(convention.id)}/users`}><FaUsersCog /></Link>
-          </span>
-        </Tooltip>
-
-        {readOnly ? (
-          ""
-        ) : (
-          <Tooltip
-            content={"Edit " + convention.name}
-            showArrow={true}
-            color="success"
-            delay={1000}
-            classNames={{
-              content: "max-w-[125px] text-center"
-            }}
-          >
-            <span className="text-3xl hover:text-gwgreen hover:cursor-pointer relative inline-flex items-center">
-              <FaEdit onClick={onOpenEdit} />
-            </span>
-          </Tooltip>
-        )}
       </div>
 
       <ConventionModal

@@ -4,8 +4,12 @@ import { useAuth } from "@/utilities/swr/useAuth";
 import { useEffect, useState } from "react";
 import { FaExternalLinkAlt, FaUserFriends } from "react-icons/fa";
 import { FaClock, FaWeightHanging } from "react-icons/fa6";
+import { Game } from "@/types/models";
 
-function formatRange(min: any, max: any): string | null {
+function formatRange(
+  min: number | null,
+  max: number | null
+): string | null {
   if (min == null && max == null) {
     return null;
   }
@@ -17,19 +21,23 @@ function formatRange(min: any, max: any): string | null {
   return `${min ?? max}`;
 }
 
-export default function BoardGameGeek(props: any) {
-  let { game: gameIn } = props;
+interface BoardGameGeekProps {
+  game?: Game | null;
+}
 
-  const [game, setData]: any = useState(gameIn ?? null);
-  const session: any = useAuth();
+export default function BoardGameGeek(props: BoardGameGeekProps) {
+  const { game: gameIn } = props;
+
+  const [game, setData] = useState<Game | null>(gameIn ?? null);
+  const session = useAuth();
 
   useEffect(() => {
     if (gameIn?.bggId !== undefined) {
       setData(gameIn);
     } else if (gameIn?.id) {
       frontendFetch("GET", "/game/" + gameIn.id, null, session?.data?.token)
-        .then((res: any) => res.json())
-        .then((data: any) => setData(data))
+        .then((res) => res.json())
+        .then((data) => setData(data))
         .catch(() => {});
     }
   }, [gameIn, session?.data?.token]);
@@ -42,20 +50,20 @@ export default function BoardGameGeek(props: any) {
   return (
     <div className="flex flex-wrap items-center w-full text-sm mt-2">
       {players ? (
-        <span className="inline-flex items-center mr-3 mb-1">
-          <FaUserFriends className="mr-1" />
+        <span className="inline-flex items-center mr-3 mb-1" aria-label={`${players} players`}>
+          <FaUserFriends className="mr-1" aria-hidden="true" />
           {players}
         </span>
       ) : null}
       {time ? (
-        <span className="inline-flex items-center mr-3 mb-1">
-          <FaClock className="mr-1" />
+        <span className="inline-flex items-center mr-3 mb-1" aria-label={`${time} minutes`}>
+          <FaClock className="mr-1" aria-hidden="true" />
           {time} min
         </span>
       ) : null}
       {game.weight != null ? (
-        <span className="inline-flex items-center mr-3 mb-1">
-          <FaWeightHanging className="mr-1" />
+        <span className="inline-flex items-center mr-3 mb-1" aria-label={`Weight ${Number(game.weight).toFixed(2)} out of 5`}>
+          <FaWeightHanging className="mr-1" aria-hidden="true" />
           {Number(game.weight).toFixed(2)}
         </span>
       ) : null}
@@ -64,10 +72,11 @@ export default function BoardGameGeek(props: any) {
         target="_blank"
         rel="noopener noreferrer"
         onClick={(e) => e.stopPropagation()}
+        aria-label="View on BoardGameGeek (opens in new tab)"
         className="inline-flex items-center mb-1 text-bggorange hover:text-gwblue"
       >
         BGG
-        <FaExternalLinkAlt className="ml-1" />
+        <FaExternalLinkAlt className="ml-1" aria-hidden="true" />
       </a>
     </div>
   );

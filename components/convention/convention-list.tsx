@@ -2,33 +2,37 @@
 import {
   Accordion,
   AccordionItem,
-  Button,
+  Selection,
   Tooltip,
   useDisclosure,
 } from "@heroui/react";
-import React, { act, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ConventionInfo from "./convention-info";
 import { IoMdAddCircle } from "react-icons/io";
 import ConventionModal from "./convention-modal";
 import frontendFetch from "@/utilities/frontendFetch";
 import { useAuth } from "@/utilities/swr/useAuth";
 import usePermissions from "@/utilities/swr/usePermissions";
+import { Convention } from "@/types/models";
 
-export default function ConventionList(props: any) {
-  let { conventionsIn, organizationId } = props;
+interface ConventionListProps {
+  conventionsIn?: Convention[];
+  organizationId?: number;
+}
 
-  const [conventions, setData]: any = useState(null);
-  const [isLoading, setLoading]: any = useState(true);
-  const [activeConvention, setActiveConvention]: any = useState(undefined);
-  const [selectedKeys, setSelectedKeys]: any = React.useState(new Set([""]));
-  const [readOnly, setReadOnly]: any = useState(true);
-  const {
-    permissions,
-    isLoading: isLoadingPermissions,
-    isError,
-  }: any = usePermissions();
+export default function ConventionList(props: ConventionListProps) {
+  const { conventionsIn, organizationId } = props;
 
-  const session: any = useAuth();
+  const [conventions, setData] = useState<Convention[] | null>(null);
+  const [isLoading, setLoading] = useState(true);
+  const [activeConvention, setActiveConvention] = useState<
+    Convention | undefined
+  >(undefined);
+  const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([""]));
+  const [readOnly, setReadOnly] = useState(true);
+  const { permissions, isLoading: isLoadingPermissions } = usePermissions();
+
+  const session = useAuth();
 
   useEffect(() => {
     if (permissions.user?.data) {
@@ -36,10 +40,9 @@ export default function ConventionList(props: any) {
         setReadOnly(false);
       } else if (organizationId) {
         if (
-          permissions.organizations.data?.filter(
-            (d: { organizationId: any; admin: boolean }) =>
-              d.organizationId == organizationId && d.admin === true
-          ).length > 0
+          (permissions.organizations.data?.filter(
+            (d) => d.organizationId == organizationId && d.admin === true
+          ).length ?? 0) > 0
         ) {
           setReadOnly(false);
         } else {
@@ -62,20 +65,20 @@ export default function ConventionList(props: any) {
         null,
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setData(data);
           setLoading(false);
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     } else {
       frontendFetch("GET", "/con", null, session?.data?.token)
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setData(data);
           setLoading(false);
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     }
   }, [conventionsIn, organizationId, session?.data?.token]);
 
@@ -83,7 +86,7 @@ export default function ConventionList(props: any) {
     if (activeConvention === undefined) {
       //Is a convention currently running? Make it active
       let active = conventions?.find(
-        (c: any) =>
+        (c) =>
           Date.parse(c.startDate) < Date.now() &&
           Date.parse(c.endDate) > Date.now()
       );
@@ -96,7 +99,7 @@ export default function ConventionList(props: any) {
       //If we didn't get an active convention, get the next convention and make it active
       if (!active) {
         active = conventions?.findLast(
-          (c: any) => Date.parse(c.startDate) > Date.now()
+          (c) => Date.parse(c.startDate) > Date.now()
         );
 
         if (active) {
@@ -114,12 +117,12 @@ export default function ConventionList(props: any) {
       null,
       session?.data?.token
     )
-      .then((res: any) => res.json())
-      .then((data: any) => {
+      .then((res) => res.json())
+      .then((data) => {
         setData(data);
         setLoading(false);
       })
-      .catch((err: any) => {});
+      .catch((err) => {});
   };
 
   const createDisclosure = useDisclosure({
@@ -143,12 +146,8 @@ export default function ConventionList(props: any) {
         selectedKeys={selectedKeys}
         onSelectionChange={setSelectedKeys}
       >
-        {conventions?.map(
-          (c: {
-            theme: string;
-            id: React.Key | null | undefined;
-            name: string;
-          }) => {
+        {(conventions ?? []).map(
+          (c) => {
             return (
               <AccordionItem
                 classNames={{
@@ -179,9 +178,14 @@ export default function ConventionList(props: any) {
           color="success"
           delay={1000}
         >
-          <span className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer">
-            <IoMdAddCircle onClick={onOpenCreate} />
-          </span>
+          <button
+            type="button"
+            aria-label="Create Convention"
+            onClick={onOpenCreate}
+            className="text-7xl fixed bottom-8 right-8 hover:text-gwgreen hover:cursor-pointer"
+          >
+            <IoMdAddCircle aria-hidden="true" />
+          </button>
         </Tooltip>
       )}
 

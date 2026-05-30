@@ -10,22 +10,26 @@ import CopyBubbles from "../copy/copy-bubbles";
 import { IoLibrary } from "react-icons/io5";
 import usePermissions from "@/utilities/swr/usePermissions";
 import BoardGameGeek from "../boardgamegeek/board-game-geek";
+import { GameWithCopies } from "@/types/models";
 
-function getCoverArtSrc(coverArt: any): string | null {
+function getCoverArtSrc(coverArt: unknown): string | null {
   if (!coverArt) return null;
   if (typeof coverArt === "string") return coverArt;
+  if (typeof coverArt !== "object") return null;
 
   let bytes: number[] | null = null;
+  const buffer = coverArt as { type?: string; data?: number[] };
 
-  if (coverArt.type === "Buffer" && coverArt.data != null) {
+  if (buffer.type === "Buffer" && buffer.data != null) {
     // Standard JSON.stringify(Buffer) format: {type: "Buffer", data: [...]}
-    bytes = Array.from(coverArt.data);
-  } else if (typeof coverArt === "object") {
+    bytes = Array.from(buffer.data);
+  } else {
     // Numeric-keyed object: {"0": 255, "1": 216, ...}
-    const keys = Object.keys(coverArt);
+    const numeric = coverArt as Record<string, number>;
+    const keys = Object.keys(numeric);
 
     if (keys.length > 0 && keys.every((k) => !isNaN(Number(k)))) {
-      bytes = keys.sort((a, b) => Number(a) - Number(b)).map((k) => coverArt[k]);
+      bytes = keys.sort((a, b) => Number(a) - Number(b)).map((k) => numeric[k]);
     }
   }
 
@@ -47,17 +51,19 @@ function getCoverArtSrc(coverArt: any): string | null {
   return `data:${mimeType};base64,${btoa(binary)}`;
 }
 
-function GameCard(props: any) {
-  let { gameIn, gameId, archived } = props;
+interface GameCardProps {
+  gameIn?: GameWithCopies;
+  gameId: number;
+  archived?: boolean;
+}
 
-  const [game, setData]: any = useState(null);
-  const [isLoading, setLoading]: any = useState(true);
-  const [readOnly, setReadOnly]: any = useState(true);
-  const {
-    permissions,
-    isLoading: isLoadingPermissions,
-    isError,
-  }: any = usePermissions();
+function GameCard(props: GameCardProps) {
+  const { gameIn, gameId, archived } = props;
+
+  const [game, setData] = useState<GameWithCopies | null>(null);
+  const [isLoading, setLoading] = useState(true);
+  const [readOnly, setReadOnly] = useState(true);
+  const { permissions } = usePermissions();
 
   useEffect(() => {
     if(archived) {
@@ -68,7 +74,7 @@ function GameCard(props: any) {
       } else if (game) {
         if (
           permissions.organizations.data?.filter(
-            (d: { organizationId: any; admin: boolean }) =>
+            (d) =>
               d.organizationId == game.organizationId && d.admin === true
           ).length > 0
         ) {
@@ -84,16 +90,16 @@ function GameCard(props: any) {
     }
   }, [permissions.user?.data, permissions.organizations?.data, game]);
 
-  const session: any = useAuth();
+  const session = useAuth();
 
   const onModalClose = () => {
     frontendFetch("GET", "/game/" + gameId, null, session?.data?.token)
-      .then((res: any) => res.json())
-      .then((data: any) => {
+      .then((res) => res.json())
+      .then((data) => {
         setData(data);
         setLoading(false);
       })
-      .catch((err: any) => {});
+      .catch((err) => {});
   };
 
   const disclosure = useDisclosure({
@@ -112,12 +118,12 @@ function GameCard(props: any) {
       setLoading(false);
     } else {
       frontendFetch("GET", "/game/" + gameId, null, session?.data?.token)
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setData(data);
           setLoading(false);
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     }
   }, [gameIn, gameId, session?.data?.token]);
 
@@ -143,6 +149,9 @@ function GameCard(props: any) {
   return (
     <div>
       <div
+        role="button"
+        tabIndex={0}
+        aria-label={(readOnly ? "View " : "Edit ") + (game.name !== "" ? game.name : "game")}
         onClick={
           readOnly
             ? () => {
@@ -150,6 +159,16 @@ function GameCard(props: any) {
               }
             : onOpen
         }
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            if (readOnly) {
+              alert("Not Yet Implmeneted.");
+            } else {
+              onOpen();
+            }
+          }
+        }}
         className="flex items-center border-2 border-gwblue w-80 h-32 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] cursor-pointer"
       >
         <div className="flex-col p-3 w-24">

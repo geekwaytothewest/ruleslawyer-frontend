@@ -4,17 +4,18 @@ import { useAuth } from "@/utilities/swr/useAuth";
 import frontendFetch from "@/utilities/frontendFetch";
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/react";
 import { useParams, usePathname } from "next/navigation";
+import { Collection, Convention } from "@/types/models";
 
 export default function ConventionLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [convention, setData]: any = useState(null);
-  const [collection, setCollection]: any = useState(null);
-  const [isLoading, setLoading]: any = useState(true);
+  const [convention, setData] = useState<Convention | null>(null);
+  const [collection, setCollection] = useState<Collection | null>(null);
+  const [isLoading, setLoading] = useState(true);
 
-  const session: any = useAuth();
+  const session = useAuth();
   const pathname = usePathname();
   const params = useParams();
 
@@ -25,8 +26,8 @@ export default function ConventionLayout({
   useEffect(() => {
     if (!conId || !token) return;
     frontendFetch("GET", "/con/" + conId, null, token)
-      .then((res: any) => res.json())
-      .then((data: any) => {
+      .then((res) => res.json())
+      .then((data) => {
         setData(data);
         setLoading(false);
       })
@@ -36,8 +37,8 @@ export default function ConventionLayout({
   useEffect(() => {
     if (!colId || !token) return;
     frontendFetch("GET", "/collection/" + colId, null, token)
-      .then((res: any) => res.json())
-      .then((data: any) => {
+      .then((res) => res.json())
+      .then((data) => {
         setCollection(data);
         setLoading(false);
       })

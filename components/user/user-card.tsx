@@ -8,38 +8,42 @@ import { IoLibrary } from "react-icons/io5";
 import usePermissions from "@/utilities/swr/usePermissions";
 import { FaTrashCan, FaUser } from "react-icons/fa6";
 import UserModal from "./user-modal";
+import { UserPermissionRow } from "@/types/models";
 
-export default function UserCard(props: any) {
-  let { userIn, onDeleted, userType } = props;
+interface UserCardProps {
+  userIn: UserPermissionRow;
+  onDeleted: () => void;
+  userType: "organization" | "convention";
+}
 
-  const [user, setData]: any = useState(null);
-  const [isLoading, setLoading]: any = useState(true);
-  const [readOnly, setReadOnly]: any = useState(true);
-  const {
-    permissions,
-    isLoading: isLoadingPermissions,
-    isError,
-  }: any = usePermissions();
+export default function UserCard(props: UserCardProps) {
+  const { userIn, onDeleted, userType } = props;
 
-  const session: any = useAuth();
+  const [user, setData] = useState<UserPermissionRow | null>(null);
+  const [isLoading, setLoading] = useState(true);
+  const [readOnly, setReadOnly] = useState(true);
+  const { permissions, isLoading: isLoadingPermissions } = usePermissions();
+
+  const session = useAuth();
 
   useEffect(() => {
     if (userIn) {
       setData(userIn);
       setLoading(false);
     } else {
+      // Dead branch: userIn is always provided by callers. Kept as-is.
       frontendFetch(
         "GET",
-        "/userConPerm/" + userIn.id,
+        "/userConPerm/" + (userIn as UserPermissionRow).id,
         null,
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setData(data);
           setLoading(false);
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     }
   }, [userIn, session?.data?.token]);
 
@@ -50,7 +54,7 @@ export default function UserCard(props: any) {
       } else if (user) {
         if (
           permissions.organizations.data?.filter(
-            (d: { organizationId: any; admin: boolean }) =>
+            (d) =>
               d.organizationId == user.organizationId && d.admin === true
           ).length > 0
         ) {
@@ -58,9 +62,9 @@ export default function UserCard(props: any) {
         } else {
           if (
             permissions.conventions.data?.filter(
-              (d: { conventionId: any; admin: boolean }) =>
+              (d) =>
                 user.conventions?.some(
-                  (c: { conventionId: any }) => d.conventionId == c.conventionId
+                  (c) => d.conventionId == c.conventionId
                 ) && d.admin === true
             ).length > 0
           ) {
@@ -90,7 +94,7 @@ export default function UserCard(props: any) {
 
 
   const deleteUser = (
-    event: React.MouseEvent<SVGElement, MouseEvent>,
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     event.preventDefault();
     event.stopPropagation();
@@ -99,27 +103,27 @@ export default function UserCard(props: any) {
       if (confirm("Are you sure you want to delete this user?")) {
         frontendFetch(
           "DELETE",
-          "/userOrgPerm/" + user.id,
+          "/userOrgPerm/" + user?.id,
           {},
           session?.data?.token
         )
-          .then((res: any) => {
+          .then((res) => {
             onDeleted();
           })
-          .catch((err: any) => {});
+          .catch((err) => {});
       }
     } else if (userType === 'convention') {
       if (confirm("Are you sure you want to delete this user?")) {
         frontendFetch(
           "DELETE",
-          "/userConPerm/" + user.id,
+          "/userConPerm/" + user?.id,
           {},
           session?.data?.token
         )
-          .then((res: any) => {
+          .then((res) => {
             onDeleted();
           })
-          .catch((err: any) => {});
+          .catch((err) => {});
       }
     }
   };
@@ -159,7 +163,16 @@ export default function UserCard(props: any) {
   return (
     <div>
         <div
+          role="button"
+          tabIndex={0}
+          aria-label={"Edit " + (user.user.name !== "" ? user.user.name : "user")}
           onClick={onOpen}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onOpen();
+            }
+          }}
           className="relative flex items-center border-2 border-gwblue w-80 h-32 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] cursor-pointer"
         >
         <div className="flex-col p-3 w-24">
@@ -210,12 +223,14 @@ export default function UserCard(props: any) {
                 color="success"
                 delay={1000}
             >
-                <span>
-                <FaTrashCan
+                <button
+                    type="button"
+                    aria-label={"Delete " + (user.user.name !== "" ? user.user.name : "user")}
                     className="hover:text-gwgreen hover:cursor-pointer"
                     onClick={(e) => deleteUser(e)}
-                />
-                </span>
+                >
+                <FaTrashCan aria-hidden="true" />
+                </button>
             </Tooltip>
             </div>
         ) : (
@@ -227,8 +242,8 @@ export default function UserCard(props: any) {
             userIn={user}
             organizationId={user.organizationId}
             disclosure={disclosure}
-            onSaved={(updated: any) =>
-                setData((prev: any) => ({ ...prev, ...updated }))
+            onSaved={(updated) =>
+                setData((prev) => ({ ...prev, ...updated }) as UserPermissionRow)
             }
             userType={userType}
         />

@@ -20,33 +20,39 @@ import { useAuth } from "@/utilities/swr/useAuth";
 import React, { useEffect, useState } from "react";
 import { useAsyncList } from "@react-stately/data";
 import usePermissions from "@/utilities/swr/usePermissions";
+import { CollectionWithCount, CopyForEditor } from "@/types/models";
 
 type game = {
   id: number;
   name: string;
 };
 
-export default function CopyModal(props: any) {
-  let { copyIn, copyId, organizationId, disclosure } = props;
+interface CopyModalProps {
+  copyIn?: CopyForEditor;
+  copyId?: number;
+  organizationId?: number;
+  disclosure: ReturnType<typeof useDisclosure>;
+}
 
-  const [copy, setData]: any = useState(null);
-  const [isLoading, setLoading]: any = useState(true);
-  const [collections, setCollections]: any = useState(null);
-  const [copyCollectionId, setCopyCollectionId]: any = useState(null);
-  const [copyWinnable, setCopyWinnable]: any = useState(false);
-  const [copyBarcode, setCopyBarcode]: any = useState("");
-  const [copyBarcodeLabel, setCopyBarcodeLabel]: any = useState("");
-  const [copyComments, setCopyComments]: any = useState("");
-  const [gameId, setGameId]: any = useState(null);
-  const [newGameName, setNewGameName]: any = useState(null);
-  const [readOnly, setReadOnly]: any = useState(true);
-  const {
-    permissions,
-    isLoading: isLoadingPermissions,
-    isError,
-  }: any = usePermissions();
+export default function CopyModal(props: CopyModalProps) {
+  const { copyIn, copyId, organizationId, disclosure } = props;
 
-  const session: any = useAuth();
+  const [copy, setData] = useState<CopyForEditor | null>(null);
+  const [isLoading, setLoading] = useState(true);
+  const [collections, setCollections] = useState<CollectionWithCount[] | null>(
+    null
+  );
+  const [copyCollectionId, setCopyCollectionId] = useState<number | null>(null);
+  const [copyWinnable, setCopyWinnable] = useState(false);
+  const [copyBarcode, setCopyBarcode] = useState("");
+  const [copyBarcodeLabel, setCopyBarcodeLabel] = useState("");
+  const [copyComments, setCopyComments] = useState<string | null>("");
+  const [gameId, setGameId] = useState<string | number | null>(null);
+  const [newGameName, setNewGameName] = useState<string | null>(null);
+  const [readOnly, setReadOnly] = useState(true);
+  const { permissions, isLoading: isLoadingPermissions } = usePermissions();
+
+  const session = useAuth();
 
   const { isOpen, onOpen, onClose } = disclosure;
 
@@ -58,7 +64,7 @@ export default function CopyModal(props: any) {
           "/copy/" + copy.id,
           null,
           session?.data?.token
-        ).then((res: any) => {
+        ).then((res) => {
           onClose();
         });
       }
@@ -80,17 +86,22 @@ export default function CopyModal(props: any) {
         },
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           copy.collection = data.collection;
           copy.collectionId = data.collectionId;
           copy.game = data.game;
           copy.gameId = data.gameId;
           onClose();
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     } else {
-      const createCopyGame: any = {
+      const createCopyGame: {
+        game:
+          | { create: { organizationId: number; name: string | null } }
+          | { connect: { id: number } }
+          | null;
+      } = {
         game: null,
       };
 
@@ -121,21 +132,21 @@ export default function CopyModal(props: any) {
         },
         session?.data?.token
       )
-        .then((res: any) => {
+        .then((res) => {
           onClose();
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     }
   };
 
-  let gameList = useAsyncList<game>({
+  const gameList = useAsyncList<game>({
     async load({ signal, filterText }) {
       if (filterText === "--- NEW GAME ---") {
         filterText = "";
       }
 
       if (filterText) {
-        let res = await frontendFetch(
+        const res = await frontendFetch(
           "GET",
           `/org/${
             copy ? copy.organizationId : organizationId
@@ -144,7 +155,7 @@ export default function CopyModal(props: any) {
           session?.data?.token,
           signal
         );
-        let json = await res.json();
+        const json = await res.json();
         json.unshift({ name: "--- NEW GAME ---", id: 0 });
         return {
           items: json,
@@ -169,8 +180,8 @@ export default function CopyModal(props: any) {
       setLoading(false);
     } else if (copyId) {
       frontendFetch("GET", "/copy/" + copyId, null, session?.data?.token)
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setData(data);
           setCopyWinnable(data.winnable);
           setCopyBarcodeLabel(data.barcodeLabel);
@@ -182,7 +193,7 @@ export default function CopyModal(props: any) {
 
           setLoading(false);
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     } else {
       setLoading(false);
     }
@@ -197,7 +208,7 @@ export default function CopyModal(props: any) {
       } else if (copy) {
         if (
           permissions.organizations.data?.filter(
-            (d: { organizationId: any; admin: boolean }) =>
+            (d) =>
               d.organizationId == copy.organizationId && d.admin === true
           ).length > 0
         ) {
@@ -223,8 +234,8 @@ export default function CopyModal(props: any) {
         null,
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setCollections(data);
         })
         .catch(() => {});
@@ -252,7 +263,7 @@ export default function CopyModal(props: any) {
               <ModalBody>
                 <Select
                   name="collectionSelect"
-                  items={collections}
+                  items={collections ?? []}
                   label="Collection"
                   placeholder="Select a collection"
                   defaultSelectedKeys={copy ? [String(copy.collectionId)] : []}
@@ -262,7 +273,7 @@ export default function CopyModal(props: any) {
                     setCopyCollectionId(Number(event.target.value));
                   }}
                 >
-                  {(collection: any) => (
+                  {(collection) => (
                     <SelectItem key={collection.id}>
                       {collection.name}
                     </SelectItem>
@@ -278,8 +289,12 @@ export default function CopyModal(props: any) {
                   onInputChange={gameList.setFilterText}
                   isDisabled={readOnly}
                   isRequired
-                  onSelectionChange={(key: React.Key | null) =>
-                    setGameId(key?.valueOf())
+                  onSelectionChange={(key) =>
+                    setGameId(
+                      typeof key === "string" || typeof key === "number"
+                        ? key
+                        : null
+                    )
                   }
                 >
                   {(item) => (
@@ -293,7 +308,7 @@ export default function CopyModal(props: any) {
                     name="newGameName"
                     type="text"
                     label="New Game Name"
-                    value={newGameName}
+                    value={newGameName ?? ""}
                     isRequired
                     onValueChange={(value) => setNewGameName(value)}
                   />

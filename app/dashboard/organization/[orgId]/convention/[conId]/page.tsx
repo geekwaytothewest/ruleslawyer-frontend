@@ -9,7 +9,7 @@ export default function ConView(props: { params: Params }) {
 
   return (
     <div>
-      <ConventionInfo id={params.conId} />
+      <ConventionInfo id={Number(params.conId)} />
     </div>
   );
 }
