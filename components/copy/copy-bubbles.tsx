@@ -14,9 +14,9 @@ function BubbleModal({ c, bubbleStyle, onCloseModal }: any) {
     return (
       <div>
         {c.checkOuts.length === 0 || c.checkOuts[0].checkIn !== null ? (
-          <BsBox2Heart className="inline-block mr-2 mb-2 text-gwgreen" />
+          <BsBox2Heart role="img" aria-label="Available" className="inline-block mr-2 mb-2 text-gwgreen" />
         ) : (
-          <BsBox2Heart className="inline-block mr-2 mb-2 text-gwdarkred" />
+          <BsBox2Heart role="img" aria-label="Checked out" className="inline-block mr-2 mb-2 text-gwdarkred" />
         )}
       </div>
     );
@@ -24,14 +24,23 @@ function BubbleModal({ c, bubbleStyle, onCloseModal }: any) {
 
   return (
     <span
+      role="button"
+      tabIndex={0}
+      aria-label={"Copy " + c.barcodeLabel}
       className="flex-col inline-block mb-2 mr-2 bg-gwdarkblue p-3 rounded-full border-4 border-gwgreen hover:border-gwblue hover:text-gwgreen cursor-pointer"
       onClick={onOpen}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onOpen();
+        }
+      }}
     >
       <div>
         {c.checkOuts.length === 0 || c.checkOuts[0].checkIn !== null ? (
-          <BsBox2Heart className="inline-block text-gwgreen mr-2 mb-2" />
+          <BsBox2Heart role="img" aria-label="Available" className="inline-block text-gwgreen mr-2 mb-2" />
         ) : (
-          <BsBox2Heart className="inline-block text-gwdarkred mr-2 mb-2" />
+          <BsBox2Heart role="img" aria-label="Checked out" className="inline-block text-gwdarkred mr-2 mb-2" />
         )}
         {c.barcodeLabel}
       </div>

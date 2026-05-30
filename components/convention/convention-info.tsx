@@ -208,9 +208,14 @@ export default function ConventionInfo(props: any) {
                     content: "max-w-[125px] text-center"
                   }}
                 >
-                  <span className="text-3xl inline-flex items-center hover:cursor-pointer">
-                    <FaEdit onClick={onOpenEdit} className="h-8 w-auto text-white hover:text-gwgreen" />
-                  </span>
+                  <button
+                    type="button"
+                    onClick={onOpenEdit}
+                    aria-label={"Edit " + convention.name}
+                    className="text-3xl inline-flex items-center hover:cursor-pointer"
+                  >
+                    <FaEdit aria-hidden="true" className="h-8 w-auto text-white hover:text-gwgreen" />
+                  </button>
                 </Tooltip>
               )}
 
@@ -224,7 +229,7 @@ export default function ConventionInfo(props: any) {
                 }}
               >
                 <span className="text-3xl inline-flex items-center hover:cursor-pointer">
-                  <Link className="text-white hover:text-gwgreen" href={`/dashboard/organization/${String(convention.organizationId)}/convention/${String(convention.id)}/users`}><FaUsersCog className="h-8 w-auto" /></Link>
+                  <Link aria-label="User Permissions" className="text-white hover:text-gwgreen" href={`/dashboard/organization/${String(convention.organizationId)}/convention/${String(convention.id)}/users`}><FaUsersCog aria-hidden="true" className="h-8 w-auto" /></Link>
                 </span>
               </Tooltip>
             </div>
@@ -242,7 +247,7 @@ export default function ConventionInfo(props: any) {
             }}
           >
             <span className="text-3xl inline-flex items-center hover:cursor-pointer">
-              <Link target="_blank" className="text-white hover:text-gwgreen" href={`${process.env.LEGACY_ADMIN_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/admin`}><MdAdminPanelSettings className="h-8 w-auto" /></Link>
+              <Link target="_blank" aria-label="Legacy Board Game Admin Frontend (opens in new tab)" className="text-white hover:text-gwgreen" href={`${process.env.LEGACY_ADMIN_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/admin`}><MdAdminPanelSettings aria-hidden="true" className="h-8 w-auto" /></Link>
             </span>
           </Tooltip>
 
@@ -256,7 +261,7 @@ export default function ConventionInfo(props: any) {
             }}
           >
             <span className="text-3xl inline-flex items-center hover:cursor-pointer">
-              <Link target="_blank" className="text-white hover:text-gwgreen" href={`${process.env.LEGACY_LIBRARIAN_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/librarian`}><MdOutlineShoppingCartCheckout className="h-8 w-auto" /></Link>
+              <Link target="_blank" aria-label="Legacy Librarian Frontend (opens in new tab)" className="text-white hover:text-gwgreen" href={`${process.env.LEGACY_LIBRARIAN_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/librarian`}><MdOutlineShoppingCartCheckout aria-hidden="true" className="h-8 w-auto" /></Link>
             </span>
           </Tooltip>
 
@@ -270,7 +275,7 @@ export default function ConventionInfo(props: any) {
             }}
           >
             <span className="text-3xl inline-flex items-center hover:cursor-pointer">
-              <Link target="_blank" className="text-white hover:text-gwgreen" href={`${process.env.LEGACY_PLAY_PRIZE_ENTRY_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/playandwin`}><FaTrophy className="h-8 w-auto" /></Link>
+              <Link target="_blank" aria-label="Legacy Play Prize Entry Frontend (opens in new tab)" className="text-white hover:text-gwgreen" href={`${process.env.LEGACY_PLAY_PRIZE_ENTRY_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/playandwin`}><FaTrophy aria-hidden="true" className="h-8 w-auto" /></Link>
             </span>
           </Tooltip>
         </div>
@@ -298,12 +303,14 @@ export default function ConventionInfo(props: any) {
                 color="success"
                 delay={1000}
               >
-                <span>
-                  <IoMdAddCircle
-                    className="ml-2 hover:cursor-pointer hover:text-gwgreen"
-                    onClick={onOpenCreate}
-                  />
-                </span>
+                <button
+                  type="button"
+                  aria-label="Create Collection"
+                  onClick={onOpenCreate}
+                  className="ml-2 hover:cursor-pointer hover:text-gwgreen"
+                >
+                  <IoMdAddCircle aria-hidden="true" />
+                </button>
               </Tooltip>
               <Tooltip
                 content="Import Collection"
@@ -311,13 +318,14 @@ export default function ConventionInfo(props: any) {
                 color="success"
                 delay={1000}
               >
-                <span>
-                  {" "}
-                  <TbPackageImport
-                    className="ml-2 hover:cursor-pointer hover:text-gwgreen"
-                    onClick={onOpenImport}
-                  />
-                </span>
+                <button
+                  type="button"
+                  aria-label="Import Collection"
+                  onClick={onOpenImport}
+                  className="ml-2 hover:cursor-pointer hover:text-gwgreen"
+                >
+                  <TbPackageImport aria-hidden="true" />
+                </button>
               </Tooltip>
               <Tooltip
                 content="Attach Collection"
@@ -325,12 +333,14 @@ export default function ConventionInfo(props: any) {
                 color="success"
                 delay={1000}
               >
-                <span>
-                  <GrAttachment
-                    className="ml-2 hover:cursor-pointer hover:text-gwgreen"
-                    onClick={onOpen}
-                  />
-                </span>
+                <button
+                  type="button"
+                  aria-label="Attach Collection"
+                  onClick={onOpen}
+                  className="ml-2 hover:cursor-pointer hover:text-gwgreen"
+                >
+                  <GrAttachment aria-hidden="true" />
+                </button>
               </Tooltip>
             </div>
           )}

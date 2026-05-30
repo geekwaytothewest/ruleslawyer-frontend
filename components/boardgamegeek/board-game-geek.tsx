@@ -42,20 +42,20 @@ export default function BoardGameGeek(props: any) {
   return (
     <div className="flex flex-wrap items-center w-full text-sm mt-2">
       {players ? (
-        <span className="inline-flex items-center mr-3 mb-1">
-          <FaUserFriends className="mr-1" />
+        <span className="inline-flex items-center mr-3 mb-1" aria-label={`${players} players`}>
+          <FaUserFriends className="mr-1" aria-hidden="true" />
           {players}
         </span>
       ) : null}
       {time ? (
-        <span className="inline-flex items-center mr-3 mb-1">
-          <FaClock className="mr-1" />
+        <span className="inline-flex items-center mr-3 mb-1" aria-label={`${time} minutes`}>
+          <FaClock className="mr-1" aria-hidden="true" />
           {time} min
         </span>
       ) : null}
       {game.weight != null ? (
-        <span className="inline-flex items-center mr-3 mb-1">
-          <FaWeightHanging className="mr-1" />
+        <span className="inline-flex items-center mr-3 mb-1" aria-label={`Weight ${Number(game.weight).toFixed(2)} out of 5`}>
+          <FaWeightHanging className="mr-1" aria-hidden="true" />
           {Number(game.weight).toFixed(2)}
         </span>
       ) : null}
@@ -64,10 +64,11 @@ export default function BoardGameGeek(props: any) {
         target="_blank"
         rel="noopener noreferrer"
         onClick={(e) => e.stopPropagation()}
+        aria-label="View on BoardGameGeek (opens in new tab)"
         className="inline-flex items-center mb-1 text-bggorange hover:text-gwblue"
       >
         BGG
-        <FaExternalLinkAlt className="ml-1" />
+        <FaExternalLinkAlt className="ml-1" aria-hidden="true" />
       </a>
     </div>
   );
