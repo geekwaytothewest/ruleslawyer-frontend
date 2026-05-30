@@ -135,18 +135,24 @@ export default function UserGrid(props: UserGridProps) {
   return (
     <div>
       <div className="flex flex-wrap">
-        {users?.map(
-          (u) => {
-            return (
-              <UserCard
-                key={u.id}
-                userIn={u}
-                onDeleted={onModalClose}
-                userType={userType}
-              />
-            );
-          }
-        )}
+        {users
+          ?.slice()
+          .sort((u1, u2) =>
+            (u1.user.name ?? "").localeCompare(u2.user.name ?? "")
+          )
+          .map(
+            (u) => {
+              return (
+                <UserCard
+                  key={u.id}
+                  userIn={u}
+                  onDeleted={onModalClose}
+                  userType={userType}
+                />
+              );
+            }
+          )
+        }
       </div>
 
       {readOnly ? (
