@@ -203,19 +203,7 @@ export default function CopyModal(props: any) {
         ) {
           setReadOnly(false);
         } else {
-          if (
-            permissions.conventions.data?.filter(
-              (d: { conventionId: any; admin: boolean }) =>
-                copy.collection.conventions.some(
-                  (c: { conventionId: any }) =>
-                    d.conventionId === c.conventionId
-                ) && d.admin == true
-            ).length > 0
-          ) {
-            setReadOnly(false);
-          } else {
-            setReadOnly(true);
-          }
+          setReadOnly(true);
         }
       } else if (organizationId) {
         setReadOnly(false);
