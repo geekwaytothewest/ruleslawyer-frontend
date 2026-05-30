@@ -46,11 +46,13 @@ export interface Collection {
   archived: boolean;
 }
 
-/** GameEntity (weight: Decimal, coverArt: Bytes). */
+/** GameEntity (weight: Decimal, bggRating: Decimala, coverArt: Bytes). */
 export interface Game {
   id: number;
   organizationId: number;
   bggId: number | null;
+  bggRank: number | null;
+  bggRating: string | number | null;
   lastBGGSync: string | null;
   name: string;
   shortDescription: string | null;
