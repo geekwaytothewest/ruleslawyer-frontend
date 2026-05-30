@@ -18,7 +18,7 @@ export default function SideBar({
 }: {
   initialCollapsed?: boolean;
 }) {
-  const { permissions, isLoading }: any = usePermissions();
+  const { permissions, isLoading } = usePermissions();
 
   const { user } = useUser();
 

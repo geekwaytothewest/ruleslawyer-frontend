@@ -9,7 +9,7 @@ export default function ConUsersView(props: { params: Params }) {
 
   return (
     <div>
-      <UserGrid conventionId={params.conId} userType="convention" />
+      <UserGrid conventionId={Number(params.conId)} userType="convention" />
     </div>
   );
 }

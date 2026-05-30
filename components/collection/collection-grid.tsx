@@ -8,20 +8,22 @@ import CollectionCard from "./collection-card";
 import CollectionModal from "./collection-modal";
 import { TbPackageImport } from "react-icons/tb";
 import usePermissions from "@/utilities/swr/usePermissions";
+import { CollectionWithCount } from "@/types/models";
 
-export default function CollectionGrid(props: any) {
-  let { collectionsIn, organizationId } = props;
+interface CollectionGridProps {
+  collectionsIn?: CollectionWithCount[];
+  organizationId?: number;
+}
 
-  const [collections, setData]: any = useState(null);
-  const [isLoading, setLoading]: any = useState(true);
-  const [readOnly, setReadOnly]: any = useState(true);
-  const {
-    permissions,
-    isLoading: isLoadingPermissions,
-    isError,
-  }: any = usePermissions();
+export default function CollectionGrid(props: CollectionGridProps) {
+  const { collectionsIn, organizationId } = props;
 
-  const session: any = useAuth();
+  const [collections, setData] = useState<CollectionWithCount[] | null>(null);
+  const [isLoading, setLoading] = useState(true);
+  const [readOnly, setReadOnly] = useState(true);
+  const { permissions, isLoading: isLoadingPermissions } = usePermissions();
+
+  const session = useAuth();
 
   useEffect(() => {
     if (permissions.user?.data) {
@@ -30,7 +32,7 @@ export default function CollectionGrid(props: any) {
       } else if (organizationId) {
         if (
           permissions.organizations.data?.filter(
-            (d: { organizationId: any; admin: boolean }) =>
+            (d) =>
               d.organizationId == organizationId && d.admin === true
           ).length > 0
         ) {
@@ -55,12 +57,12 @@ export default function CollectionGrid(props: any) {
         null,
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setData(data);
           setLoading(false);
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     }
   }, [collectionsIn, organizationId, session?.data?.token]);
 
@@ -71,12 +73,12 @@ export default function CollectionGrid(props: any) {
       null,
       session?.data?.token
     )
-      .then((res: any) => res.json())
-      .then((data: any) => {
+      .then((res) => res.json())
+      .then((data) => {
         setData(data);
         setLoading(false);
       })
-      .catch((err: any) => {});
+      .catch((err) => {});
   };
 
   const createDisclosure = useDisclosure({
@@ -105,7 +107,7 @@ export default function CollectionGrid(props: any) {
     <div>
       <div className="flex flex-wrap">
         {collections?.map(
-          (c: { id: React.Key | null | undefined; name: string }) => {
+          (c) => {
             return (
               <CollectionCard
                 key={c.id}

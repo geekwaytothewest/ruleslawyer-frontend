@@ -16,30 +16,33 @@ import frontendFetch from "@/utilities/frontendFetch";
 import { IoMdAddCircle } from "react-icons/io";
 import CopyModal from "../copy/copy-modal";
 import usePermissions from "@/utilities/swr/usePermissions";
+import { Collection, GameWithCopies } from "@/types/models";
 
-export default function GameGrid(props: any) {
+interface GameGridProps {
+  collectionId?: number;
+  organizationId?: number;
+  showHeader?: boolean;
+}
+
+export default function GameGrid(props: GameGridProps) {
   const { collectionId, organizationId, showHeader } = props;
 
-  const [games, setData]: any = useState(null);
-  const [header, setHeader]: any = useState("");
-  const [searchText, setSearchText]: any = useState("");
-  const [debouncedSearch, setDebouncedSearch]: any = useState("");
-  const [isLoading, setLoading]: any = useState(true);
+  const [games, setData] = useState<GameWithCopies[] | null>(null);
+  const [header, setHeader] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [isLoading, setLoading] = useState(true);
   const [maxResults, setMaxResults] = React.useState<string>("50");
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [total, setTotal] = useState<number>(0);
-  const [trigger, setTrigger]: any = useState(0);
-  const [readOnly, setReadOnly]: any = useState(true);
-  const [collection, setCollection]: any = useState(null);
+  const [trigger, setTrigger] = useState(0);
+  const [readOnly, setReadOnly] = useState(true);
+  const [collection, setCollection] = useState<Collection | null>(null);
 
-  const {
-    permissions,
-    isLoading: isLoadingPermissions,
-    isError,
-  }: any = usePermissions();
+  const { permissions } = usePermissions();
 
-  const session: any = useAuth();
+  const session = useAuth();
 
   useEffect(() => {
     if (permissions.user?.data) {
@@ -48,7 +51,7 @@ export default function GameGrid(props: any) {
       } else if (organizationId) {
         if (
           permissions.organizations.data?.filter(
-            (d: { organizationId: any; admin: boolean }) =>
+            (d) =>
               d.organizationId == organizationId && d.admin === true
           ).length > 0
         ) {
@@ -90,8 +93,8 @@ export default function GameGrid(props: any) {
         null,
         token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setCollection(data);
         })
         .catch(() => {})
@@ -108,8 +111,8 @@ export default function GameGrid(props: any) {
             null,
             token
           )
-            .then((res: any) => res.json())
-            .then((data: any) => {
+            .then((res) => res.json())
+            .then((data) => {
               setHeader("Collection: " + data.name);
               setData(data.games);
               setTotal(data.total ?? 0);
@@ -129,8 +132,8 @@ export default function GameGrid(props: any) {
         null,
         token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setData(data.data);
           setTotal(data.total ?? 0);
           setTotalPages(data.totalPages ?? 1);
@@ -231,24 +234,8 @@ export default function GameGrid(props: any) {
       )}
 
       <div className="flex flex-wrap">
-        {games.map(
-          (g: {
-            copies: any;
-            id: React.Key | null | undefined;
-            name:
-              | string
-              | number
-              | bigint
-              | boolean
-              | React.ReactElement<
-                  any,
-                  string | React.JSXElementConstructor<any>
-                >
-              | Iterable<React.ReactNode>
-              | React.ReactPortal
-              | null
-              | undefined;
-          }) => {
+        {games?.map(
+          (g) => {
             return <GameCard key={g.id} gameIn={g} gameId={g.id} archived={collection?.archived} />;
           }
         )}

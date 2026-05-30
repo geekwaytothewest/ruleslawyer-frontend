@@ -25,23 +25,37 @@ import CollectionModal from "../collection/collection-modal";
 import { TbPackageImport } from "react-icons/tb";
 import { DateFormatter } from "@internationalized/date";
 import { MdAdminPanelSettings, MdOutlineShoppingCartCheckout } from "react-icons/md";
+import {
+  CollectionWithCount,
+  ConventionWithCollections,
+} from "@/types/models";
 
-export default function ConventionInfo(props: any) {
-  let { id, hideTitle, hideSubtitle } = props;
+interface ConventionInfoProps {
+  id: number;
+  hideTitle?: boolean;
+  hideSubtitle?: boolean;
+}
 
-  const [convention, setData]: any = useState(null);
-  const [isLoading, setLoading]: any = useState(true);
-  const [collectionIdToAttach, setCollectionIdToAttach]: any = useState(null);
-  const [collections, setCollections]: any = useState(null);
-  const [filteredCollections, setFilteredCollections]: any = useState(null);
-  const [readOnly, setReadOnly]: any = useState(true);
-  const {
-    permissions,
-    isLoading: isLoadingPermissions,
-    isError,
-  }: any = usePermissions();
+export default function ConventionInfo(props: ConventionInfoProps) {
+  const { id, hideTitle, hideSubtitle } = props;
 
-  const session: any = useAuth();
+  const [convention, setData] = useState<ConventionWithCollections | null>(
+    null
+  );
+  const [isLoading, setLoading] = useState(true);
+  const [collectionIdToAttach, setCollectionIdToAttach] = useState<
+    number | null
+  >(null);
+  const [collections, setCollections] = useState<CollectionWithCount[] | null>(
+    null
+  );
+  const [filteredCollections, setFilteredCollections] = useState<
+    CollectionWithCount[] | null
+  >(null);
+  const [readOnly, setReadOnly] = useState(true);
+  const { permissions, isLoading: isLoadingPermissions } = usePermissions();
+
+  const session = useAuth();
   const formatter = new DateFormatter("en-US", {
     dateStyle: "full",
     timeStyle: "full",
@@ -50,12 +64,12 @@ export default function ConventionInfo(props: any) {
 
   useEffect(() => {
     frontendFetch("GET", "/con/" + id, null, session?.data?.token)
-      .then((res: any) => res.json())
-      .then((data: any) => {
+      .then((res) => res.json())
+      .then((data) => {
         setData(data);
         setLoading(false);
       })
-      .catch((err: any) => {});
+      .catch((err) => {});
   }, [id, session?.data?.token]);
 
   useEffect(() => {
@@ -65,17 +79,16 @@ export default function ConventionInfo(props: any) {
       } else if (convention) {
         if (
           permissions.organizations.data?.filter(
-            (d: { organizationId: any; admin: boolean }) =>
+            (d) =>
               d.organizationId == convention.organizationId && d.admin === true
           ).length > 0
         ) {
           setReadOnly(false);
         } else {
           if (
-            permissions.conventions.data?.filter(
-              (d: { conventionId: any; admin: boolean }) =>
-                d.conventionId == convention.conventionId && d.admin === true
-            ).length > 0
+            (permissions.conventions.data?.filter(
+              (d) => d.conventionId == convention.id && d.admin === true
+            ).length ?? 0) > 0
           ) {
             setReadOnly(false);
           } else {
@@ -102,11 +115,11 @@ export default function ConventionInfo(props: any) {
         null,
         session?.data?.token
       )
-        .then((res: any) => res.json())
-        .then((data: any) => {
+        .then((res) => res.json())
+        .then((data) => {
           setCollections(data);
         })
-        .catch((err: any) => {});
+        .catch((err) => {});
     }
   }, [convention, session?.data?.token, readOnly]);
 
@@ -114,9 +127,9 @@ export default function ConventionInfo(props: any) {
     if (collections) {
       setFilteredCollections(
         collections?.filter(
-          (c: { id: any }) =>
-            convention.collections.find(
-              (c2: { collectionId: any; id: any }) => c2.collectionId == c.id
+          (c) =>
+            convention?.collections.find(
+              (c2) => c2.collectionId == c.id
             ) === undefined
         )
       );
@@ -125,11 +138,11 @@ export default function ConventionInfo(props: any) {
 
   const onModalClose = () => {
     frontendFetch("GET", "/con/" + id, null, session?.data?.token)
-      .then((res: any) => res.json())
-      .then((data: any) => {
+      .then((res) => res.json())
+      .then((data) => {
         setData(data);
       })
-      .catch((err: any) => {});
+      .catch((err) => {});
   };
 
   const onSave = () => {
@@ -139,11 +152,11 @@ export default function ConventionInfo(props: any) {
       {},
       session?.data?.token
     )
-      .then((res: any) => res.json())
-      .then((data: any) => {
+      .then((res) => res.json())
+      .then((data) => {
         onClose();
       })
-      .catch((err: any) => {});
+      .catch((err) => {});
   };
 
   const disclosure = useDisclosure({
@@ -182,6 +195,7 @@ export default function ConventionInfo(props: any) {
   } = editDisclosure;
 
   if (isLoading || isLoadingPermissions) return <div>Loading...</div>;
+  if (!convention) return <div>Loading...</div>;
 
   return (
     <div className="relative flex flex-col sm:flex-row">
@@ -360,7 +374,7 @@ export default function ConventionInfo(props: any) {
                 <ModalBody>
                   <Select
                     name="collectionSelect"
-                    items={filteredCollections}
+                    items={filteredCollections ?? []}
                     label="Collection to Attach"
                     placeholder="Select a collection"
                     isRequired
@@ -368,7 +382,7 @@ export default function ConventionInfo(props: any) {
                       setCollectionIdToAttach(Number(event.target.value));
                     }}
                   >
-                    {(collection: any) => (
+                    {(collection) => (
                       <SelectItem key={collection.id}>
                         {collection.name}
                       </SelectItem>
@@ -389,25 +403,7 @@ export default function ConventionInfo(props: any) {
         )}
         <div className="flex flex-wrap mr-8">
           {convention.collections.map(
-            (c: {
-              collection: {
-                _count: any;
-                id: React.Key | null | undefined;
-                name:
-                  | string
-                  | number
-                  | bigint
-                  | boolean
-                  | React.ReactElement<
-                      any,
-                      string | React.JSXElementConstructor<any>
-                    >
-                  | Iterable<React.ReactNode>
-                  | React.ReactPortal
-                  | null
-                  | undefined;
-              };
-            }) => {
+            (c) => {
               return (
                 <div key={c.collection.id}>
                   <CollectionCard
