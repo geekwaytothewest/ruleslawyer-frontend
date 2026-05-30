@@ -186,6 +186,13 @@ export default function UserCard(props: UserCardProps) {
                     : "[unknown user]"}
                 </p>
             </div>
+            <div className="inline-block align-middle h-full text-sm pt-3 text-slate-300">
+                <p>
+                    {user.user.email !== ""
+                    ? user.user.email
+                    : "[unknown user]"}
+                </p>
+            </div>
             {userType === "organization" ? (
               <div className="align-middle h-full text-sm pt-3 text-slate-400">
                   {[
