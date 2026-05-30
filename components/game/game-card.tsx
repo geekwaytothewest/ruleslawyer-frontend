@@ -169,9 +169,9 @@ function GameCard(props: GameCardProps) {
             }
           }
         }}
-        className="flex items-center border-2 border-gwblue w-80 h-32 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] cursor-pointer"
+        className="flex items-center border-2 border-gwblue w-88 h-46 mr-5 mb-5 bg-gwdarkblue hover:bg-gwgreen/[.50] cursor-pointer"
       >
-        <div className="flex-col p-3 w-24">
+        <div className="flex-col p-3 w-40">
           {coverArtSrc ? (
             <img src={coverArtSrc} alt={game.name} className="w-full h-full object-cover" />
           ) : (
