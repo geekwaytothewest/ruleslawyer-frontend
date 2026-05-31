@@ -59,8 +59,8 @@ Configured in `.env` (template: `env.template`). Key variables:
 - `AUTH0_ISSUER_URL`, `AUTH0_AUDIENCE` — Auth0 tenant configuration
 - `BOARDGAMEGEEK_API_TOKEN` — token for BoardGameGeek lookups
 - `NEXT_PUBLIC_API_URL` — base URL of the ruleslawyer-backend API (e.g. `http://localhost:8080/api`)
-- `NEXT_PUBLIC_BASE_PATH` — app base path (`/ruleslawyer`)
-- `LEGACY_ADMIN_URL`, `LEGACY_LIBRARIAN_URL`, `LEGACY_PLAY_PRIZE_ENTRY_URL` — links out to the legacy SPA frontends (admin / librarian / play-and-win) for the capabilities this dashboard doesn't cover yet. Locally these point at the SPAs' dev servers (e.g. `http://localhost:8081`–`8083`); in deployed environments they're the CloudFront paths (`/admin`, `/librarian`, `/playandwin`) and are set on the ECS task by [ruleslawyer-infra](https://github.com/geekwaytothewest/ruleslawyer-infra).
+- `NEXT_PUBLIC_BASE_PATH` — app base path; empty (the default) serves the dashboard at the apex (`/`). Set a non-empty value (baked at build time) to nest it under a prefix instead. The dashboard's Auth0 routes (`/auth/*`) follow this base path, so callback URLs must match.
+- `LEGACY_ADMIN_URL`, `LEGACY_LIBRARIAN_URL`, `LEGACY_PLAY_PRIZE_ENTRY_URL` — links out to the legacy SPA frontends (admin / librarian / play-and-win) for the capabilities this dashboard doesn't cover yet. Locally these point at the SPAs' dev servers (e.g. `http://localhost:8081`–`8083/legacy/<app>`); in deployed environments they're the CloudFront paths (`/legacy/admin`, `/legacy/librarian`, `/legacy/playandwin`) and are set on the ECS task by [ruleslawyer-infra](https://github.com/geekwaytothewest/ruleslawyer-infra).
 
 `NEXT_PUBLIC_*` variables are inlined into the client bundle **at build time**, so the deploy workflow passes the per-environment value in as a Docker build arg.
 
