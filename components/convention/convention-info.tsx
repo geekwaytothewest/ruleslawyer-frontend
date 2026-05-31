@@ -18,6 +18,7 @@ import {
 } from "@heroui/react";
 import { GrAttachment } from "react-icons/gr";
 import usePermissions from "@/utilities/swr/usePermissions";
+import { useLegacyUrls } from "./legacy-urls-context";
 import ConventionModal from "./convention-modal";
 import { FaEdit, FaTrophy, FaUsersCog } from "react-icons/fa";
 import { IoMdAddCircle } from "react-icons/io";
@@ -56,6 +57,7 @@ export default function ConventionInfo(props: ConventionInfoProps) {
   const { permissions, isLoading: isLoadingPermissions } = usePermissions();
 
   const session = useAuth();
+  const legacyUrls = useLegacyUrls();
   const formatter = new DateFormatter("en-US", {
     dateStyle: "full",
     timeStyle: "full",
@@ -200,12 +202,12 @@ export default function ConventionInfo(props: ConventionInfoProps) {
   return (
     <div className="relative flex flex-col sm:flex-row">
       <div className="flex-1">
-        <div className="text-gwgreen" hidden={hideTitle && hideSubtitle}>
-          <h1 hidden={hideTitle}>{convention.name}</h1>
-          <h2 className="mb-8" hidden={hideSubtitle}>
-            {convention.theme}
-          </h2>
-        </div>
+          <div className="text-gwgreen" hidden={hideTitle && hideSubtitle}>
+            <h1 hidden={hideTitle}>{convention.name}</h1>
+            <h2 className="mb-8" hidden={hideSubtitle}>
+              {convention.theme}
+            </h2>
+          </div>
 
         <div className="flex gap-2 mb-8 items-center">
           <div>
@@ -261,7 +263,7 @@ export default function ConventionInfo(props: ConventionInfoProps) {
             }}
           >
             <span className="text-3xl inline-flex items-center hover:cursor-pointer">
-              <Link target="_blank" aria-label="Legacy Board Game Admin Frontend (opens in new tab)" className="text-white hover:text-gwgreen" href={`${process.env.NEXT_PUBLIC_LEGACY_ADMIN_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/admin`}><MdAdminPanelSettings aria-hidden="true" className="h-8 w-auto" /></Link>
+              <Link target="_blank" aria-label="Legacy Board Game Admin Frontend (opens in new tab)" className="text-white hover:text-gwgreen" href={`${legacyUrls.adminUrl}/org/${String(convention.organizationId)}/con/${String(convention.id)}/admin`}><MdAdminPanelSettings aria-hidden="true" className="h-8 w-auto" /></Link>
             </span>
           </Tooltip>
 
@@ -275,7 +277,7 @@ export default function ConventionInfo(props: ConventionInfoProps) {
             }}
           >
             <span className="text-3xl inline-flex items-center hover:cursor-pointer">
-              <Link target="_blank" aria-label="Legacy Librarian Frontend (opens in new tab)" className="text-white hover:text-gwgreen" href={`${process.env.NEXT_PUBLIC_LEGACY_LIBRARIAN_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/librarian`}><MdOutlineShoppingCartCheckout aria-hidden="true" className="h-8 w-auto" /></Link>
+              <Link target="_blank" aria-label="Legacy Librarian Frontend (opens in new tab)" className="text-white hover:text-gwgreen" href={`${legacyUrls.librarianUrl}/org/${String(convention.organizationId)}/con/${String(convention.id)}/librarian`}><MdOutlineShoppingCartCheckout aria-hidden="true" className="h-8 w-auto" /></Link>
             </span>
           </Tooltip>
 
@@ -289,19 +291,19 @@ export default function ConventionInfo(props: ConventionInfoProps) {
             }}
           >
             <span className="text-3xl inline-flex items-center hover:cursor-pointer">
-              <Link target="_blank" aria-label="Legacy Play Prize Entry Frontend (opens in new tab)" className="text-white hover:text-gwgreen" href={`${process.env.NEXT_PUBLIC_LEGACY_PLAY_PRIZE_ENTRY_URL}/org/${String(convention.organizationId)}/con/${String(convention.id)}/playandwin`}><FaTrophy aria-hidden="true" className="h-8 w-auto" /></Link>
+              <Link target="_blank" aria-label="Legacy Play Prize Entry Frontend (opens in new tab)" className="text-white hover:text-gwgreen" href={`${legacyUrls.playPrizeEntryUrl}/org/${String(convention.organizationId)}/con/${String(convention.id)}/playandwin`}><FaTrophy aria-hidden="true" className="h-8 w-auto" /></Link>
             </span>
           </Tooltip>
         </div>
 
-        <p>
-          <b className="text-gwgreen">Start Date: </b>
-          {formatter.format(new Date(convention.startDate))}
-        </p>
-        <p className="mb-8">
-          <b className="text-gwgreen">End Date: </b>
-          {formatter.format(new Date(convention.endDate))}
-        </p>
+          <p>
+            <b className="text-gwgreen">Start Date: </b>
+            {formatter.format(new Date(convention.startDate))}
+          </p>
+          <p className="mb-8">
+            <b className="text-gwgreen">End Date: </b>
+            {formatter.format(new Date(convention.endDate))}
+          </p>
 
         <h3 className="flex">
           <span className="text-gwgreen">

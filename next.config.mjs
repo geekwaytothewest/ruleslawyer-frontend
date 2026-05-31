@@ -1,13 +1,22 @@
+// basePath is baked in at build time. Default to root ('') so the dashboard is
+// served directly at the env host (e.g. library.geekway.com); pass a non-empty
+// NEXT_PUBLIC_BASE_PATH build arg (see Dockerfile) to nest it under a prefix.
+// Auth routes follow basePath, so callback/logout URLs in Auth0 must match.
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     eslint: {
         ignoreDuringBuilds: true,
     },
-    basePath: '/ruleslawyer',
+    basePath,
     env: {
-        NEXT_PUBLIC_BASE_PATH: '/ruleslawyer',
-        NEXT_PUBLIC_PROFILE_ROUTE: '/ruleslawyer/auth/profile',
-        NEXT_PUBLIC_ACCESS_TOKEN_ROUTE: '/ruleslawyer/auth/access-token',
+        NEXT_PUBLIC_BASE_PATH: basePath,
+        NEXT_PUBLIC_PROFILE_ROUTE: `${basePath}/auth/profile`,
+        NEXT_PUBLIC_ACCESS_TOKEN_ROUTE: `${basePath}/auth/access-token`,
+        LEGACY_ADMIN_URL: process.env.LEGACY_ADMIN_URL,
+        LEGACY_LIBRARIAN_URL: process.env.LEGACY_LIBRARIAN_URL,
+        LEGACY_PLAY_PRIZE_ENTRY_URL: process.env.LEGACY_PLAY_PRIZE_ENTRY_URL,
     },
     images: {
         remotePatterns: [

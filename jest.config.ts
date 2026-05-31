@@ -20,6 +20,7 @@ const config: Config = {
     "components/**/*.{ts,tsx}",
     "utilities/**/*.{ts,tsx}",
     "lib/**/*.{ts,tsx}",
+    "app/**/*.{ts,tsx}",
     "!**/*.d.ts",
   ],
 };

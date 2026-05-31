@@ -2,6 +2,22 @@
 
 The web frontend for the **Geekway to the West Library Management System** — a library management and Play and Win event tool built for and by [Geekway to the West](https://geekway.com). It provides a dashboard for managing organizations, conventions, collections, games, copies, and users, backed by the [ruleslawyer-backend](https://github.com/geekwaytothewest/ruleslawyer-backend) API.
 
+This frontend is a **work in progress**. It already offers many capabilities the legacy board-game-admin frontend lacks, but it is not yet a complete replacement — most notably, attendee management is still missing.
+
+The end goal is a single unified experience for admins, geek guides, and attendees.
+## Tech stack
+
+- [Next.js 15](https://nextjs.org/) (App Router, standalone output) with React 19
+- [HeroUI](https://www.heroui.com/) component library
+- [Tailwind CSS v4](https://tailwindcss.com/)
+- [Auth0](https://auth0.com/) (`@auth0/nextjs-auth0`) for authentication
+- [SWR](https://swr.vercel.app/) for client-side data fetching
+
+The app is mounted under the `/ruleslawyer` base path (see `next.config.mjs`).
+# ruleslawyer-frontend
+
+The web frontend for the **Geekway to the West Library Management System** — a library management and Play and Win event tool built for and by [Geekway to the West](https://geekway.com). It provides a dashboard for managing organizations, conventions, collections, games, copies, and users, backed by the [ruleslawyer-backend](https://github.com/geekwaytothewest/ruleslawyer-backend) API.
+
 ## Tech stack
 
 - [Next.js 15](https://nextjs.org/) (App Router, standalone output) with React 19
@@ -38,24 +54,15 @@ Open [http://localhost:3000/ruleslawyer](http://localhost:3000/ruleslawyer) to v
 
 ## Environment variables
 
-For local development, copy `env.template` to `.env` and fill in the values. In production these are set on the ECS task definition (`.aws/taskdefinition-{env}.json`) — non-secret values inline, with `AUTH0_SECRET` and `AUTH0_CLIENT_SECRET` pulled from AWS Secrets Manager.
+Configured in `.env` (template: `env.template`). Key variables:
 
-Auth0 (`@auth0/nextjs-auth0`) — the SDK reads these from the environment automatically, except `AUTH0_AUDIENCE`, which `lib/auth0.ts` passes explicitly:
-
-- `AUTH0_DOMAIN` — Auth0 tenant domain (e.g. `geekway.auth0.com`)
-- `AUTH0_CLIENT_ID` — Auth0 application client ID
-- `AUTH0_CLIENT_SECRET` — Auth0 application client secret (secret)
-- `AUTH0_SECRET` — session cookie encryption key (secret)
-- `AUTH0_AUDIENCE` — API audience requested for access tokens
-- `APP_BASE_URL` — public base URL of the app (e.g. `https://library.geekway.com/ruleslawyer`)
-
-Backend API:
-
-- `API_URL` — server-side base URL of the ruleslawyer-backend API
-- `NEXT_PUBLIC_API_URL` — client-side base URL of the API (e.g. `http://localhost:8080/api`)
+- `AUTH0_ISSUER_URL`, `AUTH0_AUDIENCE` — Auth0 tenant configuration
+- `BOARDGAMEGEEK_API_TOKEN` — token for BoardGameGeek lookups
+- `NEXT_PUBLIC_API_URL` — base URL of the ruleslawyer-backend API (e.g. `http://localhost:8080/api`)
 - `NEXT_PUBLIC_BASE_PATH` — app base path (`/ruleslawyer`)
+- `LEGACY_ADMIN_URL`, `LEGACY_LIBRARIAN_URL`, `LEGACY_PLAY_PRIZE_ENTRY_URL` — links out to the legacy SPA frontends (admin / librarian / play-and-win) for the capabilities this dashboard doesn't cover yet. Locally these point at the SPAs' dev servers (e.g. `http://localhost:8081`–`8083`); in deployed environments they're the CloudFront paths (`/admin`, `/librarian`, `/playandwin`) and are set on the ECS task by [ruleslawyer-infra](https://github.com/geekwaytothewest/ruleslawyer-infra).
 
-`NEXT_PUBLIC_*` variables are inlined into the client bundle **at build time**, so the deploy workflow passes the per-environment value in as a Docker build arg. The remaining variables are read at runtime from the task definition.
+`NEXT_PUBLIC_*` variables are inlined into the client bundle **at build time**, so the deploy workflow passes the per-environment value in as a Docker build arg.
 
 ## Project structure
 
