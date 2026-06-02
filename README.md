@@ -13,8 +13,6 @@ The end goal is a single unified experience for admins, geek guides, and attende
 - [Auth0](https://auth0.com/) (`@auth0/nextjs-auth0`) for authentication
 - [SWR](https://swr.vercel.app/) for client-side data fetching
 
-The app is mounted under the `/ruleslawyer` base path (see `next.config.mjs`).
-
 ## Getting started
 
 Install dependencies and copy the environment template:
