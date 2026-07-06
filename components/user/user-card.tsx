@@ -211,6 +211,7 @@ export default function UserCard(props: UserCardProps) {
                   {[
                       user.admin ? "Admin" : null,
                       user.geekGuide ? "Geek Guide" : null,
+                      user.kiosk ? "Kiosk" : null,
                       user.readOnly ? "Read Only" : null,
                   ]
                       .filter(Boolean)
@@ -225,6 +226,7 @@ export default function UserCard(props: UserCardProps) {
                       user.admin ? "Admin" : null,
                       user.attendee ? "Attendee" : null,
                       user.geekGuide ? "Geek Guide" : null,
+                      user.kiosk ? "Kiosk" : null,
                       user.readOnly ? "Read Only" : null,
                   ]
                       .filter(Boolean)

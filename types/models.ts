@@ -183,6 +183,7 @@ export interface UserOrganizationPermissions {
   organizationId: number;
   admin: boolean;
   geekGuide: boolean;
+  kiosk: boolean;
   readOnly: boolean;
 }
 
@@ -193,6 +194,7 @@ export interface UserConventionPermissions {
   conventionId: number;
   admin: boolean;
   geekGuide: boolean;
+  kiosk: boolean;
   attendee: boolean;
 }
 
@@ -307,6 +309,7 @@ export interface UserPermissionRow {
   conventionId?: number;
   admin: boolean;
   geekGuide: boolean;
+  kiosk?: boolean;
   readOnly?: boolean;
   attendee?: boolean;
   user: User;
@@ -358,6 +361,7 @@ export interface OrganizationPermissionWithOrg {
   organizationId: number;
   admin: boolean;
   geekGuide?: boolean;
+  kiosk?: boolean;
   readOnly?: boolean;
   organization: Organization;
   user?: User;
