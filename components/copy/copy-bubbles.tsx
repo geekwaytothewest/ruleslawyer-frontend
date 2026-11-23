@@ -29,30 +29,40 @@ function BubbleModal({ c, bubbleStyle, onCloseModal }: BubbleModalProps) {
     );
   }
 
+  // The modal is a SIBLING of the bubble, never a child. React events propagate
+  // along the React tree even though the modal renders into a portal, so a
+  // nested modal sent every keystroke (and click) inside it through the
+  // bubble's handlers below — the Enter/Space preventDefault() then ate every
+  // space typed into the copy's game-name and comments fields.
   return (
-    <span
-      role="button"
-      tabIndex={0}
-      aria-label={"Copy " + c.barcodeLabel}
-      className="flex-col inline-block mb-2 mr-2 bg-gwdarkblue p-3 rounded-full border-4 border-gwgreen hover:border-gwblue hover:text-gwgreen cursor-pointer"
-      onClick={onOpen}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onOpen();
-        }
-      }}
-    >
-      <div>
-        {c.checkOuts.length === 0 || c.checkOuts[0].checkIn !== null ? (
-          <BsBox2Heart role="img" aria-label="Available" className="inline-block text-gwgreen mr-2 mb-2" />
-        ) : (
-          <BsBox2Heart role="img" aria-label="Checked out" className="inline-block text-gwdarkred mr-2 mb-2" />
-        )}
-        {c.barcodeLabel}
-      </div>
+    <>
+      <span
+        role="button"
+        tabIndex={0}
+        aria-label={"Copy " + c.barcodeLabel}
+        className="flex-col inline-block mb-2 mr-2 bg-gwdarkblue p-3 rounded-full border-4 border-gwgreen hover:border-gwblue hover:text-gwgreen cursor-pointer"
+        onClick={onOpen}
+        onKeyDown={(e) => {
+          // Only the bubble itself activates on Enter/Space; anything bubbling
+          // up from a descendant (a text field, a button) keeps its own default.
+          if (e.target !== e.currentTarget) return;
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onOpen();
+          }
+        }}
+      >
+        <div>
+          {c.checkOuts.length === 0 || c.checkOuts[0].checkIn !== null ? (
+            <BsBox2Heart role="img" aria-label="Available" className="inline-block text-gwgreen mr-2 mb-2" />
+          ) : (
+            <BsBox2Heart role="img" aria-label="Checked out" className="inline-block text-gwdarkred mr-2 mb-2" />
+          )}
+          {c.barcodeLabel}
+        </div>
+      </span>
       <CopyModal disclosure={disclosure} copyIn={c} copyId={c.id} organizationId={c.organizationId} />
-    </span>
+    </>
   );
 }
 

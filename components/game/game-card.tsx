@@ -142,6 +142,11 @@ function GameCard(props: GameCardProps) {
             : onOpen
         }
         onKeyDown={(e) => {
+          // Only the card itself activates on Enter/Space; anything bubbling
+          // up from a descendant (a nested control, a portalled modal) keeps
+          // its own default — otherwise preventDefault() here eats e.g. every
+          // space typed into a field.
+          if (e.target !== e.currentTarget) return;
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
             if (readOnly) {
