@@ -2,18 +2,16 @@
 import GameGrid from "@/components/game/game-grid";
 import React, { use } from "react";
 
-type Params = Promise<{ orgId: string; colId: string }>;
+type Params = Promise<{ colId: string }>;
 
-export default function OrgCollectionView(props: { params: Params }) {
+// Read-only collection view (no org in the URL). GameGrid derives the
+// organization from the fetched collection.
+export default function CollectionView(props: { params: Params }) {
   const params = use(props.params);
 
   return (
     <div>
-      <GameGrid
-        collectionId={Number(params.colId)}
-        organizationId={Number(params.orgId)}
-        showHeader={true}
-      />
+      <GameGrid collectionId={Number(params.colId)} showHeader={true} />
     </div>
   );
 }
