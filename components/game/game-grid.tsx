@@ -47,15 +47,20 @@ export default function GameGrid(props: GameGridProps) {
 
   const session = useAuth();
 
+  // The read-only collection route has no org in its URL; fall back to the
+  // fetched collection's org so permissions and the create/import modals
+  // get a real id instead of undefined/NaN.
+  const effectiveOrgId = organizationId || collection?.organizationId;
+
   useEffect(() => {
     if (permissions.user?.data) {
       if (permissions.user.data.superAdmin) {
         setReadOnly(false);
-      } else if (organizationId) {
+      } else if (effectiveOrgId) {
         if (
           permissions.organizations.data?.filter(
             (d) =>
-              d.organizationId == organizationId && d.admin === true
+              d.organizationId == effectiveOrgId && d.admin === true
           ).length > 0
         ) {
           setReadOnly(false);
@@ -66,7 +71,7 @@ export default function GameGrid(props: GameGridProps) {
         setReadOnly(true);
       }
     }
-  }, [permissions.user?.data, permissions.organizations?.data, organizationId]);
+  }, [permissions.user?.data, permissions.organizations?.data, effectiveOrgId]);
 
   // Fetch the collection's plays as CSV and download it in the browser. The
   // endpoint returns { csvText, collectionName } JSON rather than a file.
@@ -149,8 +154,7 @@ export default function GameGrid(props: GameGridProps) {
             "/collection/" +
               collectionId +
               "/copiesByGames" +
-              "?orgId=" + organizationId +
-              "&limit=" + maxResults +
+              "?limit=" + maxResults +
               "&page=" + page +
               "&filter=" + encodeURIComponent(debouncedSearch),
             null,
@@ -317,13 +321,13 @@ export default function GameGrid(props: GameGridProps) {
 
       <CopyModal
         disclosure={createDisclosure}
-        organizationId={organizationId}
+        organizationId={effectiveOrgId}
       ></CopyModal>
 
       {isOpenImport && (
         <CollectionModal
           disclosure={importDisclosure}
-          organizationId={organizationId}
+          organizationId={effectiveOrgId}
           collectionId={collectionId}
           importFile={true}
           importCopiesOnly={true}

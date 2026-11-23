@@ -14,16 +14,26 @@ jest.mock("@/components/game/game-card", () => ({
   __esModule: true,
   default: ({ gameId }: { gameId: number }) => <div data-testid="game-card">{gameId}</div>,
 }));
-jest.mock("@/components/copy/copy-modal", () => ({ __esModule: true, default: () => null }));
+jest.mock("@/components/copy/copy-modal", () => ({
+  __esModule: true,
+  default: ({ organizationId }: { organizationId?: number }) => (
+    <div data-testid="copy-modal" data-org={String(organizationId)} />
+  ),
+}));
 
 const fetchMock = frontendFetch as jest.Mock;
 const usePermissionsMock = usePermissions as jest.Mock;
 
-function mockPermissions(opts: { superAdmin?: boolean } = {}) {
+function mockPermissions(
+  opts: {
+    superAdmin?: boolean;
+    orgs?: { organizationId: number; admin: boolean }[];
+  } = {}
+) {
   usePermissionsMock.mockReturnValue({
     permissions: {
       user: { data: { superAdmin: opts.superAdmin ?? false } },
-      organizations: { data: [] },
+      organizations: { data: opts.orgs ?? [] },
       conventions: { data: [] },
     },
     isLoading: false,
@@ -104,5 +114,59 @@ describe("GameGrid", () => {
     expect(
       await screen.findByRole("button", { name: "Create Game" })
     ).toBeInTheDocument();
+  });
+
+  // Collection mode with no org in the URL (/dashboard/collection/[colId]):
+  // GET /collection/:id, then GET /collection/:id/copiesByGames.
+  describe("collection without an organizationId prop", () => {
+    function mockCollectionResponses() {
+      fetchMock.mockImplementation((_method: string, url: string) =>
+        Promise.resolve({
+          json: async () =>
+            url.includes("/copiesByGames")
+              ? { name: "Main Library", games: [{ id: 1 }], total: 1, totalPages: 1 }
+              : { id: 3, name: "Main Library", organizationId: 9 },
+        })
+      );
+    }
+
+    it("does not send orgId=NaN/undefined to copiesByGames", async () => {
+      mockCollectionResponses();
+      render(<GameGrid collectionId={3} />);
+      await screen.findByTestId("game-card");
+
+      const urls = fetchMock.mock.calls.map((c) => c[1] as string);
+      expect(urls).toContain("/collection/3");
+      expect(urls.some((u) => u.startsWith("/collection/3/copiesByGames?"))).toBe(true);
+      expect(urls.some((u) => /orgId=(NaN|undefined)/.test(u))).toBe(false);
+    });
+
+    it("passes the collection's organization to the copy modal", async () => {
+      mockPermissions({ superAdmin: true });
+      mockCollectionResponses();
+      render(<GameGrid collectionId={3} />);
+      await screen.findByTestId("game-card");
+
+      expect(screen.getByTestId("copy-modal")).toHaveAttribute("data-org", "9");
+    });
+
+    it("grants edit controls to admins of the collection's organization", async () => {
+      mockPermissions({ orgs: [{ organizationId: 9, admin: true }] });
+      mockCollectionResponses();
+      render(<GameGrid collectionId={3} />);
+
+      expect(
+        await screen.findByRole("button", { name: "Create Game" })
+      ).toBeInTheDocument();
+    });
+
+    it("stays read-only for non-admins of the collection's organization", async () => {
+      mockPermissions({ orgs: [{ organizationId: 9, admin: false }] });
+      mockCollectionResponses();
+      render(<GameGrid collectionId={3} />);
+      await screen.findByTestId("game-card");
+
+      expect(screen.queryByRole("button", { name: "Create Game" })).not.toBeInTheDocument();
+    });
   });
 });
