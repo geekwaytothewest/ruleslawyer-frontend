@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import frontendFetch from "@/utilities/frontendFetch";
+import { toastNetworkError, toastSaveError } from "@/utilities/toastFetchError";
 import { useAuth } from "@/utilities/swr/useAuth";
 import usePermissions from "@/utilities/swr/usePermissions";
 import AttendeeCard from "./attendee-card";
@@ -15,8 +16,9 @@ import AttendeeSyncTabletopEventsModal from "./atttendee-sync-tabletop-events-mo
 import { useDisclosure } from "@/utilities/useDisclosure";
 import AttendeeModal from "./attendee-modal";
 import { IoMdAddCircle } from "react-icons/io";
-import { RiImportLine } from "react-icons/ri";
+import { RiExportLine, RiImportLine } from "react-icons/ri";
 import { MdOutlineCloudSync } from "react-icons/md";
+import { unstable_batchedUpdates } from "react-dom";
 
 interface AttendeeGridProps {
   attendeesIn?: Attendee[];
@@ -58,6 +60,37 @@ export default function AttendeeGrid(props: AttendeeGridProps) {
   const { permissions } = usePermissions();
 
   const session = useAuth();
+
+  // Fetch the convention's badge file and download it in the browser. The
+  // endpoint streams raw CSV (not JSON), so save the response body as-is.
+  const onExportBadgeFile = async () => {
+    const token = session?.data?.token;
+    if (!token || !conventionId) return;
+
+    try {
+      const res = await frontendFetch(
+        "GET",
+        "/con/" + conventionId + "/exportBadgeFile",
+        null,
+        token,
+      );
+      if (!res.ok) {
+        toastSaveError(res);
+        return;
+      }
+
+      const url = URL.createObjectURL(await res.blob());
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "badgeFile.csv";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      toastNetworkError();
+    }
+  };
 
   useEffect(() => {
     frontendFetch("GET", "/attendee/pronouns", null, session?.data?.token)
@@ -236,7 +269,7 @@ export default function AttendeeGrid(props: AttendeeGridProps) {
           content="Sync with Tabletop Events"
           delay={1000}
           ariaLabel="Sync with Tabletop Events"
-          triggerClassName="text-7xl fixed bottom-72 right-8 hover:text-gwgreen hover:cursor-pointer bg-gwdarkgreen rounded-full p-2"
+          triggerClassName="text-7xl fixed bottom-96 right-8 hover:text-gwgreen hover:cursor-pointer bg-gwdarkgreen rounded-full p-2"
           onPress={onOpenSyncTabletopEvents}
         >
           <MdOutlineCloudSync aria-hidden="true" />
@@ -250,10 +283,24 @@ export default function AttendeeGrid(props: AttendeeGridProps) {
           content="Import Attendees From CSV"
           delay={1000}
           ariaLabel="Import Attendees From CSV"
-          triggerClassName="text-7xl fixed bottom-48 right-8 hover:text-gwgreen hover:cursor-pointer bg-gwdarkgreen rounded-full p-2"
+          triggerClassName="text-7xl fixed bottom-72 right-8 hover:text-gwgreen hover:cursor-pointer bg-gwdarkgreen rounded-full p-2"
           onPress={onOpenCreateAttendeeImport}
         >
           <RiImportLine aria-hidden="true" />
+        </SimpleTooltip>
+      )}
+
+      {readOnly ? (
+        null
+      ) : (
+        <SimpleTooltip
+          content="Export Badge File"
+          delay={1000}
+          ariaLabel="Export Badge File"
+          triggerClassName="text-7xl fixed bottom-48 right-8 hover:text-gwgreen hover:cursor-pointer bg-gwdarkgreen rounded-full p-2"
+          onPress={onExportBadgeFile}
+        >
+          <RiExportLine aria-hidden="true" />
         </SimpleTooltip>
       )}
 
