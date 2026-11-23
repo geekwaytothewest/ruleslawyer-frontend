@@ -13,6 +13,7 @@ import { SimpleCheckbox } from "@/components/ui/simple-checkbox";
 interface UserPermissionUpdate {
   admin: boolean;
   geekGuide: boolean;
+  kiosk?: boolean;
   readOnly?: boolean;
   attendee?: boolean;
 }
@@ -42,6 +43,7 @@ export default function UserModal(props: UserModalProps) {
   const [userEmail, setUserEmail] = useState<string | undefined>(undefined);
   const [userAdmin, setUserAdmin] = useState(false);
   const [userGeekGuide, setUserGeekGuide] = useState(false);
+  const [userKiosk, setUserKiosk] = useState(false);
   const [userReadOnly, setUserReadOnly] = useState(false);
   const [userAttendee, setUserAttendee] = useState(false);
   const [isLoading, setLoading] = useState(true);
@@ -62,6 +64,7 @@ export default function UserModal(props: UserModalProps) {
           {
               admin: userAdmin,
               geekGuide: userGeekGuide,
+              kiosk: userKiosk,
               readOnly: userReadOnly,
           },
           session?.data?.token
@@ -74,6 +77,7 @@ export default function UserModal(props: UserModalProps) {
             onSaved?.({
                 admin: userAdmin,
                 geekGuide: userGeekGuide,
+                kiosk: userKiosk,
                 readOnly: userReadOnly,
             });
             onClose();
@@ -89,6 +93,7 @@ export default function UserModal(props: UserModalProps) {
               email: userEmail,
               admin: userAdmin,
               geekGuide: userGeekGuide,
+              kiosk: userKiosk,
               readOnly: userReadOnly,
           },
           session?.data?.token
@@ -101,6 +106,7 @@ export default function UserModal(props: UserModalProps) {
             onSaved?.({
                 admin: userAdmin,
                 geekGuide: userGeekGuide,
+                kiosk: userKiosk,
                 readOnly: userReadOnly,
             });
             onClose();
@@ -117,6 +123,7 @@ export default function UserModal(props: UserModalProps) {
           {
               admin: userAdmin,
               geekGuide: userGeekGuide,
+              kiosk: userKiosk,
               attendee: userAttendee,
           },
           session?.data?.token
@@ -129,6 +136,7 @@ export default function UserModal(props: UserModalProps) {
             onSaved?.({
                 admin: userAdmin,
                 geekGuide: userGeekGuide,
+                kiosk: userKiosk,
                 attendee: userAttendee,
             });
             onClose();
@@ -144,6 +152,7 @@ export default function UserModal(props: UserModalProps) {
               email: userEmail,
               admin: userAdmin,
               geekGuide: userGeekGuide,
+              kiosk: userKiosk,
               attendee: userAttendee,
           },
           session?.data?.token
@@ -156,6 +165,7 @@ export default function UserModal(props: UserModalProps) {
             onSaved?.({
                 admin: userAdmin,
                 geekGuide: userGeekGuide,
+                kiosk: userKiosk,
                 attendee: userAttendee,
             });
             onClose();
@@ -195,6 +205,7 @@ export default function UserModal(props: UserModalProps) {
     if (user && isOpen) {
       setUserAdmin(user.admin ?? false);
       setUserGeekGuide(user.geekGuide ?? false);
+      setUserKiosk(user.kiosk ?? false);
       setUserReadOnly(user.readOnly ?? false);
       setUserAttendee(user.attendee ?? false);
     }
@@ -283,6 +294,15 @@ export default function UserModal(props: UserModalProps) {
                       />
                       <br/>
                       <SimpleCheckbox
+                        isSelected={userKiosk}
+                        onChange={setUserKiosk}
+                        isDisabled={readOnly}
+                        label="Kiosk"
+                        aria-label="Kiosk"
+                        id="kiosk"
+                      />
+                      <br/>
+                      <SimpleCheckbox
                         isSelected={userReadOnly}
                         onChange={setUserReadOnly}
                         isDisabled={readOnly}
@@ -313,6 +333,15 @@ export default function UserModal(props: UserModalProps) {
                         label="Geek Guide"
                         aria-label="Geek Guide"
                         id="con-geek-guide"
+                      />
+                      <br/>
+                      <SimpleCheckbox
+                        isSelected={userKiosk}
+                        onChange={setUserKiosk}
+                        isDisabled={readOnly}
+                        label="Kiosk"
+                        aria-label="Kiosk"
+                        id="con-kiosk"
                       />
                       <br/>
                       <SimpleCheckbox

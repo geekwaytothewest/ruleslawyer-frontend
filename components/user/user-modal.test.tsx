@@ -47,6 +47,7 @@ function makeUser(over: Partial<UserPermissionRow> = {}): UserPermissionRow {
     organizationId: 7,
     admin: false,
     geekGuide: false,
+    kiosk: false,
     readOnly: false,
     attendee: false,
     user: { id: 1, name: "Ada Lovelace", email: "ada@test.dev" },
@@ -113,7 +114,7 @@ describe("UserModal — organization save", () => {
     expect(fetchMock).toHaveBeenCalledWith(
       "PUT",
       "/userOrgPerm/55",
-      { admin: true, geekGuide: false, readOnly: true },
+      { admin: true, geekGuide: false, kiosk: false, readOnly: true },
       "tok"
     );
     await waitFor(() => expect(onSaved).toHaveBeenCalledTimes(1));
@@ -133,7 +134,25 @@ describe("UserModal — organization save", () => {
     expect(fetchMock).toHaveBeenCalledWith(
       "POST",
       "/userOrgPerm/organization/7/addUser",
-      { email: "new@test.dev", admin: true, geekGuide: false, readOnly: false },
+      { email: "new@test.dev", admin: true, geekGuide: false, kiosk: false, readOnly: false },
+      "tok"
+    );
+  });
+
+  it("POSTs kiosk=true when the Kiosk checkbox is toggled", async () => {
+    fetchMock.mockResolvedValue({ ok: true });
+    render(
+      <UserModal organizationId={7} disclosure={openDisclosure().disclosure} userType="organization" />
+    );
+
+    await userEvent.type(await screen.findByLabelText("Email"), "kiosk@test.dev");
+    await userEvent.click(screen.getByRole("checkbox", { name: "Kiosk" }));
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "POST",
+      "/userOrgPerm/organization/7/addUser",
+      { email: "kiosk@test.dev", admin: false, geekGuide: false, kiosk: true, readOnly: false },
       "tok"
     );
   });
@@ -161,7 +180,7 @@ describe("UserModal — convention save", () => {
     expect(fetchMock).toHaveBeenCalledWith(
       "PUT",
       "/userConPerm/88",
-      { admin: false, geekGuide: true, attendee: true },
+      { admin: false, geekGuide: true, kiosk: false, attendee: true },
       "tok"
     );
   });
@@ -182,7 +201,7 @@ describe("UserModal — convention save", () => {
     expect(fetchMock).toHaveBeenCalledWith(
       "POST",
       "/userConPerm/convention/3/addUser",
-      { email: "con@test.dev", admin: false, geekGuide: false, attendee: false },
+      { email: "con@test.dev", admin: false, geekGuide: false, kiosk: false, attendee: false },
       "tok"
     );
   });
